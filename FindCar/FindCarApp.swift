@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseCore
+import FirebaseFirestore
 
 // Added class for Firebase setup
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -21,10 +22,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct FindCarApp: App {
     // Register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
+        
+    @StateObject var sessionService = SessionServiceImpl()
+        
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack {
+                switch sessionService.state {
+                case .loggedIn:
+                    HomeView()
+                        .environmentObject(sessionService)
+                case .loggedOut:
+                    LoginView()
+                }
+            }
         }
     }
 }
