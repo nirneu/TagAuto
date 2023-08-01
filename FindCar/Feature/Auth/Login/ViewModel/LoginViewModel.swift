@@ -11,7 +11,7 @@ import AuthenticationServices
 import Firebase
 
 enum LoginState {
-    case successfull
+    case successful
     case failed(error: Error)
     case na
 }
@@ -57,7 +57,7 @@ final class LoginViewModelImpl: LoginViewModel, ObservableObject {
                 }
                 
             } receiveValue: { [weak self] in
-                self?.state = .successfull
+                self?.state = .successful
             }
             .store(in: &subscriptions)
     }
@@ -107,7 +107,7 @@ final class LoginViewModelImpl: LoginViewModel, ObservableObject {
                         }
                         
                     } receiveValue: { [weak self] in
-                        self?.state = .successfull
+                        self?.state = .successful
                     }
                     .store(in: &subscriptions)
                 
@@ -122,7 +122,7 @@ private extension LoginViewModelImpl {
     func setupErrorSubscription() {
         $state.map { state -> Bool in
             switch state {
-            case .successfull, .na:
+            case .successful, .na:
                 return false
             case .failed:
                 return true

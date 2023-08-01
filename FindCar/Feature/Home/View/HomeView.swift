@@ -15,15 +15,22 @@ struct HomeView: View {
     
     var body: some View {
         
-        NavigationView {
-            TabView(selection: $selection) {
-                
-                MapView()
-                    .tabItem {
-                        Label("FindCar", systemImage: "map")
-                    }
-                    .edgesIgnoringSafeArea(.top)
-                    .tag(1)
+        TabView(selection: $selection) {
+            
+            MapView()
+                .tabItem {
+                    Label("Cars", systemImage: "map")
+                }
+                .edgesIgnoringSafeArea(.top)
+                .tag(1)
+            
+            GroupsView(selection: $selection)
+                .tabItem {
+                    Label("Groups", systemImage: "person.3")
+                }
+                .tag(2)
+            
+            NavigationStack {
                 
                 VStack(alignment: .leading, spacing: 16) {
                     
@@ -37,21 +44,14 @@ struct HomeView: View {
                     }
                 }
                 .padding(.horizontal, 16)
-                .tabItem {
-                    Label("Profile", systemImage: "person.crop.circle.fill")
-                }
-                .tag(2)
-                
-                Text("settings")
-                    .tabItem {
-                        Label("Settings", systemImage: "gear")
-                    }
-                    .tag(3)
+                .navigationTitle("Profile")
                 
             }
-            .navigationTitle(
-                selection == 1 ? "" : selection == 2 ? "Profile" : "Settings"
-            )
+            .tabItem {
+                Label("Profile", systemImage: "person.crop.circle")
+            }
+            .tag(3)
+            
         }
     }
     

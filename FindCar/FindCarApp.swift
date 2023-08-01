@@ -11,30 +11,28 @@ import FirebaseFirestore
 
 // Added class for Firebase setup
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-    return true
-  }
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
 }
 
 @main
 struct FindCarApp: App {
     // Register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-        
+    
     @StateObject var sessionService = SessionServiceImpl()
-        
+    
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                switch sessionService.state {
-                case .loggedIn:
-                    HomeView()
-                        .environmentObject(sessionService)
-                case .loggedOut:
-                    LoginView()
-                }
+            switch sessionService.state {
+            case .loggedIn:
+                HomeView()
+                    .environmentObject(sessionService)
+            case .loggedOut:
+                LoginView()
             }
         }
     }

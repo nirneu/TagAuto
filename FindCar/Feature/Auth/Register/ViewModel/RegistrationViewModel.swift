@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 enum RegistrationState {
-    case successfull
+    case successful
     case failed(error: Error)
     case na
 }
@@ -50,7 +50,7 @@ final class RegistrationViewModelImpl: ObservableObject, RegistrationViewModel {
                 }
                 
             } receiveValue: { [weak self] in
-                self?.state = .successfull
+                self?.state = .successful
             }
             .store(in: &subscriptions)
     }
@@ -61,7 +61,7 @@ extension RegistrationViewModelImpl {
     func setupErrorSubscription() {
         $state.map { state -> Bool in
             switch state {
-            case .successfull, .na:
+            case .successful, .na:
                 return false
             case .failed:
                 return true

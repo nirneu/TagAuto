@@ -7,10 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A8285A932A793F2D007D3305 /* GroupDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8285A922A793F2D007D3305 /* GroupDetailView.swift */; };
+		A8285A952A7950AE007D3305 /* CreateGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8285A942A7950AE007D3305 /* CreateGroup.swift */; };
 		A82D1A032A6EB65100687364 /* ForgotPasswordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A022A6EB65100687364 /* ForgotPasswordService.swift */; };
 		A82D1A062A6EBCC700687364 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A052A6EBCC700687364 /* ForgotPasswordViewModel.swift */; };
 		A82D1A0B2A71722700687364 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A0A2A71722700687364 /* MapView.swift */; };
 		A82D1A0E2A7172BB00687364 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A0D2A7172BB00687364 /* MapViewModel.swift */; };
+		A82DF7D52A77DD30005AD7B0 /* MapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82DF7D42A77DD30005AD7B0 /* MapService.swift */; };
 		A842D8512A5EBAFC008F8C8F /* FindCarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8502A5EBAFC008F8C8F /* FindCarApp.swift */; };
 		A842D8552A5EBAFD008F8C8F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A842D8542A5EBAFD008F8C8F /* Assets.xcassets */; };
 		A842D8582A5EBAFD008F8C8F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A842D8572A5EBAFD008F8C8F /* Preview Assets.xcassets */; };
@@ -34,14 +37,21 @@
 		A842D8962A63FC28008F8C8F /* LoginCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8952A63FC28008F8C8F /* LoginCredentials.swift */; };
 		A842D8992A63FC72008F8C8F /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8982A63FC72008F8C8F /* LoginService.swift */; };
 		A885FD862A6E78F300C3CBD4 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A885FD852A6E78F300C3CBD4 /* LoginViewModel.swift */; };
+		A89F2E642A79359800C97665 /* GroupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E632A79359800C97665 /* GroupsService.swift */; };
+		A89F2E672A7938FA00C97665 /* GroupsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E662A7938FA00C97665 /* GroupsViewModel.swift */; };
+		A89F2E6A2A793BCA00C97665 /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E692A793BCA00C97665 /* GroupsView.swift */; };
+		A89F2E6D2A793D4C00C97665 /* Groups.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E6C2A793D4C00C97665 /* Groups.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A8285A922A793F2D007D3305 /* GroupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailView.swift; sourceTree = "<group>"; };
+		A8285A942A7950AE007D3305 /* CreateGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroup.swift; sourceTree = "<group>"; };
 		A82D1A022A6EB65100687364 /* ForgotPasswordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordService.swift; sourceTree = "<group>"; };
 		A82D1A052A6EBCC700687364 /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		A82D1A072A6FF67D00687364 /* FindCar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FindCar.entitlements; sourceTree = "<group>"; };
 		A82D1A0A2A71722700687364 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		A82D1A0D2A7172BB00687364 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		A82DF7D42A77DD30005AD7B0 /* MapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapService.swift; sourceTree = "<group>"; };
 		A842D84D2A5EBAFC008F8C8F /* FindCar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FindCar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A842D8502A5EBAFC008F8C8F /* FindCarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindCarApp.swift; sourceTree = "<group>"; };
 		A842D8542A5EBAFD008F8C8F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -64,6 +74,10 @@
 		A842D8952A63FC28008F8C8F /* LoginCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCredentials.swift; sourceTree = "<group>"; };
 		A842D8982A63FC72008F8C8F /* LoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
 		A885FD852A6E78F300C3CBD4 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		A89F2E632A79359800C97665 /* GroupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsService.swift; sourceTree = "<group>"; };
+		A89F2E662A7938FA00C97665 /* GroupsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsViewModel.swift; sourceTree = "<group>"; };
+		A89F2E692A793BCA00C97665 /* GroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsView.swift; sourceTree = "<group>"; };
+		A89F2E6C2A793D4C00C97665 /* Groups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Groups.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +112,7 @@
 		A82D1A082A71720200687364 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				A82DF7D32A77DD22005AD7B0 /* Service */,
 				A82D1A0C2A7172AF00687364 /* ViewModel */,
 				A82D1A092A71721900687364 /* View */,
 			);
@@ -118,6 +133,14 @@
 				A82D1A0D2A7172BB00687364 /* MapViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		A82DF7D32A77DD22005AD7B0 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				A82DF7D42A77DD30005AD7B0 /* MapService.swift */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 		A842D8442A5EBAFC008F8C8F = {
@@ -170,12 +193,10 @@
 		A842D85F2A5EBB0D008F8C8F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
-				A82D1A082A71720200687364 /* Map */,
-				A842D88D2A61AE08008F8C8F /* Session */,
-				A842D8802A6165E4008F8C8F /* Forgot Password */,
+				A89F2E612A79355A00C97665 /* Groups */,
+				A89F2E602A79353200C97665 /* Cars */,
+				A89F2E5F2A7934BA00C97665 /* Auth */,
 				A842D87C2A608913008F8C8F /* Home */,
-				A842D8762A6080F8008F8C8F /* Register */,
-				A842D8672A5F0EFF008F8C8F /* Login */,
 			);
 			path = Feature;
 			sourceTree = "<group>";
@@ -344,6 +365,70 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		A89F2E5F2A7934BA00C97665 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				A842D88D2A61AE08008F8C8F /* Session */,
+				A842D8802A6165E4008F8C8F /* Forgot Password */,
+				A842D8762A6080F8008F8C8F /* Register */,
+				A842D8672A5F0EFF008F8C8F /* Login */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		A89F2E602A79353200C97665 /* Cars */ = {
+			isa = PBXGroup;
+			children = (
+				A82D1A082A71720200687364 /* Map */,
+			);
+			path = Cars;
+			sourceTree = "<group>";
+		};
+		A89F2E612A79355A00C97665 /* Groups */ = {
+			isa = PBXGroup;
+			children = (
+				A89F2E6B2A793D4200C97665 /* Model */,
+				A89F2E682A793BBE00C97665 /* Views */,
+				A89F2E652A7938EE00C97665 /* ViewModel */,
+				A89F2E622A79356600C97665 /* Service */,
+			);
+			path = Groups;
+			sourceTree = "<group>";
+		};
+		A89F2E622A79356600C97665 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				A89F2E632A79359800C97665 /* GroupsService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		A89F2E652A7938EE00C97665 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				A89F2E662A7938FA00C97665 /* GroupsViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		A89F2E682A793BBE00C97665 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A89F2E692A793BCA00C97665 /* GroupsView.swift */,
+				A8285A922A793F2D007D3305 /* GroupDetailView.swift */,
+				A8285A942A7950AE007D3305 /* CreateGroup.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A89F2E6B2A793D4200C97665 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A89F2E6C2A793D4C00C97665 /* Groups.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -425,23 +510,30 @@
 				A842D8992A63FC72008F8C8F /* LoginService.swift in Sources */,
 				A842D87F2A608926008F8C8F /* HomeView.swift in Sources */,
 				A842D8722A606514008F8C8F /* InputPasswordView.swift in Sources */,
+				A8285A932A793F2D007D3305 /* GroupDetailView.swift in Sources */,
 				A82D1A062A6EBCC700687364 /* ForgotPasswordViewModel.swift in Sources */,
 				A842D86A2A5F0F17008F8C8F /* LoginView.swift in Sources */,
 				A842D8702A5F1C8E008F8C8F /* PreviewLayoutComponentModifier.swift in Sources */,
 				A842D8892A61732C008F8C8F /* RegistrationService.swift in Sources */,
+				A89F2E642A79359800C97665 /* GroupsService.swift in Sources */,
 				A82D1A0B2A71722700687364 /* MapView.swift in Sources */,
 				A842D87B2A6086B4008F8C8F /* CloseModifier.swift in Sources */,
 				A842D8932A61AE9F008F8C8F /* SessionService.swift in Sources */,
 				A885FD862A6E78F300C3CBD4 /* LoginViewModel.swift in Sources */,
 				A842D8792A608112008F8C8F /* RegisterView.swift in Sources */,
 				A842D8962A63FC28008F8C8F /* LoginCredentials.swift in Sources */,
+				A89F2E6A2A793BCA00C97665 /* GroupsView.swift in Sources */,
 				A842D8512A5EBAFC008F8C8F /* FindCarApp.swift in Sources */,
 				A842D8742A607988008F8C8F /* ButtonView.swift in Sources */,
 				A842D88C2A619088008F8C8F /* RegistrationViewModel.swift in Sources */,
 				A82D1A032A6EB65100687364 /* ForgotPasswordService.swift in Sources */,
+				A8285A952A7950AE007D3305 /* CreateGroup.swift in Sources */,
 				A82D1A0E2A7172BB00687364 /* MapViewModel.swift in Sources */,
 				A842D8862A6172D8008F8C8F /* RegistrationDetails.swift in Sources */,
+				A82DF7D52A77DD30005AD7B0 /* MapService.swift in Sources */,
+				A89F2E672A7938FA00C97665 /* GroupsViewModel.swift in Sources */,
 				A842D8832A616603008F8C8F /* ForgotPasswordView.swift in Sources */,
+				A89F2E6D2A793D4C00C97665 /* Groups.swift in Sources */,
 				A842D8902A61AE26008F8C8F /* SessionUserDetails.swift in Sources */,
 				A842D86D2A5F11D1008F8C8F /* InputTextFieldView.swift in Sources */,
 			);
