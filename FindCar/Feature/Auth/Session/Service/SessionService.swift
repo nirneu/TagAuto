@@ -65,7 +65,7 @@ private extension SessionServiceImpl {
                     }
                     
                     DispatchQueue.main.async {
-                        self.userDetails = SessionUserDetails(firstName: firstName, lastName: lastName)
+                        self.userDetails = SessionUserDetails(userId: uid, firstName: firstName, lastName: lastName)
                     }
                 }
             }

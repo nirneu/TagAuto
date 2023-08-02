@@ -9,20 +9,34 @@ import SwiftUI
 
 struct GroupDetailView: View {
     
+    @StateObject private var vm = GroupsViewModelImpl(service: GroupsServiceImpl())
+    
     @State private var showingAddMember = false
     @State private var showingAddCar = false
     
-    let group: Groups
+    let group: GroupDetails
     
     var body: some View {
         List {
             Section(header: headerView(title: "Members", action: { showingAddMember = true })) {
-                ForEach(group.members, id: \.self) { member in
-                    HStack {
-                        Image(systemName: "person.fill")
-                        Text(member)
+                if !vm.memberDetails.isEmpty {
+                    ForEach(vm.memberDetails, id: \.self) { member in
+                        HStack {
+                            Image(systemName: "person.fill")
+                            Text(member.firstName + " " + member.lastName)
+                        }
+                    }
+                } else {
+                    ForEach(group.members, id: \.self) { member in
+                        HStack {
+                            Image(systemName: "person.fill")
+                            Text(member)
+                        }
                     }
                 }
+            }
+            .onAppear {
+                vm.fetchUserDetails(for: group.members)
             }
             
             Section(header: headerView(title: "Cars", action: { showingAddCar = true })) {
@@ -57,6 +71,6 @@ struct GroupDetailView: View {
 
 struct GroupDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        GroupDetailView(group: Groups.mockGroups.first!)
+        GroupDetailView(group: GroupDetails.mockGroups.first!)
     }
 }

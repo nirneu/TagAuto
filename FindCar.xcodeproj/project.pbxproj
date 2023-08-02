@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A8285A932A793F2D007D3305 /* GroupDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8285A922A793F2D007D3305 /* GroupDetailView.swift */; };
-		A8285A952A7950AE007D3305 /* CreateGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8285A942A7950AE007D3305 /* CreateGroup.swift */; };
+		A8285A952A7950AE007D3305 /* CreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8285A942A7950AE007D3305 /* CreateGroupView.swift */; };
 		A82D1A032A6EB65100687364 /* ForgotPasswordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A022A6EB65100687364 /* ForgotPasswordService.swift */; };
 		A82D1A062A6EBCC700687364 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A052A6EBCC700687364 /* ForgotPasswordViewModel.swift */; };
 		A82D1A0B2A71722700687364 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A0A2A71722700687364 /* MapView.swift */; };
@@ -40,12 +40,13 @@
 		A89F2E642A79359800C97665 /* GroupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E632A79359800C97665 /* GroupsService.swift */; };
 		A89F2E672A7938FA00C97665 /* GroupsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E662A7938FA00C97665 /* GroupsViewModel.swift */; };
 		A89F2E6A2A793BCA00C97665 /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E692A793BCA00C97665 /* GroupsView.swift */; };
-		A89F2E6D2A793D4C00C97665 /* Groups.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E6C2A793D4C00C97665 /* Groups.swift */; };
+		A89F2E6D2A793D4C00C97665 /* GroupDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E6C2A793D4C00C97665 /* GroupDetails.swift */; };
+		A8CF46D32A7A6A6200F39C7A /* AddCarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF46D22A7A6A6200F39C7A /* AddCarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A8285A922A793F2D007D3305 /* GroupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailView.swift; sourceTree = "<group>"; };
-		A8285A942A7950AE007D3305 /* CreateGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroup.swift; sourceTree = "<group>"; };
+		A8285A942A7950AE007D3305 /* CreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupView.swift; sourceTree = "<group>"; };
 		A82D1A022A6EB65100687364 /* ForgotPasswordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordService.swift; sourceTree = "<group>"; };
 		A82D1A052A6EBCC700687364 /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		A82D1A072A6FF67D00687364 /* FindCar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FindCar.entitlements; sourceTree = "<group>"; };
@@ -77,7 +78,8 @@
 		A89F2E632A79359800C97665 /* GroupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsService.swift; sourceTree = "<group>"; };
 		A89F2E662A7938FA00C97665 /* GroupsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsViewModel.swift; sourceTree = "<group>"; };
 		A89F2E692A793BCA00C97665 /* GroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsView.swift; sourceTree = "<group>"; };
-		A89F2E6C2A793D4C00C97665 /* Groups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Groups.swift; sourceTree = "<group>"; };
+		A89F2E6C2A793D4C00C97665 /* GroupDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetails.swift; sourceTree = "<group>"; };
+		A8CF46D22A7A6A6200F39C7A /* AddCarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -416,7 +418,8 @@
 			children = (
 				A89F2E692A793BCA00C97665 /* GroupsView.swift */,
 				A8285A922A793F2D007D3305 /* GroupDetailView.swift */,
-				A8285A942A7950AE007D3305 /* CreateGroup.swift */,
+				A8285A942A7950AE007D3305 /* CreateGroupView.swift */,
+				A8CF46D22A7A6A6200F39C7A /* AddCarView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -424,7 +427,7 @@
 		A89F2E6B2A793D4200C97665 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A89F2E6C2A793D4C00C97665 /* Groups.swift */,
+				A89F2E6C2A793D4C00C97665 /* GroupDetails.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -527,13 +530,14 @@
 				A842D8742A607988008F8C8F /* ButtonView.swift in Sources */,
 				A842D88C2A619088008F8C8F /* RegistrationViewModel.swift in Sources */,
 				A82D1A032A6EB65100687364 /* ForgotPasswordService.swift in Sources */,
-				A8285A952A7950AE007D3305 /* CreateGroup.swift in Sources */,
+				A8285A952A7950AE007D3305 /* CreateGroupView.swift in Sources */,
 				A82D1A0E2A7172BB00687364 /* MapViewModel.swift in Sources */,
 				A842D8862A6172D8008F8C8F /* RegistrationDetails.swift in Sources */,
 				A82DF7D52A77DD30005AD7B0 /* MapService.swift in Sources */,
 				A89F2E672A7938FA00C97665 /* GroupsViewModel.swift in Sources */,
 				A842D8832A616603008F8C8F /* ForgotPasswordView.swift in Sources */,
-				A89F2E6D2A793D4C00C97665 /* Groups.swift in Sources */,
+				A89F2E6D2A793D4C00C97665 /* GroupDetails.swift in Sources */,
+				A8CF46D32A7A6A6200F39C7A /* AddCarView.swift in Sources */,
 				A842D8902A61AE26008F8C8F /* SessionUserDetails.swift in Sources */,
 				A842D86D2A5F11D1008F8C8F /* InputTextFieldView.swift in Sources */,
 			);

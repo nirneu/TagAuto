@@ -9,13 +9,15 @@ import SwiftUI
 
 struct GroupsView: View {
     
+    @EnvironmentObject var sessionService: SessionServiceImpl
+    
     @StateObject private var vm = GroupsViewModelImpl(service: GroupsServiceImpl())
     
     @State private var showCreateGroup = false
     
     @Binding var selection: Int
     
-    let mockGroups = Groups.mockGroups
+    let mockGroups = GroupDetails.mockGroups
     
     var body: some View {
         
@@ -25,7 +27,9 @@ struct GroupsView: View {
                 
                 switch vm.state {
                 case .na:
-                    List(mockGroups, id: \.id) { group in
+                    Text("You don't have any Groups yet")
+                case .successful:
+                    List(vm.groups, id: \.id) { group in
                         NavigationLink(destination: GroupDetailView(group: group)) {
                             HStack {
                                 Image(systemName: "person.3")
@@ -43,13 +47,9 @@ struct GroupsView: View {
                                         .foregroundColor(.gray)
                                 }
                                 
-                                Spacer() // This pushes the content to the left
+                                Spacer()
                             }
                         }
-                    }
-                case .successful:
-                    List(vm.groups, id: \.self) { group in
-                        Text(group)
                     }
                 case .failed(let error):
                     Text("Error: \(error.localizedDescription)")
@@ -57,8 +57,13 @@ struct GroupsView: View {
                 
             }
             .onAppear {
-                // Replace "testUserID" with the actual user id
-                //            vm.fetchUserGroups(userId: "testUserID")
+                vm.fetchUserGroups(userId: sessionService.userDetails?.userId ?? "")
+            }
+            .onReceive(vm.$groupCreated) { created in
+                if created {
+                    vm.fetchUserGroups(userId: sessionService.userDetails?.userId ?? "")
+                    vm.groupCreated = false
+                }
             }
             .alert("Error", isPresented: $vm.hasError) {
                 Button("OK", role: .cancel) { }
@@ -80,7 +85,8 @@ struct GroupsView: View {
                     .sheet(isPresented: $showCreateGroup, onDismiss: {
                         selection = 2
                     }) {
-                        CreateGroup()
+                        CreateGroupView(showingSheet: $showCreateGroup)
+                            .environmentObject(vm)
                     }
                 }
             }

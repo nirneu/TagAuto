@@ -8,6 +8,7 @@
 import Foundation
 
 struct SessionUserDetails {
+    let userId: String
     let firstName: String
     let lastName: String
 }
