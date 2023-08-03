@@ -9,13 +9,15 @@ import Foundation
 import FirebaseFirestore
 import Combine
 
-struct Car {
+struct Car: Hashable {
     let id: String
+    let name: String
     var location: GeoPoint
     
     var dictionary: [String: Any] {
         return [
             "id": id,
+            "name": name,
             "location": location
         ]
     }
@@ -35,7 +37,7 @@ final class MapServiceImpl: MapService {
                 
                 let db = Firestore.firestore()
                 let docRef = db.collection("groups").document(groupId)
-                                  .collection("cars").document(car.id)
+                    .collection("cars").document(car.id)
                 
                 docRef.setData(car.dictionary) { error in
                     if let error = error {

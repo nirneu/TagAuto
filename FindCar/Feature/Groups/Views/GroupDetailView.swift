@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GroupDetailView: View {
     
-    @StateObject private var vm = GroupsViewModelImpl(service: GroupsServiceImpl())
+    @EnvironmentObject var vm: GroupsViewModelImpl
     
     @State private var showingAddMember = false
     @State private var showingAddCar = false
@@ -40,11 +40,30 @@ struct GroupDetailView: View {
             }
             
             Section(header: headerView(title: "Cars", action: { showingAddCar = true })) {
-                ForEach(group.cars, id: \.self) { car in
-                    HStack {
-                        Image(systemName: "car.fill")
-                        Text(car)
+                if !vm.groupCars.isEmpty {
+                    ForEach(vm.groupCars, id: \.self) { car in
+                        HStack {
+                            Image(systemName: "car.fill")
+                            Text(car.name)
+                        }
                     }
+                } else {
+                    ForEach(group.cars, id: \.self) { car in
+                        HStack {
+                            Image(systemName: "car.fill")
+                            Text(car)
+                        }
+                    }
+                }
+         
+            }
+            .onAppear {
+                vm.fetchGroupCars(groupId: group.id)
+            }
+            .onReceive(vm.$carCreated) { created in
+                if created {
+                    vm.fetchGroupCars(groupId: group.id)
+                    vm.carCreated = false
                 }
             }
         }
@@ -54,7 +73,8 @@ struct GroupDetailView: View {
             // Display view to add a new member
         }
         .sheet(isPresented: $showingAddCar) {
-            // Display view to add a new car
+            AddCarView(showingSheet: $showingAddCar, group: group)
+                .environmentObject(vm)
         }
     }
     
@@ -71,6 +91,10 @@ struct GroupDetailView: View {
 
 struct GroupDetailView_Previews: PreviewProvider {
     static var previews: some View {
+        
+        let viewModel = GroupsViewModelImpl(service: GroupsServiceImpl())
+        
         GroupDetailView(group: GroupDetails.mockGroups.first!)
+            .environmentObject(viewModel)
     }
 }

@@ -20,8 +20,11 @@ protocol GroupsViewModel {
     var hasError: Bool { get }
     var groupDetails: GroupDetails { get }
     var memberDetails: [UserDetails] { get }
+    var groupCars: [Car] { get }
     func fetchUserGroups(userId: String)
     func createGroup()
+    func addCarToGroup(groupId: String, car: Car)
+    func fetchGroupCars(groupId: String)
     init(service: GroupsService)
 }
 
@@ -36,6 +39,8 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     @Published var groupDetails: GroupDetails = GroupDetails.new
     @Published var memberDetails: [UserDetails] = []
     @Published var groupCreated: Bool = false
+    @Published var carCreated: Bool = false
+    @Published var groupCars: [Car] = []
     
     init(service: GroupsService) {
         self.service = service
@@ -89,6 +94,38 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
             }
             .store(in: &subscriptions)
     }
+    
+    func addCarToGroup(groupId: String, car: Car) {
+        service.addCarToGroup(groupId, car: car)
+            .sink { [weak self] res in
+                
+                switch res {
+                case .failure(let error):
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] userDetails in
+                self?.state = .successful
+                self?.carCreated = true
+            }
+            .store(in: &subscriptions)
+    }
+    
+    func fetchGroupCars(groupId: String) {
+           service.getCars(of: groupId)
+               .receive(on: DispatchQueue.main)
+               .sink { [weak self] res in
+                   switch res {
+                   case .failure(let error):
+                       self?.state = .failed(error: error)
+                   default: break
+                   }
+               } receiveValue: { [weak self] cars in
+                   self?.groupCars = cars
+                   self?.state = .successful
+               }
+               .store(in: &subscriptions)
+       }
     
 }
 

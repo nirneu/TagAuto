@@ -41,6 +41,7 @@
 		A89F2E672A7938FA00C97665 /* GroupsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E662A7938FA00C97665 /* GroupsViewModel.swift */; };
 		A89F2E6A2A793BCA00C97665 /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E692A793BCA00C97665 /* GroupsView.swift */; };
 		A89F2E6D2A793D4C00C97665 /* GroupDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E6C2A793D4C00C97665 /* GroupDetails.swift */; };
+		A8A863702A7BB5EA0046995D /* UserDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8A8636F2A7BB5EA0046995D /* UserDetails.swift */; };
 		A8CF46D32A7A6A6200F39C7A /* AddCarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF46D22A7A6A6200F39C7A /* AddCarView.swift */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +80,7 @@
 		A89F2E662A7938FA00C97665 /* GroupsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsViewModel.swift; sourceTree = "<group>"; };
 		A89F2E692A793BCA00C97665 /* GroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsView.swift; sourceTree = "<group>"; };
 		A89F2E6C2A793D4C00C97665 /* GroupDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetails.swift; sourceTree = "<group>"; };
+		A8A8636F2A7BB5EA0046995D /* UserDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetails.swift; sourceTree = "<group>"; };
 		A8CF46D22A7A6A6200F39C7A /* AddCarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -428,6 +430,7 @@
 			isa = PBXGroup;
 			children = (
 				A89F2E6C2A793D4C00C97665 /* GroupDetails.swift */,
+				A8A8636F2A7BB5EA0046995D /* UserDetails.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -526,6 +529,7 @@
 				A842D8792A608112008F8C8F /* RegisterView.swift in Sources */,
 				A842D8962A63FC28008F8C8F /* LoginCredentials.swift in Sources */,
 				A89F2E6A2A793BCA00C97665 /* GroupsView.swift in Sources */,
+				A8A863702A7BB5EA0046995D /* UserDetails.swift in Sources */,
 				A842D8512A5EBAFC008F8C8F /* FindCarApp.swift in Sources */,
 				A842D8742A607988008F8C8F /* ButtonView.swift in Sources */,
 				A842D88C2A619088008F8C8F /* RegistrationViewModel.swift in Sources */,

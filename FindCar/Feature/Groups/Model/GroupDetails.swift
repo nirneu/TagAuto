@@ -7,12 +7,6 @@
  
 import Foundation
 
-struct UserDetails: Hashable {
-    var userId: String
-    var firstName: String
-    var lastName: String
-}
-
 struct GroupDetails {
     var id: String
     var name: String

@@ -59,6 +59,10 @@ struct CreateGroupView: View {
 
 struct CreateGroup_Previews: PreviewProvider {
     static var previews: some View {
+        let viewModel = GroupsViewModelImpl(service: GroupsServiceImpl())
+
         CreateGroupView(showingSheet: .constant(true))
+            .environmentObject(viewModel)
+
     }
 }

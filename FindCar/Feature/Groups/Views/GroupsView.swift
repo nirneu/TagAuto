@@ -29,26 +29,32 @@ struct GroupsView: View {
                 case .na:
                     Text("You don't have any Groups yet")
                 case .successful:
-                    List(vm.groups, id: \.id) { group in
-                        NavigationLink(destination: GroupDetailView(group: group)) {
-                            HStack {
-                                Image(systemName: "person.3")
-                                    .frame(width: 20, height: 20)
-                                    .padding(.trailing, 10)
-                                
-                                VStack(alignment: .leading) {
-                                    Text("\(group.name)")
-                                        .font(.headline)
-                                    Text("Members: \(group.members.count)")
-                                        .font(.subheadline)
-                                        .foregroundColor(.gray)
-                                    Text("Cars: \(group.cars.count)")
-                                        .font(.subheadline)
-                                        .foregroundColor(.gray)
+                    if vm.groups.isEmpty {
+                        Text("You don't have any Groups yet")
+                    } else {
+                        
+                        List(vm.groups, id: \.id) { group in
+                            NavigationLink(destination: GroupDetailView(group: group)
+                                .environmentObject(vm)) {
+                                    HStack {
+                                        Image(systemName: "person.3")
+                                            .frame(width: 20, height: 20)
+                                            .padding(.trailing, 10)
+                                        
+                                        VStack(alignment: .leading) {
+                                            Text("\(group.name)")
+                                                .font(.headline)
+                                            Text("Members: \(group.members.count)")
+                                                .font(.subheadline)
+                                                .foregroundColor(.gray)
+                                            Text("Cars: \(group.cars.count)")
+                                                .font(.subheadline)
+                                                .foregroundColor(.gray)
+                                        }
+                                        
+                                        Spacer()
+                                    }
                                 }
-                                
-                                Spacer()
-                            }
                         }
                     }
                 case .failed(let error):
@@ -98,8 +104,12 @@ struct GroupsView: View {
 
 struct GroupsView_Previews: PreviewProvider {
     static var previews: some View {
+        
+        let service = SessionServiceImpl()
+        
         @State var mockInt: Int = 2
         
         GroupsView(selection: $mockInt)
+            .environmentObject(service)
     }
 }
