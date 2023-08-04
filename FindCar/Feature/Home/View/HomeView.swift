@@ -17,12 +17,19 @@ struct HomeView: View {
         
         TabView(selection: $selection) {
             
-            MapView()
-                .tabItem {
-                    Label("Cars", systemImage: "map")
+            GeometryReader { geometry in
+                VStack {
+                    MapView()
+                        .frame(height: geometry.size.height * 0.7)
+                    CarsView()
+                        .frame(height: (geometry.size.height * 0.3) - 25)
                 }
-                .edgesIgnoringSafeArea(.top)
-                .tag(1)
+            }
+            .tabItem {
+                Label("Cars", systemImage: "map")
+            }
+            .edgesIgnoringSafeArea(.top)
+            .tag(1)
             
             GroupsView(selection: $selection)
                 .tabItem {

@@ -9,20 +9,6 @@ import Foundation
 import FirebaseFirestore
 import Combine
 
-struct Car: Hashable {
-    let id: String
-    let name: String
-    var location: GeoPoint
-    
-    var dictionary: [String: Any] {
-        return [
-            "id": id,
-            "name": name,
-            "location": location
-        ]
-    }
-}
-
 protocol MapService {
     func saveCarLocation(_ car: Car, groupId: String) -> AnyPublisher<Void, Error>
 }

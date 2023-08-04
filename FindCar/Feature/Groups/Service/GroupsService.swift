@@ -91,7 +91,7 @@ final class GroupsServiceImpl: GroupsService {
         Deferred {
             
             Future { promise in
-                                
+                
                 let values = [GroupKeys.name.rawValue: details.name.trimmingCharacters(in: .whitespaces),
                               GroupKeys.members.rawValue: details.members] as [String: Any]
                 
@@ -135,7 +135,7 @@ final class GroupsServiceImpl: GroupsService {
                 for userId in userIds {
                     dispatchGroup.enter()
                     let docRef = self.db.collection(self.usersPath).document(userId)
-
+                    
                     docRef.getDocument { (document, error) in
                         if let error = error {
                             print("Error getting user details: \(error)")
@@ -183,27 +183,27 @@ final class GroupsServiceImpl: GroupsService {
     
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error> {
         
-            Deferred {
+        Deferred {
+            
+            Future { promise in
                 
-                Future { promise in
-                    
-                    let docRef = self.db.collection(self.groupsPath).document(groupId)
-                    
-                    docRef.getDocument { (document, error) in
-                        if let error = error {
-                            promise(.failure(error))
-                        } else if let document = document, document.exists, let carNames = document.data()?[self.carsPath] as? [String] {
-                            // for simplicity we assume car details is just its name, you can fetch full details if needed
-                            let cars = carNames.map { Car(id: "", name: $0, location: GeoPoint(latitude: 0, longitude: 0)) }
-                            promise(.success(cars))
-                        } else {
-                            promise(.failure(NSError(domain: "No document found", code: 404)))
-                        }
+                let docRef = self.db.collection(self.groupsPath).document(groupId)
+                
+                docRef.getDocument { (document, error) in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else if let document = document, document.exists, let carNames = document.data()?[self.carsPath] as? [String] {
+                        // for simplicity we assume car details is just its name, you can fetch full details if needed
+                        let cars = carNames.map { Car(id: "", name: $0, location: GeoPoint(latitude: 0, longitude: 0)) }
+                        promise(.success(cars))
+                    } else {
+                        promise(.failure(NSError(domain: "No document found", code: 404)))
                     }
                 }
             }
-            .receive (on: RunLoop.main)
-            .eraseToAnyPublisher()
         }
+        .receive (on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
     
 }

@@ -48,6 +48,11 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     }
     
     func fetchUserGroups(userId: String) {
+        
+        guard !userId.isEmpty else {
+            return
+        }
+        
         service.getGroups(of: userId)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] res in
@@ -118,7 +123,10 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                    switch res {
                    case .failure(let error):
                        self?.state = .failed(error: error)
-                   default: break
+                       self?.groupCars = []
+                   default:
+                       self?.groupCars = []
+                       break
                    }
                } receiveValue: { [weak self] cars in
                    self?.groupCars = cars
