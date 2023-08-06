@@ -22,7 +22,7 @@ struct HomeView: View {
                     MapView()
                         .frame(height: geometry.size.height * 0.7)
                     CarsView()
-                        .frame(height: (geometry.size.height * 0.3) - 25)
+                        .frame(height: (geometry.size.height * 0.3) - 30)
                 }
             }
             .tabItem {

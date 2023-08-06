@@ -25,32 +25,36 @@ struct GroupsView: View {
             
             VStack {
                 
-                if vm.groups.isEmpty {
-                    Text("You don't have any Groups yet")
+                if vm.isLoading {
+                    ProgressView()
                 } else {
-                    
-                    List(vm.groups, id: \.id) { group in
-                        NavigationLink(destination: GroupDetailView(group: group)
-                            .environmentObject(vm)) {
-                                HStack {
-                                    Image(systemName: "person.3")
-                                        .frame(width: 20, height: 20)
-                                        .padding(.trailing, 10)
-                                    
-                                    VStack(alignment: .leading) {
-                                        Text("\(group.name)")
-                                            .font(.headline)
-                                        Text("Members: \(group.members.count)")
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray)
-                                        Text("Cars: \(group.cars.count)")
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray)
+                    if vm.groups.isEmpty {
+                        Text("You don't have any Groups yet")
+                    } else {
+                        
+                        List(vm.groups, id: \.id) { group in
+                            NavigationLink(destination: GroupDetailView(group: group)
+                                .environmentObject(vm)) {
+                                    HStack {
+                                        Image(systemName: "person.3")
+                                            .frame(width: 20, height: 20)
+                                            .padding(.trailing, 10)
+                                        
+                                        VStack(alignment: .leading) {
+                                            Text("\(group.name)")
+                                                .font(.headline)
+                                            Text("Members: \(group.members.count)")
+                                                .font(.subheadline)
+                                                .foregroundColor(.gray)
+                                            Text("Cars: \(group.cars.count)")
+                                                .font(.subheadline)
+                                                .foregroundColor(.gray)
+                                        }
+                                        
+                                        Spacer()
                                     }
-                                    
-                                    Spacer()
                                 }
-                            }
+                        }
                     }
                 }
             }

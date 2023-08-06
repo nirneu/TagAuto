@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SessionUserDetails {
+struct SessionUserDetails: Equatable {
     let userId: String
     let firstName: String
     let lastName: String

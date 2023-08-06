@@ -161,23 +161,39 @@ final class GroupsServiceImpl: GroupsService {
     }
     
     func addCarToGroup(_ groupId: String, car: Car) -> AnyPublisher<Void, Error> {
-        
+
         Deferred {
-            
+
             Future { promise in
                 
-                self.db.collection(self.groupsPath).document(groupId).updateData([
-                    self.carsPath: FieldValue.arrayUnion([car.name])
+                var newCarRef: DocumentReference? = nil
+                newCarRef = self.db.collection(self.carsPath).addDocument(data: [
+                    "name": car.name,
+                    "group": groupId
                 ]) { error in
                     if let error = error {
                         promise(.failure(error))
                     } else {
-                        promise(.success(()))
+                        // If the car document was created successfully, update the group
+                        guard let newCarId = newCarRef?.documentID else {
+                            promise(.failure(NSError(domain: "Couldn't get car ID", code: 404)))
+                            return
+                        }
+                        
+                        self.db.collection(self.groupsPath).document(groupId).updateData([
+                            self.carsPath: FieldValue.arrayUnion([newCarId])
+                        ]) { error in
+                            if let error = error {
+                                promise(.failure(error))
+                            } else {
+                                promise(.success(()))
+                            }
+                        }
                     }
                 }
             }
         }
-        .receive (on: RunLoop.main)
+        .receive(on: RunLoop.main)
         .eraseToAnyPublisher()
     }
     
@@ -192,12 +208,34 @@ final class GroupsServiceImpl: GroupsService {
                 docRef.getDocument { (document, error) in
                     if let error = error {
                         promise(.failure(error))
-                    } else if let document = document, document.exists, let carNames = document.data()?[self.carsPath] as? [String] {
-                        // for simplicity we assume car details is just its name, you can fetch full details if needed
-                        let cars = carNames.map { Car(id: "", name: $0, location: GeoPoint(latitude: 0, longitude: 0)) }
-                        promise(.success(cars))
-                    } else {
-                        promise(.failure(NSError(domain: "No document found", code: 404)))
+                    } else if let document = document, document.exists, let carIds = document.data()?[self.carsPath] as? [String] {
+                        
+                        var cars: [Car] = []
+                        let dispatchGroup = DispatchGroup()
+                        
+                        for carId in carIds {
+                            
+                            dispatchGroup.enter()
+                            
+                            let carRef = self.db.collection("cars").document(carId)
+                            carRef.getDocument { (document, error) in
+                                
+                                if let error = error {
+                                    promise(.failure(error))
+                                } else if let document = document, document.exists, let data = document.data() {
+                                    
+                                    let car = Car(id: document.documentID, name: data["name"] as? String ?? "", location: data["location"] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0))
+                                    cars.append(car)
+                                    
+                                }
+                                dispatchGroup.leave()
+                            }
+                        }
+                        
+                        dispatchGroup.notify(queue: .main) {
+                            promise(.success(cars))
+                        }
+                        
                     }
                 }
             }
@@ -205,5 +243,6 @@ final class GroupsServiceImpl: GroupsService {
         .receive (on: RunLoop.main)
         .eraseToAnyPublisher()
     }
+
     
 }

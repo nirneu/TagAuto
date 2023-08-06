@@ -7,9 +7,11 @@
 
 import Foundation
 import Combine
+import CoreLocation
 
 enum CarsState {
     case successful
+    case unsuccessful(reason: String)
     case failed(error: Error)
     case na
 }
@@ -19,6 +21,8 @@ protocol CarsViewModel {
     var hasError: Bool { get }
     var cars: [Car] { get }
     func fetchUserCars(userId: String)
+    func selectCar(_ car: Car)
+    func updateCarLocation(_ car: Car)
     init(service: CarsService)
 }
 
@@ -26,11 +30,14 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     
     private var subscriptions = Set<AnyCancellable>()
     private let service: CarsService
+    private let locationManager = CLLocationManager()
+    private var currentLocation: CLLocation?
     
     @Published var state: CarsState = .na
     @Published var hasError: Bool = false
     @Published var cars: [Car] = []
-    
+    @Published var isLoading: Bool = true
+    @Published var selectedCar: Car?
     
     init(service: CarsService) {
         self.service = service
@@ -48,14 +55,42 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
             .sink { [weak self] res in
                 switch res {
                 case .failure (let error):
+                    self?.isLoading = false
                     self?.state = .failed(error: error)
                 default: break
                 }
             } receiveValue: { [weak self] cars in
                 self?.cars = cars
+                self?.isLoading = false
                 self?.state = .successful
             }
             .store(in: &subscriptions)
+    }
+    
+    func updateCarLocation(_ car: Car) {
+                
+        if let currentLocation = locationManager.location {
+            service.updateCarLocation(car, location: currentLocation)
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] res in
+                    switch res {
+                    case .failure (let error):
+                        self?.isLoading = false
+                        self?.state = .failed(error: error)
+                    default: break
+                    }
+                } receiveValue: { [weak self] cars in
+                    self?.state = .successful
+                }
+                .store(in: &subscriptions)
+        } else {
+            self.state = .unsuccessful(reason: "Location is not available")
+        }
+        
+    }
+    
+    func selectCar(_ car: Car) {
+        selectedCar = car
     }
     
 }
@@ -67,11 +102,14 @@ extension CarsViewModelImpl {
             switch state {
             case .successful, .na:
                 return false
+            case .unsuccessful:
+                return true
             case .failed:
                 return true
             }
         }
         .assign(to: &$hasError)
     }
+    
 }
 

@@ -11,7 +11,7 @@ import MapKit
 struct MapView: View {
     
     @StateObject private var vm = MapViewModelImpl(service: MapServiceImpl())
-    
+        
     var body: some View {
         Map(coordinateRegion: $vm.region, showsUserLocation: true)
             .onAppear {
@@ -28,16 +28,16 @@ struct MapView: View {
                     Text("Something went wrong")
                 }
             }
-            .overlay(Button(action: {
-                //                            vm.markLocationAsParked()
-            }) {
-                Text("Save Parking Location")
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                    .font(.system(size: 16, weight: .bold))
-            }, alignment: .bottom)
+//            .overlay(Button(action: {
+//                //                            vm.markLocationAsParked()
+//            }) {
+//                Text("Save Parking Location")
+//                    .padding()
+//                    .background(Color.blue)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(10)
+//                    .font(.system(size: 16, weight: .bold))
+//            }, alignment: .bottom)
             .navigationTitle("")
     }
 }

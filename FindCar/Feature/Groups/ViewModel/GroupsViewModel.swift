@@ -41,6 +41,7 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     @Published var groupCreated: Bool = false
     @Published var carCreated: Bool = false
     @Published var groupCars: [Car] = []
+    @Published var isLoading: Bool = true
     
     init(service: GroupsService) {
         self.service = service
@@ -59,11 +60,13 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                 switch res {
                 case .failure (let error):
                     self?.state = .failed(error: error)
+                    self?.isLoading = false
                 default: break
                 }
             } receiveValue: { [weak self] groups in
                 self?.groups = groups
                 self?.state = .successful
+                self?.isLoading = false
             }
             .store(in: &subscriptions)
     }
@@ -125,7 +128,6 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                        self?.state = .failed(error: error)
                        self?.groupCars = []
                    default:
-                       self?.groupCars = []
                        break
                    }
                } receiveValue: { [weak self] cars in

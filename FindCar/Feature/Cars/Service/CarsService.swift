@@ -8,9 +8,17 @@
 import Foundation
 import Combine
 import FirebaseFirestore
+import CoreLocation
+
+enum CarKeys: String {
+    case id
+    case name
+    case location
+}
 
 protocol CarsService {
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error>
+    func updateCarLocation(_ car: Car, location: CLLocation) -> AnyPublisher<Void, Error>
 }
 
 final class CarsServiceImpl: CarsService {
@@ -47,15 +55,31 @@ final class CarsServiceImpl: CarsService {
                             groupRef.getDocument { (document, error) in
                                 
                                 if let error = error {
-                                    print("Error getting group details: \(error)")
+                                    promise(.failure(error))
                                     dispatchGroup.leave()
-                                } else if let document = document, document.exists, let carNames = document.data()?[self.carsPath] as? [String] {
-                                    let groupCars = carNames.map { Car(id: "", name: $0, location: GeoPoint(latitude: 0, longitude: 0)) }
-                                    cars.append(contentsOf: groupCars)
-                                    dispatchGroup.leave()
-                                } else {
-                                    dispatchGroup.leave()
+                                } else if let document = document, document.exists, let carIds = document.data()?[self.carsPath] as? [String] {
+                                    
+                                    let carsRef = carIds.map { self.db.collection(self.carsPath).document($0) }
+                                    
+                                    for carRef in carsRef {
+                                        
+                                        dispatchGroup.enter()
+                                        
+                                        carRef.getDocument { (document, error) in
+                                            
+                                            if let error = error {
+                                                promise(.failure(error))
+                                            } else if let document = document, document.exists, let data = document.data() {
+                                                
+                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0))
+                                                cars.append(car)
+                                                
+                                            }
+                                            dispatchGroup.leave()
+                                        }
+                                    }
                                 }
+                                dispatchGroup.leave()
                             }
                         }
                         
@@ -67,6 +91,32 @@ final class CarsServiceImpl: CarsService {
                         
                         promise(.failure(NSError(domain: "No document found", code: 404)))
                         
+                    }
+                }
+            }
+        }
+        .receive (on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+    
+    
+    func updateCarLocation(_ car: Car, location: CLLocation) -> AnyPublisher<Void, Error> {
+        
+        Deferred {
+            
+            Future { promise in
+                
+                // create the GeoPoint for the new location
+                let geoPoint = GeoPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                
+                // update the location in Firestore
+                self.db.collection(self.carsPath).document(car.id).updateData([
+                    CarKeys.location.rawValue: geoPoint
+                ]) { error in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(()))
                     }
                 }
             }
