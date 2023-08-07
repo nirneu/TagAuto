@@ -41,7 +41,9 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     @Published var groupCreated: Bool = false
     @Published var carCreated: Bool = false
     @Published var groupCars: [Car] = []
-    @Published var isLoading: Bool = true
+    @Published var isLoadingGroups: Bool = true
+    @Published var isLoadingMembers: Bool = true
+    @Published var isLoadingCars: Bool = true
     
     init(service: GroupsService) {
         self.service = service
@@ -60,13 +62,13 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                 switch res {
                 case .failure (let error):
                     self?.state = .failed(error: error)
-                    self?.isLoading = false
+                    self?.isLoadingGroups = false
                 default: break
                 }
             } receiveValue: { [weak self] groups in
                 self?.groups = groups
                 self?.state = .successful
-                self?.isLoading = false
+                self?.isLoadingGroups = false
             }
             .store(in: &subscriptions)
     }
@@ -90,15 +92,16 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     func fetchUserDetails(for members: [String]) {
         service.fetchUserDetails(for: members)
             .sink { [weak self] res in
-                
                 switch res {
                 case .failure(let error):
                     self?.state = .failed(error: error)
+                    self?.isLoadingMembers = false
                 default: break
                 }
             } receiveValue: { [weak self] userDetails in
                 self?.memberDetails = userDetails
                 self?.state = .successful
+                self?.isLoadingMembers = false
             }
             .store(in: &subscriptions)
     }
@@ -127,12 +130,14 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                    case .failure(let error):
                        self?.state = .failed(error: error)
                        self?.groupCars = []
+                       self?.isLoadingCars = false
                    default:
                        break
                    }
                } receiveValue: { [weak self] cars in
                    self?.groupCars = cars
                    self?.state = .successful
+                   self?.isLoadingCars = false
                }
                .store(in: &subscriptions)
        }

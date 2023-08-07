@@ -25,7 +25,7 @@ struct GroupsView: View {
             
             VStack {
                 
-                if vm.isLoading {
+                if vm.isLoadingGroups {
                     ProgressView()
                 } else {
                     if vm.groups.isEmpty {

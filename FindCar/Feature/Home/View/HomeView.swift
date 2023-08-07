@@ -13,6 +13,8 @@ struct HomeView: View {
     
     @State private var selection = 1
     
+    @StateObject private var carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
+    
     var body: some View {
         
         TabView(selection: $selection) {
@@ -21,8 +23,10 @@ struct HomeView: View {
                 VStack {
                     MapView()
                         .frame(height: geometry.size.height * 0.7)
+                        .environmentObject(carsViewModel)
                     CarsView()
                         .frame(height: (geometry.size.height * 0.3) - 30)
+                        .environmentObject(carsViewModel)
                 }
             }
             .tabItem {

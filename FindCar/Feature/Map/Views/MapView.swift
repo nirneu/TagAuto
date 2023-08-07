@@ -11,11 +11,29 @@ import MapKit
 struct MapView: View {
     
     @StateObject private var vm = MapViewModelImpl(service: MapServiceImpl())
-        
+    
+    @EnvironmentObject var carsViewModel: CarsViewModelImpl
+    
+    @State var currentLocationOn: Bool = true
+    
     var body: some View {
-        Map(coordinateRegion: $vm.region, showsUserLocation: true)
+        
+        ZStack(alignment: .top) {
+            Map(coordinateRegion: $vm.region, showsUserLocation: true, annotationItems: carsViewModel.cars) { car in
+                MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: car.location.latitude, longitude: car.location.longitude)) {
+                    Image(systemName: "car.side")
+                    Text(car.name).font(.system(.caption, weight: .bold))
+                }
+            }
             .onAppear {
                 vm.checkIfLocationServicesIsEnabled()
+            }
+            .onChange(of: carsViewModel.selectedCar) { selectedCar in
+                guard let coordinate = selectedCar?.location else { return }
+                let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: span)
+                vm.region = region
+                self.currentLocationOn = false
             }
             .alert("Error", isPresented: $vm.hasError) {
                 Button("OK", role: .cancel) { }
@@ -28,22 +46,35 @@ struct MapView: View {
                     Text("Something went wrong")
                 }
             }
-//            .overlay(Button(action: {
-//                //                            vm.markLocationAsParked()
-//            }) {
-//                Text("Save Parking Location")
-//                    .padding()
-//                    .background(Color.blue)
-//                    .foregroundColor(.white)
-//                    .cornerRadius(10)
-//                    .font(.system(size: 16, weight: .bold))
-//            }, alignment: .bottom)
             .navigationTitle("")
+            
+            HStack {
+                
+                Spacer()
+                
+                Button {
+                    vm.getCurrentLocation()
+                    self.currentLocationOn = true
+                    carsViewModel.selectedCar = nil
+                } label: {
+                    Image(systemName: currentLocationOn ? "location.fill" : "location")
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(.trailing, 15)
+                .padding(.top, 50)
+            }
+            
+        }
     }
 }
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
+        
+        let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
+        
         MapView()
+            .environmentObject(carsViewModel)
+        
     }
 }

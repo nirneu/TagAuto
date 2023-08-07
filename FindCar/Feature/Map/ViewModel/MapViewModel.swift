@@ -11,7 +11,7 @@ import FirebaseFirestore
 
 enum MapDetails {
     static let startingLocation = CLLocationCoordinate2D(latitude: 37.331516, longitude: -121.891054)
-    static let defaultSpan = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+    static let defaultSpan = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
 }
 
 enum LocationAuthState {
@@ -35,7 +35,7 @@ protocol MapViewModel {
     var state: LocationAuthState { get }
     var hasError: Bool { get }
     func checkIfLocationServicesIsEnabled()
-    func markLocationAsParked()
+    func getCurrentLocation()
     init(service: MapService)
 }
 
@@ -44,7 +44,8 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel {
     @Published var state: LocationAuthState = .na
     @Published var hasError: Bool = false
     @Published var region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
-    
+    @Published var selectedCoordinate: CLLocationCoordinate2D?
+
     var locationManager: CLLocationManager?
     
     let service: MapService
@@ -71,21 +72,6 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel {
         }
     }
     
-    func markLocationAsParked() {
-//        guard let currentLocation = locationManager?.location else { return }
-//        let car = Car(id: "carId", location: GeoPoint(latitude: currentLocation.coordinate.latitude, longitude: currentLocation.coordinate.longitude))
-//        service.saveCarLocation(car, groupId: <#T##String#>) { result in
-//            switch result {
-//            case .success:
-//                print("Car location successfully written to Firestore!")
-//                self.state = .successful
-//            case .failure(let error):
-//                print("Error writing car location to Firestore: \(error)")
-//                self.state = .failed(error: error)
-//            }
-//        }
-    }
-    
     private func checkLocationAuthorization() {
         
         guard let locationManager = locationManager else { return }
@@ -106,6 +92,15 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel {
                 self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
             }
         @unknown default:
+            self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+        }
+    }
+    
+    func getCurrentLocation() {
+        if let location = locationManager?.location {
+            region = MKCoordinateRegion(center: location.coordinate,
+                                        span: MapDetails.defaultSpan)
+        } else {
             self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
         }
     }

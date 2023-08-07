@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 import Combine
 
-struct Car: Hashable {
+struct Car: Hashable, Identifiable {
     let id: String
     let name: String
     var location: GeoPoint

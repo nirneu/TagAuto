@@ -19,18 +19,24 @@ struct GroupDetailView: View {
     var body: some View {
         List {
             Section(header: headerView(title: "Members", action: { showingAddMember = true })) {
-                if !vm.memberDetails.isEmpty {
-                    ForEach(vm.memberDetails, id: \.self) { member in
-                        HStack {
-                            Image(systemName: "person.fill")
-                            Text(member.firstName + " " + member.lastName)
-                        }
-                    }
+                
+                if vm.isLoadingMembers {
+                    ProgressView()
                 } else {
-                    ForEach(group.members, id: \.self) { member in
-                        HStack {
-                            Image(systemName: "person.fill")
-                            Text(member)
+                    
+                    if !vm.memberDetails.isEmpty {
+                        ForEach(vm.memberDetails, id: \.self) { member in
+                            HStack {
+                                Image(systemName: "person.fill")
+                                Text(member.firstName + " " + member.lastName)
+                            }
+                        }
+                    } else {
+                        ForEach(group.members, id: \.self) { member in
+                            HStack {
+                                Image(systemName: "person.fill")
+                                Text(member)
+                            }
                         }
                     }
                 }
@@ -40,18 +46,24 @@ struct GroupDetailView: View {
             }
             
             Section(header: headerView(title: "Cars", action: { showingAddCar = true })) {
-                if !vm.groupCars.isEmpty {
-                    ForEach(vm.groupCars, id: \.self) { car in
-                        HStack {
-                            Image(systemName: "car.fill")
-                            Text(car.name)
-                        }
-                    }
+                
+                if vm.isLoadingCars {
+                    ProgressView()
                 } else {
-                    ForEach(group.cars, id: \.self) { car in
-                        HStack {
-                            Image(systemName: "car.fill")
-                            Text(car)
+                    
+                    if !vm.groupCars.isEmpty {
+                        ForEach(vm.groupCars, id: \.self) { car in
+                            HStack {
+                                Image(systemName: "car.fill")
+                                Text(car.name)
+                            }
+                        }
+                    } else {
+                        ForEach(group.cars, id: \.self) { car in
+                            HStack {
+                                Image(systemName: "car.fill")
+                                Text(car)
+                            }
                         }
                     }
                 }

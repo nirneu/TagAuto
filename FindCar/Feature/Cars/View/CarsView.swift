@@ -10,11 +10,10 @@ import SwiftUI
 struct CarsView: View {
     
     @EnvironmentObject var sessionService: SessionServiceImpl
-    
-    @StateObject private var vm = CarsViewModelImpl(service: CarsServiceImpl())
+    @EnvironmentObject var carsViewModel: CarsViewModelImpl
     
     @State private var showLocationUpdateAlert = false
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             
@@ -24,49 +23,13 @@ struct CarsView: View {
             
             List {
                 
-//                ForEach(Car.mockCars, id: \.self) { car in
-//                    HStack {
-//                        Image(systemName: "car.fill")
-//                        Text(car.name)
-//
-//                        Spacer()
-//
-//                        HStack(spacing: 20) {
-//
-//                            Button {
-//                                vm.selectCar(car)
-//                            } label: {
-//                                Image(systemName: vm.selectedCar == car ? "location.fill" : "location")
-//                            }
-//                            Button {
-//                                vm.selectCar(car)
-//                                self.showLocationUpdateAlert = true
-//                            } label: {
-//                                Image(systemName: "mappin.and.ellipse")
-//                            }
-//                            .alert("Update Location", isPresented: $showLocationUpdateAlert) {
-//                                Button("Confirm", action: {
-//                                    // code to update location
-//                                    vm.updateCarLocation(car)
-//                                    self.showLocationUpdateAlert = false
-//                                })
-//                                Button("Cancel", role: .cancel) {
-//                                    self.showLocationUpdateAlert = false
-//                                }
-//                            }
-//                        }
-//
-//                    }
-//                    .frame(height: 40)
-//                }
-                
-                if vm.isLoading {
+                if carsViewModel.isLoading {
                     ProgressView()
                 } else {
-            
-                    if !vm.cars.isEmpty {
+                    
+                    if !carsViewModel.cars.isEmpty {
                         
-                        ForEach(vm.cars, id: \.self) { car in
+                        ForEach(carsViewModel.cars, id: \.self) { car in
                             HStack {
                                 Image(systemName: "car.fill")
                                 Text(car.name)
@@ -76,25 +39,39 @@ struct CarsView: View {
                                 HStack(spacing: 20) {
                                     
                                     Button {
-                                        vm.selectCar(car)
+                                        self.showLocationUpdateAlert = false
+                                        // This is to ensure that .onChange in MapView for selectedCar is triggered even when the same car is selected again.
+                                        carsViewModel.selectCar(nil)
+                                        carsViewModel.selectCar(car)
                                     } label: {
-                                        Image(systemName: vm.selectedCar == car ? "location.fill" : "location")
+                                        Image(systemName: carsViewModel.selectedCar == car ? "location.fill" : "location")
                                     }
+                                    .buttonStyle(.borderless)
+                                    
+                                    
+                                    Divider()
                                     Button {
-                                        vm.selectCar(car)
+                                        carsViewModel.selectCar(car)
                                         self.showLocationUpdateAlert = true
                                     } label: {
                                         Image(systemName: "mappin.and.ellipse")
                                     }
-                                    .alert("Update Location", isPresented: $showLocationUpdateAlert) {
+                                    .buttonStyle(.borderless)
+                                    
+                                    
+                                    .alert("Location Update", isPresented: $showLocationUpdateAlert) {
                                         Button("Confirm", action: {
-                                            // code to update location
-                                            vm.updateCarLocation(car)
+                                            carsViewModel.updateCarLocation(car)
+                                            if let userId = sessionService.userDetails?.userId {
+                                                carsViewModel.fetchUserCars(userId: userId)
+                                            }
                                             self.showLocationUpdateAlert = false
                                         })
                                         Button("Cancel", role: .cancel) {
                                             self.showLocationUpdateAlert = false
                                         }
+                                    } message: {
+                                        Text("Set the car's location to your current position?")
                                     }
                                 }
                             }
@@ -108,20 +85,20 @@ struct CarsView: View {
             }
             .onAppear {
                 if let userId = sessionService.userDetails?.userId {
-                    vm.fetchUserCars(userId: userId)
+                    carsViewModel.fetchUserCars(userId: userId)
                 }
             }
             .onChange(of: sessionService.userDetails) { newUserDetails in
                 if let userId = newUserDetails?.userId {
-                    vm.fetchUserCars(userId: userId)
+                    carsViewModel.fetchUserCars(userId: userId)
                 }
             }
             .listStyle(.plain)
             
-            .alert("Error", isPresented: $vm.hasError) {
+            .alert("Error", isPresented: $carsViewModel.hasError) {
                 Button("OK", role: .cancel) { }
             } message: {
-                if case .failed(let error) = vm.state {
+                if case .failed(let error) = carsViewModel.state {
                     Text(error.localizedDescription)
                 } else {
                     Text("Something went wrong")
@@ -137,8 +114,11 @@ struct CarsView_Previews: PreviewProvider {
     static var previews: some View {
         
         let sessionService = SessionServiceImpl()
+        let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
         
         CarsView()
             .environmentObject(sessionService)
+            .environmentObject(carsViewModel)
+
     }
 }

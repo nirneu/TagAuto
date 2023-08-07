@@ -21,15 +21,15 @@ protocol CarsViewModel {
     var hasError: Bool { get }
     var cars: [Car] { get }
     func fetchUserCars(userId: String)
-    func selectCar(_ car: Car)
+    func selectCar(_ car: Car?)
     func updateCarLocation(_ car: Car)
-    init(service: CarsService)
+    init(service: CarsServiceImpl)
 }
 
 final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     
     private var subscriptions = Set<AnyCancellable>()
-    private let service: CarsService
+    private let service: CarsServiceImpl
     private let locationManager = CLLocationManager()
     private var currentLocation: CLLocation?
     
@@ -39,7 +39,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     @Published var isLoading: Bool = true
     @Published var selectedCar: Car?
     
-    init(service: CarsService) {
+    init(service: CarsServiceImpl) {
         self.service = service
         setupErrorSubscription()
     }
@@ -68,7 +68,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     }
     
     func updateCarLocation(_ car: Car) {
-                
+        
         if let currentLocation = locationManager.location {
             service.updateCarLocation(car, location: currentLocation)
                 .receive(on: DispatchQueue.main)
@@ -79,7 +79,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                         self?.state = .failed(error: error)
                     default: break
                     }
-                } receiveValue: { [weak self] cars in
+                } receiveValue: { [weak self] _ in
                     self?.state = .successful
                 }
                 .store(in: &subscriptions)
@@ -89,7 +89,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
         
     }
     
-    func selectCar(_ car: Car) {
+    func selectCar(_ car: Car?) {
         selectedCar = car
     }
     
