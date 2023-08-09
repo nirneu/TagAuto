@@ -40,11 +40,9 @@ struct CarsView: View {
                                     
                                     Button {
                                         self.showLocationUpdateAlert = false
-                                        // This is to ensure that .onChange in MapView for selectedCar is triggered even when the same car is selected again.
-                                        carsViewModel.selectCar(nil)
                                         carsViewModel.selectCar(car)
                                     } label: {
-                                        Image(systemName: carsViewModel.selectedCar == car ? "location.fill" : "location")
+                                        Image(systemName: "location.fill")
                                     }
                                     .buttonStyle(.borderless)
                                     
@@ -57,8 +55,8 @@ struct CarsView: View {
                                         Image(systemName: "mappin.and.ellipse")
                                     }
                                     .buttonStyle(.borderless)
-                                    
-                                    
+
+
                                     .alert("Location Update", isPresented: $showLocationUpdateAlert) {
                                         Button("Confirm", action: {
                                             carsViewModel.updateCarLocation(car)

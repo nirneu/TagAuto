@@ -36,6 +36,7 @@ protocol MapViewModel {
     var hasError: Bool { get }
     func checkIfLocationServicesIsEnabled()
     func getCurrentLocation()
+    func regionForCar(_ car: Car?) -> MKCoordinateRegion
     init(service: MapService)
 }
 
@@ -44,8 +45,9 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel {
     @Published var state: LocationAuthState = .na
     @Published var hasError: Bool = false
     @Published var region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
+    @Published var lastCurrentLocation: MKCoordinateRegion?
     @Published var selectedCoordinate: CLLocationCoordinate2D?
-
+    
     var locationManager: CLLocationManager?
     
     let service: MapService
@@ -59,59 +61,60 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel {
     }
     
     func checkIfLocationServicesIsEnabled() {
-        
-        if CLLocationManager.locationServicesEnabled() {
-            
-            locationManager = CLLocationManager()
-            locationManager!.delegate = self
-            
-        } else {
-            
-            self.state = .unauthorized(reason: LocationAuthMessages.turnOnLocation)
-            
-        }
-    }
-    
-    private func checkLocationAuthorization() {
-        
-        guard let locationManager = locationManager else { return }
-        
-        switch locationManager.authorizationStatus {
-            
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
-        case .restricted:
-            self.state = .unauthorized(reason: LocationAuthMessages.unauthorized)
-        case .denied:
-            self.state = .unauthorized(reason: LocationAuthMessages.denied)
-        case .authorizedAlways, .authorizedWhenInUse:
-            if let location = locationManager.location {
-                region = MKCoordinateRegion(center: location.coordinate,
-                                            span: MapDetails.defaultSpan)
-            } else {
-                self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
-            }
-        @unknown default:
-            self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+        DispatchQueue.main.async {
+            self.locationManager = CLLocationManager()
+            self.locationManager!.delegate = self
         }
     }
     
     func getCurrentLocation() {
-        if let location = locationManager?.location {
-            region = MKCoordinateRegion(center: location.coordinate,
-                                        span: MapDetails.defaultSpan)
-        } else {
-            self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+        DispatchQueue.main.async {
+            if let location = self.locationManager?.location {
+                let currentLocation = MKCoordinateRegion(center: location.coordinate,
+                                                         span: MapDetails.defaultSpan)
+                self.region = currentLocation
+                self.lastCurrentLocation = currentLocation
+            } else {
+                self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+            }
         }
     }
+    
+    func regionForCar(_ car: Car?) -> MKCoordinateRegion {
+        guard let coordinate = car?.location else { return self.region }
+        let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+        return MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: span)
+    }
+    
 }
 
 //MARK: - CLLocationManagerDelegate
 extension MapViewModelImpl: CLLocationManagerDelegate {
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        checkLocationAuthorization()
+        DispatchQueue.main.async {
+            switch manager.authorizationStatus {
+            case .notDetermined:
+                manager.requestWhenInUseAuthorization()
+            case .restricted:
+                self.state = .unauthorized(reason: LocationAuthMessages.unauthorized)
+            case .denied:
+                self.state = .unauthorized(reason: LocationAuthMessages.denied)
+            case .authorizedAlways, .authorizedWhenInUse:
+                if let location = manager.location {
+                    DispatchQueue.main.async {
+                        self.region = MKCoordinateRegion(center: location.coordinate,
+                                                         span: MapDetails.defaultSpan)
+                    }
+                } else {
+                    self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+                }
+            @unknown default:
+                self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+            }
+        }
     }
+    
 }
 
 //MARK: - Error handling
@@ -129,6 +132,19 @@ private extension MapViewModelImpl {
             }
         }
         .assign(to: &$hasError)
+    }
+    
+}
+
+extension MKCoordinateRegion {
+    
+    func isApproximatelyEqual(to region: MKCoordinateRegion, tolerance: Double = 0.0001) -> Bool {
+        let areLatitudesClose = abs(self.center.latitude - region.center.latitude) < tolerance
+        let areLongitudesClose = abs(self.center.longitude - region.center.longitude) < tolerance
+        let areLatitudeDeltasClose = abs(self.span.latitudeDelta - region.span.latitudeDelta) < tolerance
+        let areLongitudeDeltasClose = abs(self.span.longitudeDelta - region.span.longitudeDelta) < tolerance
+        
+        return areLatitudesClose && areLongitudesClose && areLatitudeDeltasClose && areLongitudeDeltasClose
     }
     
 }

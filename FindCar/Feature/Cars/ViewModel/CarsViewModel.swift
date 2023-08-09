@@ -68,7 +68,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     }
     
     func updateCarLocation(_ car: Car) {
-        
+
         if let currentLocation = locationManager.location {
             service.updateCarLocation(car, location: currentLocation)
                 .receive(on: DispatchQueue.main)
@@ -86,9 +86,9 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
         } else {
             self.state = .unsuccessful(reason: "Location is not available")
         }
-        
+
     }
-    
+
     func selectCar(_ car: Car?) {
         selectedCar = car
     }
