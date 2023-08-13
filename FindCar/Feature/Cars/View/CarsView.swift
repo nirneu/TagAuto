@@ -34,40 +34,48 @@ struct CarsView: View {
                         
                         ForEach(carsViewModel.cars, id: \.self) { car in
                             
-                            HStack {
+//                            HStack {
                                 
-                                Button {
-                                    self.showLocationUpdateAlert = false
-                                    carsViewModel.selectCar(car)
-                                    selectedCar = car
+                                NavigationLink {
+                                    Text("hi")
                                 } label: {
-                                    HStack {
-                                        Image(systemName: "car.fill")
-                                        Text(car.name)
-                                    }
+                                    Image(systemName: "car.fill")
+                                    Text(car.name)
                                 }
-                                                    
-                                Spacer()
-                                          
-                                Divider()
                                 
-                                Button {
-                                    carToUpdate = car
-                                    self.showLocationUpdateAlert = true
-                                } label: {
-                                    Image(systemName: "mappin.and.ellipse")
-                                }
-                                .buttonStyle(.borderless)
+//                                Button {
+//                                    self.showLocationUpdateAlert = false
+//                                    carsViewModel.selectCar(car)
+//                                    selectedCar = car
+//                                } label: {
+//                                    HStack {
+//                                        Image(systemName: "car.fill")
+//                                        Text(car.name)
+//                                    }
+//                                }
+//                                .contentShape(Rectangle())
+//                                .buttonStyle(.borderless)
                                 
-                            }
-                            .listRowBackground(selectedCar == car ? Color.gray.opacity(0.3) : Color.clear)
+//                                Spacer()
+//
+//                                Divider()
+//
+//                                Button {
+//                                    carToUpdate = car
+//                                    self.showLocationUpdateAlert = true
+//                                } label: {
+//                                    Image(systemName: "mappin.and.ellipse")
+//                                }
+//                                .buttonStyle(.borderless)
+                                
+//                            }
                         }
                         .frame(height: 40)
-
-                        
+                                 
                     } else {
                         
                         Text("You still don't have cars. Go ahead for the Groups section to add one.")
+                        
                     }
                 }
             }

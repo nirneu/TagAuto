@@ -21,18 +21,28 @@ struct HomeView: View {
             
             GeometryReader { geometry in
                 VStack {
-                    MapView()
-                        .frame(height: geometry.size.height * 0.7)
-                        .environmentObject(carsViewModel)
-                    CarsView()
-                        .frame(height: (geometry.size.height * 0.3) - 30)
-                        .environmentObject(carsViewModel)
+                    
+                    NavigationStack {
+                        
+                        MapView()
+                            .environmentObject(carsViewModel)
+                            .edgesIgnoringSafeArea(.top)
+                    }
+                    .frame(height: geometry.size.height * 0.7)
+                    
+                    
+                    NavigationStack {
+                        
+                        CarsView()
+                            .environmentObject(carsViewModel)
+                    }
+                    
+                    .frame(height: (geometry.size.height * 0.3) - 15)
                 }
             }
             .tabItem {
                 Label("Cars", systemImage: "map")
             }
-            .edgesIgnoringSafeArea(.top)
             .tag(1)
             
             GroupsView(selection: $selection)
@@ -70,9 +80,9 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            HomeView()
-                .environmentObject(SessionServiceImpl())
-        }
+        //        NavigationStack {
+        HomeView()
+            .environmentObject(SessionServiceImpl())
+        //        }
     }
 }
