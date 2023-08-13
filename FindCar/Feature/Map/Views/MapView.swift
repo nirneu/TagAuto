@@ -59,6 +59,13 @@ struct MapView: View {
                 vm.region = region
                 self.currentLocationOn = false
             }
+            .onChange(of: carsViewModel.locationUpdated) { value in
+                guard let coordinate = carsViewModel.selectedCar?.location else { return }
+                let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: span)
+                vm.region = region
+                self.currentLocationOn = false
+            }
             .alert("Error", isPresented: $vm.hasError) {
                 Button("OK", role: .cancel) { }
             } message: {
@@ -94,9 +101,11 @@ struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
-        
+        let sessionService = SessionServiceImpl()
+
         MapView()
             .environmentObject(carsViewModel)
+            .environmentObject(sessionService)
         
     }
 }

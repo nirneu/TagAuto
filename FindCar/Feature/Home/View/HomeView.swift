@@ -30,13 +30,12 @@ struct HomeView: View {
                     }
                     .frame(height: geometry.size.height * 0.7)
                     
-                    
                     NavigationStack {
                         
                         CarsView()
                             .environmentObject(carsViewModel)
+                            .environmentObject(sessionService)
                     }
-                    
                     .frame(height: (geometry.size.height * 0.3) - 15)
                 }
             }

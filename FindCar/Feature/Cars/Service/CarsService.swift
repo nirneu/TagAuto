@@ -19,6 +19,7 @@ enum CarKeys: String {
 protocol CarsService {
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error>
     func updateCarLocation(_ car: Car, location: CLLocation) -> AnyPublisher<Void, Error>
+    func getAddress(from geopoint: CLLocationCoordinate2D) -> AnyPublisher<String, Error>
 }
 
 final class CarsServiceImpl: CarsService {
@@ -122,6 +123,41 @@ final class CarsServiceImpl: CarsService {
             }
         }
         .receive (on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+    
+    func getAddress(from geopoint: CLLocationCoordinate2D) -> AnyPublisher<String, Error> {
+        
+        Deferred {
+            
+            Future { promise in
+                
+                let geocoder = CLGeocoder()
+                let location = CLLocation(latitude: geopoint.latitude, longitude: geopoint.longitude)
+                
+                geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+                    if let error = error {
+                        promise(.failure(error))
+                        return
+                    }
+                    
+                    if let placemark = placemarks?.first {
+                        let number = placemark.subThoroughfare ?? ""
+                        let street = placemark.thoroughfare ?? ""
+                        let city = placemark.locality ?? ""
+                        let state = placemark.administrativeArea ?? ""
+                        let zipCode = placemark.postalCode ?? ""
+                        let country = placemark.country ?? ""
+                        
+                        let addressString = "\(street) \(number), \(city)"
+                        promise(.success(addressString))
+                    } else {
+                        promise(.failure(CLError(.locationUnknown)))
+                    }
+                }
+            }
+        }
+        .receive(on: RunLoop.main)
         .eraseToAnyPublisher()
     }
     

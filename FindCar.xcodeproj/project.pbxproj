@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A827F2CC2A895C75002F6567 /* CarDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A827F2CB2A895C75002F6567 /* CarDetailsView.swift */; };
 		A8285A932A793F2D007D3305 /* GroupDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8285A922A793F2D007D3305 /* GroupDetailView.swift */; };
 		A8285A952A7950AE007D3305 /* CreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8285A942A7950AE007D3305 /* CreateGroupView.swift */; };
 		A82D1A032A6EB65100687364 /* ForgotPasswordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A022A6EB65100687364 /* ForgotPasswordService.swift */; };
@@ -51,6 +52,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A827F2CB2A895C75002F6567 /* CarDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarDetailsView.swift; sourceTree = "<group>"; };
 		A8285A922A793F2D007D3305 /* GroupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailView.swift; sourceTree = "<group>"; };
 		A8285A942A7950AE007D3305 /* CreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupView.swift; sourceTree = "<group>"; };
 		A82D1A022A6EB65100687364 /* ForgotPasswordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordService.swift; sourceTree = "<group>"; };
@@ -454,6 +456,7 @@
 			isa = PBXGroup;
 			children = (
 				A8FF95C72A7D1CA50025C516 /* CarsView.swift */,
+				A827F2CB2A895C75002F6567 /* CarDetailsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -589,6 +592,7 @@
 				A82DF7D52A77DD30005AD7B0 /* MapService.swift in Sources */,
 				A89F2E672A7938FA00C97665 /* GroupsViewModel.swift in Sources */,
 				A8FF95C22A7D16A60025C516 /* Car.swift in Sources */,
+				A827F2CC2A895C75002F6567 /* CarDetailsView.swift in Sources */,
 				A842D8832A616603008F8C8F /* ForgotPasswordView.swift in Sources */,
 				A8FF95C62A7D1B110025C516 /* CarsViewModel.swift in Sources */,
 				A8FF95C82A7D1CA50025C516 /* CarsView.swift in Sources */,

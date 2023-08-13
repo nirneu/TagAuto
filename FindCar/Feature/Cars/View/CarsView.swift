@@ -13,8 +13,6 @@ struct CarsView: View {
     @EnvironmentObject var carsViewModel: CarsViewModelImpl
     
     @State private var showLocationUpdateAlert = false
-    @State private var carToUpdate: Car?
-    @State private var selectedCar: Car?
     
     var body: some View {
         
@@ -32,43 +30,17 @@ struct CarsView: View {
                     
                     if !carsViewModel.cars.isEmpty {
                         
-                        ForEach(carsViewModel.cars, id: \.self) { car in
-                            
-//                            HStack {
-                                
+                        ForEach(carsViewModel.cars.sorted(by: { $0.id < $1.id }), id: \.self) { car in
+                                                            
                                 NavigationLink {
-                                    Text("hi")
+                                    CarDetailsView(car: car)
+                                        .environmentObject(sessionService)
+                                        .environmentObject(carsViewModel)
                                 } label: {
                                     Image(systemName: "car.fill")
                                     Text(car.name)
                                 }
                                 
-//                                Button {
-//                                    self.showLocationUpdateAlert = false
-//                                    carsViewModel.selectCar(car)
-//                                    selectedCar = car
-//                                } label: {
-//                                    HStack {
-//                                        Image(systemName: "car.fill")
-//                                        Text(car.name)
-//                                    }
-//                                }
-//                                .contentShape(Rectangle())
-//                                .buttonStyle(.borderless)
-                                
-//                                Spacer()
-//
-//                                Divider()
-//
-//                                Button {
-//                                    carToUpdate = car
-//                                    self.showLocationUpdateAlert = true
-//                                } label: {
-//                                    Image(systemName: "mappin.and.ellipse")
-//                                }
-//                                .buttonStyle(.borderless)
-                                
-//                            }
                         }
                         .frame(height: 40)
                                  
@@ -79,27 +51,11 @@ struct CarsView: View {
                     }
                 }
             }
-            .alert("Location Update", isPresented: $showLocationUpdateAlert) {
-                Button("Confirm", action: {
-                    if let updatingCar = carToUpdate {
-                        carsViewModel.updateCarLocation(updatingCar)
-                        if let userId = sessionService.userDetails?.userId {
-                            carsViewModel.fetchUserCars(userId: userId)
-                        }
-                        self.showLocationUpdateAlert = false
-                    }
-                })
-                Button("Cancel", role: .cancel) {
-                    self.showLocationUpdateAlert = false
-                }
-            } message: {
-                Text("Set the car's location to your current position?")
-            }
+            
             .onAppear {
                 if let userId = sessionService.userDetails?.userId {
                     carsViewModel.fetchUserCars(userId: userId)
                 }
-                selectedCar = nil
             }
             .onChange(of: sessionService.userDetails) { newUserDetails in
                 if let userId = newUserDetails?.userId {
@@ -120,7 +76,6 @@ struct CarsView: View {
     }
     
 }
-
 
 struct CarsView_Previews: PreviewProvider {
     static var previews: some View {
