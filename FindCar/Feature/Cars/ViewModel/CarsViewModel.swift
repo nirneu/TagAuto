@@ -32,7 +32,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     private var subscriptions = Set<AnyCancellable>()
     private let service: CarsServiceImpl
     private let locationManager = CLLocationManager()
-    private var currentLocation: CLLocation?
+//    private var currentLocation: CLLocation?
     
     @Published var state: CarsState = .na
     @Published var hasError: Bool = false
@@ -41,6 +41,8 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     @Published var isLoading: Bool = true
     @Published var selectedCar: Car?
     @Published var locationUpdated: Bool = false
+    @Published  var currentLocationFocus: CLLocation?
+
     
     init(service: CarsServiceImpl) {
         self.service = service
@@ -84,8 +86,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                     }
                 } receiveValue: { [weak self] _ in
                     self?.state = .successful
-                    self?.selectedCar = car
-                    self?.locationUpdated.toggle()
+                    self?.currentLocationFocus = currentLocation
                 }
                 .store(in: &subscriptions)
         } else {

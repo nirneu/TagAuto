@@ -57,13 +57,13 @@ struct MapView: View {
                 let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: span)
                 vm.region = region
             }
-            .onChange(of: carsViewModel.locationUpdated) { value in
-                
-                // Introducing a slight delay to handle a concurrency issue
-                // where the location update might not be immediately available
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                      vm.getCurrentLocation()
-                  }            }
+            .onChange(of: carsViewModel.currentLocationFocus) { newLocation in
+                if let location = newLocation {
+                    let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+
+                    vm.region = MKCoordinateRegion( center: location.coordinate, span: span)
+                }
+            }
             .alert("Error", isPresented: $vm.hasError) {
                 Button("OK", role: .cancel) { }
             } message: {
