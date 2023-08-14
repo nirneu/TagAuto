@@ -45,7 +45,6 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel {
     @Published var state: LocationAuthState = .na
     @Published var hasError: Bool = false
     @Published var region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
-    @Published var lastCurrentLocation: MKCoordinateRegion?
     @Published var selectedCoordinate: CLLocationCoordinate2D?
     
     var locationManager: CLLocationManager?
@@ -73,7 +72,6 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel {
                 let currentLocation = MKCoordinateRegion(center: location.coordinate,
                                                          span: MapDetails.defaultSpan)
                 self.region = currentLocation
-                self.lastCurrentLocation = currentLocation
             } else {
                 self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
             }

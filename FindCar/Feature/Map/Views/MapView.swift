@@ -17,7 +17,6 @@ struct MapView: View {
     @EnvironmentObject var sessionService: SessionServiceImpl
     
     @State var tracking = MapUserTrackingMode.follow
-    @State var currentLocationOn: Bool = true
     
     private var region : Binding<MKCoordinateRegion> {
         
@@ -57,15 +56,14 @@ struct MapView: View {
                 let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
                 let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: span)
                 vm.region = region
-                self.currentLocationOn = false
             }
             .onChange(of: carsViewModel.locationUpdated) { value in
-                guard let coordinate = carsViewModel.selectedCar?.location else { return }
-                let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-                let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: span)
-                vm.region = region
-                self.currentLocationOn = false
-            }
+                
+                // Introducing a slight delay to handle a concurrency issue
+                // where the location update might not be immediately available
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                      vm.getCurrentLocation()
+                  }            }
             .alert("Error", isPresented: $vm.hasError) {
                 Button("OK", role: .cancel) { }
             } message: {
