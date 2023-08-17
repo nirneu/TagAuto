@@ -9,6 +9,7 @@ import Foundation
 
 struct SessionUserDetails: Equatable {
     let userId: String
+    let userEmail: String
     let firstName: String
     let lastName: String
 }

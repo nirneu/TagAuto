@@ -43,13 +43,13 @@ private extension SessionServiceImpl {
         handler = Auth.auth().addStateDidChangeListener({ [weak self] res, user in
             guard let self = self else { return }
             self.state = user == nil ? .loggedOut : .loggedIn
-            if let uid = user?.uid {
-                self.handlerRefresh(with: uid)
+            if let uid = user?.uid, let userEmail = user?.email {
+                self.handlerRefresh(uid: uid, userEmail: userEmail)
             }
         })
     }
     
-    func handlerRefresh(with uid: String) {
+    func handlerRefresh(uid: String, userEmail: String) {
         
         let db = Firestore.firestore()
         let docRef = db.collection("users").document(uid)
@@ -65,7 +65,7 @@ private extension SessionServiceImpl {
                     }
                     
                     DispatchQueue.main.async {
-                        self.userDetails = SessionUserDetails(userId: uid, firstName: firstName, lastName: lastName)
+                        self.userDetails = SessionUserDetails(userId: uid, userEmail: userEmail, firstName: firstName, lastName: lastName)
                     }
                 }
             }

@@ -16,11 +16,19 @@ enum GroupKeys: String {
     case cars
 }
 
+enum InvitationKeys: String {
+    case id
+    case email
+    case groupId
+    case groupName
+}
+
 protocol GroupsService {
     func getGroups(of userId: String) -> AnyPublisher<[GroupDetails], Error>
     func createGroup(with details: GroupDetails) -> AnyPublisher<Void, Error>
     func fetchUserDetails(for userIds: [String]) -> AnyPublisher<[UserDetails], Error>
     func addCarToGroup(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
+    func sendInvitation(to email: String, for group: String, groupName: String) -> AnyPublisher<Void, Error>
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error>
 }
 
@@ -30,6 +38,7 @@ final class GroupsServiceImpl: GroupsService {
     private let groupsPath = "groups"
     private let usersPath = "users"
     private let carsPath = "cars"
+    private let invitationsPath = "invitations"
     
     func getGroups(of userId: String) -> AnyPublisher<[GroupDetails], Error> {
         
@@ -75,7 +84,7 @@ final class GroupsServiceImpl: GroupsService {
                         }
                         
                     } else {
-                        promise(.failure(NSError(domain: "No document found", code: 404)))
+                        promise(.success([]))
                     }
                 }
             }
@@ -161,9 +170,9 @@ final class GroupsServiceImpl: GroupsService {
     }
     
     func addCarToGroup(_ groupId: String, car: Car) -> AnyPublisher<Void, Error> {
-
+        
         Deferred {
-
+            
             Future { promise in
                 
                 var newCarRef: DocumentReference? = nil
@@ -243,6 +252,30 @@ final class GroupsServiceImpl: GroupsService {
         .receive (on: RunLoop.main)
         .eraseToAnyPublisher()
     }
-
+    
+    func sendInvitation(to email: String, for groupId: String, groupName: String) -> AnyPublisher<Void, Error> {
+        
+        Deferred {
+            
+            Future { promise in
+                
+                self.db.collection(self.invitationsPath).addDocument(data: [
+                    InvitationKeys.email.rawValue: email,
+                    InvitationKeys.groupId.rawValue: groupId,
+                    InvitationKeys.groupName.rawValue: groupName
+                ]) { error in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(()))
+                    }
+                }
+                
+            }
+        }
+        .receive (on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+    
     
 }

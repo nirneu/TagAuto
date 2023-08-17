@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseFirestore
 import Combine
+import CoreLocation
 
 struct Car: Hashable, Identifiable {
     let id: String
@@ -20,6 +21,10 @@ struct Car: Hashable, Identifiable {
             "name": name,
             "location": location
         ]
+    }
+    
+    var locationCorodinate: CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
     }
 }
 

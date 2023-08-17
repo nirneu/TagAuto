@@ -43,8 +43,13 @@
 		A89F2E6A2A793BCA00C97665 /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E692A793BCA00C97665 /* GroupsView.swift */; };
 		A89F2E6D2A793D4C00C97665 /* GroupDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E6C2A793D4C00C97665 /* GroupDetails.swift */; };
 		A8A863702A7BB5EA0046995D /* UserDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8A8636F2A7BB5EA0046995D /* UserDetails.swift */; };
-		A8B9D4922A7FFBD300C3973B /* SaveParkingLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8B9D4912A7FFBD300C3973B /* SaveParkingLocationView.swift */; };
 		A8CF46D32A7A6A6200F39C7A /* AddCarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF46D22A7A6A6200F39C7A /* AddCarView.swift */; };
+		A8F759702A8E608E009443BB /* InviteMemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7596F2A8E608E009443BB /* InviteMemberView.swift */; };
+		A8F759732A8E6CAB009443BB /* BaseFuntions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F759722A8E6CAB009443BB /* BaseFuntions.swift */; };
+		A8F759772A8E6E0B009443BB /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F759762A8E6E0B009443BB /* AccountView.swift */; };
+		A8F7597A2A8E70FA009443BB /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F759792A8E70FA009443BB /* AccountViewModel.swift */; };
+		A8F7597D2A8E7176009443BB /* AccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7597C2A8E7176009443BB /* AccountService.swift */; };
+		A8F759802A8E71CF009443BB /* Invitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F7597F2A8E71CF009443BB /* Invitation.swift */; };
 		A8FF95C22A7D16A60025C516 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8FF95C12A7D16A60025C516 /* Car.swift */; };
 		A8FF95C42A7D16F30025C516 /* CarsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8FF95C32A7D16F30025C516 /* CarsService.swift */; };
 		A8FF95C62A7D1B110025C516 /* CarsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8FF95C52A7D1B110025C516 /* CarsViewModel.swift */; };
@@ -88,8 +93,13 @@
 		A89F2E692A793BCA00C97665 /* GroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsView.swift; sourceTree = "<group>"; };
 		A89F2E6C2A793D4C00C97665 /* GroupDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetails.swift; sourceTree = "<group>"; };
 		A8A8636F2A7BB5EA0046995D /* UserDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetails.swift; sourceTree = "<group>"; };
-		A8B9D4912A7FFBD300C3973B /* SaveParkingLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveParkingLocationView.swift; sourceTree = "<group>"; };
 		A8CF46D22A7A6A6200F39C7A /* AddCarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCarView.swift; sourceTree = "<group>"; };
+		A8F7596F2A8E608E009443BB /* InviteMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteMemberView.swift; sourceTree = "<group>"; };
+		A8F759722A8E6CAB009443BB /* BaseFuntions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseFuntions.swift; sourceTree = "<group>"; };
+		A8F759762A8E6E0B009443BB /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
+		A8F759792A8E70FA009443BB /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
+		A8F7597C2A8E7176009443BB /* AccountService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountService.swift; sourceTree = "<group>"; };
+		A8F7597F2A8E71CF009443BB /* Invitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invitation.swift; sourceTree = "<group>"; };
 		A8FF95C12A7D16A60025C516 /* Car.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
 		A8FF95C32A7D16F30025C516 /* CarsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarsService.swift; sourceTree = "<group>"; };
 		A8FF95C52A7D1B110025C516 /* CarsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarsViewModel.swift; sourceTree = "<group>"; };
@@ -139,7 +149,6 @@
 			isa = PBXGroup;
 			children = (
 				A82D1A0A2A71722700687364 /* MapView.swift */,
-				A8B9D4912A7FFBD300C3973B /* SaveParkingLocationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -201,6 +210,7 @@
 		A842D85E2A5EBB09008F8C8F /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				A8F759712A8E6C8A009443BB /* Functions */,
 				A842D86E2A5F1C62008F8C8F /* Modifier */,
 				A842D86B2A5F11B8008F8C8F /* Views */,
 			);
@@ -210,6 +220,7 @@
 		A842D85F2A5EBB0D008F8C8F /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				A8F759742A8E6DF6009443BB /* Account */,
 				A89F2E612A79355A00C97665 /* Groups */,
 				A82D1A082A71720200687364 /* Map */,
 				A89F2E602A79353200C97665 /* Cars */,
@@ -400,7 +411,7 @@
 				A8FF95C02A7D166A0025C516 /* Service */,
 				A8FF95BF2A7D16620025C516 /* ViewModel */,
 				A8FF95BE2A7D165C0025C516 /* Model */,
-				A8FF95BD2A7D16530025C516 /* View */,
+				A8FF95BD2A7D16530025C516 /* Views */,
 			);
 			path = Cars;
 			sourceTree = "<group>";
@@ -439,6 +450,7 @@
 				A8285A922A793F2D007D3305 /* GroupDetailView.swift */,
 				A8285A942A7950AE007D3305 /* CreateGroupView.swift */,
 				A8CF46D22A7A6A6200F39C7A /* AddCarView.swift */,
+				A8F7596F2A8E608E009443BB /* InviteMemberView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -452,13 +464,64 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		A8FF95BD2A7D16530025C516 /* View */ = {
+		A8F759712A8E6C8A009443BB /* Functions */ = {
+			isa = PBXGroup;
+			children = (
+				A8F759722A8E6CAB009443BB /* BaseFuntions.swift */,
+			);
+			path = Functions;
+			sourceTree = "<group>";
+		};
+		A8F759742A8E6DF6009443BB /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				A8F7597E2A8E71C3009443BB /* Model */,
+				A8F7597B2A8E716A009443BB /* Service */,
+				A8F759782A8E70E8009443BB /* ViewModel */,
+				A8F759752A8E6DFE009443BB /* View */,
+			);
+			path = Account;
+			sourceTree = "<group>";
+		};
+		A8F759752A8E6DFE009443BB /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A8F759762A8E6E0B009443BB /* AccountView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		A8F759782A8E70E8009443BB /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				A8F759792A8E70FA009443BB /* AccountViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		A8F7597B2A8E716A009443BB /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				A8F7597C2A8E7176009443BB /* AccountService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		A8F7597E2A8E71C3009443BB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A8F7597F2A8E71CF009443BB /* Invitation.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		A8FF95BD2A7D16530025C516 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				A8FF95C72A7D1CA50025C516 /* CarsView.swift */,
 				A827F2CB2A895C75002F6567 /* CarDetailsView.swift */,
 			);
-			path = View;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		A8FF95BE2A7D165C0025C516 /* Model */ = {
@@ -563,10 +626,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8F759732A8E6CAB009443BB /* BaseFuntions.swift in Sources */,
+				A8F759702A8E608E009443BB /* InviteMemberView.swift in Sources */,
 				A842D8992A63FC72008F8C8F /* LoginService.swift in Sources */,
 				A842D87F2A608926008F8C8F /* HomeView.swift in Sources */,
 				A842D8722A606514008F8C8F /* InputPasswordView.swift in Sources */,
-				A8B9D4922A7FFBD300C3973B /* SaveParkingLocationView.swift in Sources */,
 				A8FF95C42A7D16F30025C516 /* CarsService.swift in Sources */,
 				A8285A932A793F2D007D3305 /* GroupDetailView.swift in Sources */,
 				A82D1A062A6EBCC700687364 /* ForgotPasswordViewModel.swift in Sources */,
@@ -586,17 +650,21 @@
 				A842D8742A607988008F8C8F /* ButtonView.swift in Sources */,
 				A842D88C2A619088008F8C8F /* RegistrationViewModel.swift in Sources */,
 				A82D1A032A6EB65100687364 /* ForgotPasswordService.swift in Sources */,
+				A8F759772A8E6E0B009443BB /* AccountView.swift in Sources */,
 				A8285A952A7950AE007D3305 /* CreateGroupView.swift in Sources */,
+				A8F7597A2A8E70FA009443BB /* AccountViewModel.swift in Sources */,
 				A82D1A0E2A7172BB00687364 /* MapViewModel.swift in Sources */,
 				A842D8862A6172D8008F8C8F /* RegistrationDetails.swift in Sources */,
 				A82DF7D52A77DD30005AD7B0 /* MapService.swift in Sources */,
 				A89F2E672A7938FA00C97665 /* GroupsViewModel.swift in Sources */,
 				A8FF95C22A7D16A60025C516 /* Car.swift in Sources */,
+				A8F7597D2A8E7176009443BB /* AccountService.swift in Sources */,
 				A827F2CC2A895C75002F6567 /* CarDetailsView.swift in Sources */,
 				A842D8832A616603008F8C8F /* ForgotPasswordView.swift in Sources */,
 				A8FF95C62A7D1B110025C516 /* CarsViewModel.swift in Sources */,
 				A8FF95C82A7D1CA50025C516 /* CarsView.swift in Sources */,
 				A89F2E6D2A793D4C00C97665 /* GroupDetails.swift in Sources */,
+				A8F759802A8E71CF009443BB /* Invitation.swift in Sources */,
 				A8CF46D32A7A6A6200F39C7A /* AddCarView.swift in Sources */,
 				A842D8902A61AE26008F8C8F /* SessionUserDetails.swift in Sources */,
 				A842D86D2A5F11D1008F8C8F /* InputTextFieldView.swift in Sources */,

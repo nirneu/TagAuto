@@ -11,14 +11,14 @@ struct GroupDetailView: View {
     
     @EnvironmentObject var vm: GroupsViewModelImpl
     
-    @State private var showingAddMember = false
+    @State private var showingInviteMember = false
     @State private var showingAddCar = false
     
     let group: GroupDetails
     
     var body: some View {
         List {
-            Section(header: headerView(title: "Members", action: { showingAddMember = true })) {
+            Section(header: headerView(title: "Members", action: { showingInviteMember = true })) {
                 
                 if vm.isLoadingMembers {
                     ProgressView()
@@ -81,8 +81,9 @@ struct GroupDetailView: View {
         }
         .listStyle(InsetGroupedListStyle())
         .navigationTitle(group.name)
-        .sheet(isPresented: $showingAddMember) {
-            // Display view to add a new member
+        .sheet(isPresented: $showingInviteMember) {
+            InviteMemberView(showingSheet: $showingInviteMember, group: group)
+                .environmentObject(vm)
         }
         .sheet(isPresented: $showingAddCar) {
             AddCarView(showingSheet: $showingAddCar, group: group)

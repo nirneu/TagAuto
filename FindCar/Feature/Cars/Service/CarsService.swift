@@ -18,7 +18,7 @@ enum CarKeys: String {
 
 protocol CarsService {
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error>
-    func updateCarLocation(_ car: Car, location: CLLocation) -> AnyPublisher<Void, Error>
+    func updateCarLocation(_ car: Car, location: CLLocation) -> AnyPublisher<GeoPoint, Error>
     func getAddress(from geopoint: CLLocationCoordinate2D) -> AnyPublisher<String, Error>
 }
 
@@ -89,9 +89,7 @@ final class CarsServiceImpl: CarsService {
                         }
                         
                     } else {
-                        
-                        promise(.failure(NSError(domain: "No document found", code: 404)))
-                        
+                        promise(.success([]))
                     }
                 }
             }
@@ -101,7 +99,7 @@ final class CarsServiceImpl: CarsService {
     }
     
     
-    func updateCarLocation(_ car: Car, location: CLLocation) -> AnyPublisher<Void, Error> {
+    func updateCarLocation(_ car: Car, location: CLLocation) -> AnyPublisher<GeoPoint, Error> {
         
         Deferred {
             
@@ -117,7 +115,7 @@ final class CarsServiceImpl: CarsService {
                     if let error = error {
                         promise(.failure(error))
                     } else {
-                        promise(.success(()))
+                        promise(.success((geoPoint)))
                     }
                 }
             }
@@ -145,9 +143,6 @@ final class CarsServiceImpl: CarsService {
                         let number = placemark.subThoroughfare ?? ""
                         let street = placemark.thoroughfare ?? ""
                         let city = placemark.locality ?? ""
-                        let state = placemark.administrativeArea ?? ""
-                        let zipCode = placemark.postalCode ?? ""
-                        let country = placemark.country ?? ""
                         
                         let addressString = "\(street) \(number), \(city)"
                         promise(.success(addressString))

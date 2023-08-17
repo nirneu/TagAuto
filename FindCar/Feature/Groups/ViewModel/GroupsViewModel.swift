@@ -24,6 +24,7 @@ protocol GroupsViewModel {
     func fetchUserGroups(userId: String)
     func createGroup()
     func addCarToGroup(groupId: String, car: Car)
+    func sendInvitation(to email: String, for groupId: String, groupName: String)
     func fetchGroupCars(groupId: String)
     init(service: GroupsService)
 }
@@ -109,13 +110,12 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     func addCarToGroup(groupId: String, car: Car) {
         service.addCarToGroup(groupId, car: car)
             .sink { [weak self] res in
-                
                 switch res {
                 case .failure(let error):
                     self?.state = .failed(error: error)
                 default: break
                 }
-            } receiveValue: { [weak self] userDetails in
+            } receiveValue: { [weak self] _ in
                 self?.state = .successful
                 self?.carCreated = true
             }
@@ -123,24 +123,38 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     }
     
     func fetchGroupCars(groupId: String) {
-           service.getCars(of: groupId)
-               .receive(on: DispatchQueue.main)
-               .sink { [weak self] res in
-                   switch res {
-                   case .failure(let error):
-                       self?.state = .failed(error: error)
-                       self?.groupCars = []
-                       self?.isLoadingCars = false
-                   default:
-                       break
-                   }
-               } receiveValue: { [weak self] cars in
-                   self?.groupCars = cars
-                   self?.state = .successful
-                   self?.isLoadingCars = false
-               }
-               .store(in: &subscriptions)
-       }
+        service.getCars(of: groupId)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] res in
+                switch res {
+                case .failure(let error):
+                    self?.state = .failed(error: error)
+                    self?.groupCars = []
+                    self?.isLoadingCars = false
+                default:
+                    break
+                }
+            } receiveValue: { [weak self] cars in
+                self?.groupCars = cars
+                self?.state = .successful
+                self?.isLoadingCars = false
+            }
+            .store(in: &subscriptions)
+    }
+    
+    func sendInvitation(to email: String, for groupId: String, groupName: String) {
+        service.sendInvitation(to: email, for: groupId, groupName: groupName)
+            .sink { [weak self] res in
+                switch res {
+                case .failure(let error):
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] _ in
+                self?.state = .successful
+            }
+            .store(in: &subscriptions)
+    }
     
 }
 

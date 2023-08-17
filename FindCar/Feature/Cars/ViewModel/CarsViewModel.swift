@@ -32,7 +32,6 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     private var subscriptions = Set<AnyCancellable>()
     private let service: CarsServiceImpl
     private let locationManager = CLLocationManager()
-//    private var currentLocation: CLLocation?
     
     @Published var state: CarsState = .na
     @Published var hasError: Bool = false
@@ -84,9 +83,11 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                         self?.state = .failed(error: error)
                     default: break
                     }
-                } receiveValue: { [weak self] _ in
+                } receiveValue: { [weak self] geoPoint in
+                    self?.isLoading = false
                     self?.state = .successful
                     self?.currentLocationFocus = currentLocation
+                    self?.getAddress(from: CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude))
                 }
                 .store(in: &subscriptions)
         } else {

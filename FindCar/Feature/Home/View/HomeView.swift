@@ -50,25 +50,9 @@ struct HomeView: View {
                 }
                 .tag(2)
             
-            NavigationStack {
-                
-                VStack(alignment: .leading, spacing: 16) {
-                    
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("First Name: \(sessionService.userDetails?.firstName ?? "NA")")
-                        Text("Last Name: \(sessionService.userDetails?.lastName ?? "NA")")
-                    }
-                    
-                    ButtonView(title: "Logout") {
-                        sessionService.logout()
-                    }
-                }
-                .padding(.horizontal, 16)
-                .navigationTitle("Profile")
-                
-            }
+            AccountView(accountViewModel: AccountViewModelImpl(service: AccountServiceImpl()))
             .tabItem {
-                Label("Profile", systemImage: "person.crop.circle")
+                Label("Account", systemImage: "person.crop.circle")
             }
             .tag(3)
             
@@ -79,9 +63,8 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        //        NavigationStack {
+        
         HomeView()
             .environmentObject(SessionServiceImpl())
-        //        }
     }
 }

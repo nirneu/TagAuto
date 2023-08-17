@@ -52,7 +52,7 @@ struct CarDetailsView: View {
         }
         .onAppear {
             carsViewModel.selectCar(car)
-            carsViewModel.getAddress(from: CLLocationCoordinate2D(latitude: car.location.latitude, longitude: car.location.longitude))
+            carsViewModel.getAddress(from: car.locationCorodinate)
         }
         .alert("Location Update", isPresented: $showLocationUpdateAlert) {
             Button("Confirm", action: {
