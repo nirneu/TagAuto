@@ -31,7 +31,7 @@ struct AddCarView: View {
                 
                 ButtonView(title: "Add Car", handler: {
                     if !carName.trimmingCharacters(in: .whitespaces).isEmpty {
-                        vm.addCarToGroup(groupId: group.id, car: Car(id: "", name: carName, location: GeoPoint(latitude: 0, longitude: 0)))
+                        vm.addCarToGroup(groupId: group.id, car: Car(id: "", name: carName, location: GeoPoint(latitude: 0, longitude: 0), groupName: group.name))
                     }
                     showingSheet = false
                 }, disabled: Binding<Bool>(

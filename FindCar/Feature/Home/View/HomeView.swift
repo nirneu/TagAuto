@@ -28,7 +28,7 @@ struct HomeView: View {
                             .environmentObject(carsViewModel)
                             .edgesIgnoringSafeArea(.top)
                     }
-                    .frame(height: geometry.size.height * 0.7)
+                    .frame(height: geometry.size.height * 0.6)
                     
                     NavigationStack {
                         
@@ -36,7 +36,7 @@ struct HomeView: View {
                             .environmentObject(carsViewModel)
                             .environmentObject(sessionService)
                     }
-                    .frame(height: (geometry.size.height * 0.3) - 15)
+                    .frame(height: (geometry.size.height * 0.4) - 15)
                 }
             }
             .tabItem {

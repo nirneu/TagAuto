@@ -58,7 +58,7 @@ final class CarsServiceImpl: CarsService {
                                 if let error = error {
                                     promise(.failure(error))
                                     dispatchGroup.leave()
-                                } else if let document = document, document.exists, let carIds = document.data()?[self.carsPath] as? [String] {
+                                } else if let document = document, document.exists, let carIds = document.data()?[self.carsPath] as? [String], let groupName = document.data()?["name"] as? String {
                                     
                                     let carsRef = carIds.map { self.db.collection(self.carsPath).document($0) }
                                     
@@ -71,8 +71,8 @@ final class CarsServiceImpl: CarsService {
                                             if let error = error {
                                                 promise(.failure(error))
                                             } else if let document = document, document.exists, let data = document.data() {
-                                                
-                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0))
+
+                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), groupName: groupName)
                                                 cars.append(car)
                                                 
                                             }

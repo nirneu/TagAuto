@@ -216,7 +216,7 @@ final class GroupsServiceImpl: GroupsService {
                 docRef.getDocument { (document, error) in
                     if let error = error {
                         promise(.failure(error))
-                    } else if let document = document, document.exists, let carIds = document.data()?[self.carsPath] as? [String] {
+                    } else if let document = document, document.exists, let carIds = document.data()?[self.carsPath] as? [String], let groupName = document.data()?["name"] as? String {
                         
                         var cars: [Car] = []
                         let dispatchGroup = DispatchGroup()
@@ -232,7 +232,7 @@ final class GroupsServiceImpl: GroupsService {
                                     promise(.failure(error))
                                 } else if let document = document, document.exists, let data = document.data() {
                                     
-                                    let car = Car(id: document.documentID, name: data["name"] as? String ?? "", location: data["location"] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0))
+                                    let car = Car(id: document.documentID, name: data["name"] as? String ?? "", location: data["location"] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), groupName: groupName)
                                     cars.append(car)
                                     
                                 }

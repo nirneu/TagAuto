@@ -30,19 +30,29 @@ struct CarsView: View {
                     
                     if !carsViewModel.cars.isEmpty {
                         
-                        ForEach(carsViewModel.cars.sorted(by: { $0.id < $1.id }), id: \.self) { car in
-                                                            
-                                NavigationLink {
-                                    CarDetailsView(car: car)
-                                        .environmentObject(sessionService)
-                                        .environmentObject(carsViewModel)
-                                } label: {
-                                    Image(systemName: "car.fill")
-                                    Text(car.name)
-                                }
+                        let sortedUniqueGroupNames = Array(Set(carsViewModel.cars.map { $0.groupName })).sorted(by: <)
+
+                        ForEach(sortedUniqueGroupNames) { groupName in
+                            
+                            Section(header: Text(groupName)) {
                                 
+                                ForEach(carsViewModel.cars.filter { $0.groupName == groupName }.sorted(by: { $0.name < $1.name }), id: \.self) { car in
+
+                                        NavigationLink {
+                                            CarDetailsView(car: car)
+                                                .environmentObject(sessionService)
+                                                .environmentObject(carsViewModel)
+                                        } label: {
+                                            Image(systemName: "car.fill")
+                                            Text(car.name)
+                                        }
+                                        
+                                }
+                                .frame(height: 40)
+                                
+                            }
+                            
                         }
-                        .frame(height: 40)
                                  
                     } else {
                         
@@ -77,6 +87,13 @@ struct CarsView: View {
     
 }
 
+extension String: Identifiable {
+    public typealias ID = Int
+    public var id: Int {
+        return hash
+    }
+}
+
 struct CarsView_Previews: PreviewProvider {
     static var previews: some View {
         
@@ -89,3 +106,4 @@ struct CarsView_Previews: PreviewProvider {
         
     }
 }
+
