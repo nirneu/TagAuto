@@ -33,7 +33,6 @@
 		A842D8862A6172D8008F8C8F /* RegistrationDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8852A6172D8008F8C8F /* RegistrationDetails.swift */; };
 		A842D8892A61732C008F8C8F /* RegistrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8882A61732C008F8C8F /* RegistrationService.swift */; };
 		A842D88C2A619088008F8C8F /* RegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D88B2A619088008F8C8F /* RegistrationViewModel.swift */; };
-		A842D8902A61AE26008F8C8F /* SessionUserDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D88F2A61AE26008F8C8F /* SessionUserDetails.swift */; };
 		A842D8932A61AE9F008F8C8F /* SessionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8922A61AE9F008F8C8F /* SessionService.swift */; };
 		A842D8962A63FC28008F8C8F /* LoginCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8952A63FC28008F8C8F /* LoginCredentials.swift */; };
 		A842D8992A63FC72008F8C8F /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8982A63FC72008F8C8F /* LoginService.swift */; };
@@ -83,7 +82,6 @@
 		A842D8852A6172D8008F8C8F /* RegistrationDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationDetails.swift; sourceTree = "<group>"; };
 		A842D8882A61732C008F8C8F /* RegistrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationService.swift; sourceTree = "<group>"; };
 		A842D88B2A619088008F8C8F /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
-		A842D88F2A61AE26008F8C8F /* SessionUserDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUserDetails.swift; sourceTree = "<group>"; };
 		A842D8922A61AE9F008F8C8F /* SessionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionService.swift; sourceTree = "<group>"; };
 		A842D8952A63FC28008F8C8F /* LoginCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCredentials.swift; sourceTree = "<group>"; };
 		A842D8982A63FC72008F8C8F /* LoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
@@ -357,7 +355,7 @@
 		A842D88E2A61AE13008F8C8F /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A842D88F2A61AE26008F8C8F /* SessionUserDetails.swift */,
+				A8A8636F2A7BB5EA0046995D /* UserDetails.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -459,7 +457,6 @@
 			isa = PBXGroup;
 			children = (
 				A89F2E6C2A793D4C00C97665 /* GroupDetails.swift */,
-				A8A8636F2A7BB5EA0046995D /* UserDetails.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -666,7 +663,6 @@
 				A89F2E6D2A793D4C00C97665 /* GroupDetails.swift in Sources */,
 				A8F759802A8E71CF009443BB /* Invitation.swift in Sources */,
 				A8CF46D32A7A6A6200F39C7A /* AddCarView.swift in Sources */,
-				A842D8902A61AE26008F8C8F /* SessionUserDetails.swift in Sources */,
 				A842D86D2A5F11D1008F8C8F /* InputTextFieldView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

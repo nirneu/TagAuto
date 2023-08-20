@@ -16,14 +16,14 @@ enum SessionState {
 
 protocol SessionService {
     var state: SessionState { get }
-    var userDetails: SessionUserDetails? { get }
+    var userDetails: UserDetails? { get }
     func logout()
 }
 
 final class SessionServiceImpl: ObservableObject, SessionService {
     
     @Published var state: SessionState = .loggedOut
-    @Published var userDetails: SessionUserDetails?
+    @Published var userDetails: UserDetails?
     
     private var handler: AuthStateDidChangeListenerHandle?
     
@@ -65,7 +65,7 @@ private extension SessionServiceImpl {
                     }
                     
                     DispatchQueue.main.async {
-                        self.userDetails = SessionUserDetails(userId: uid, userEmail: userEmail, firstName: firstName, lastName: lastName)
+                        self.userDetails = UserDetails(userId: uid, userEmail: userEmail, firstName: firstName, lastName: lastName)
                     }
                 }
             }

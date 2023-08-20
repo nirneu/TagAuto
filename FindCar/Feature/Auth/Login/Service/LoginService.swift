@@ -14,6 +14,7 @@ import CryptoKit
 enum LoginWithAppleKeys: String {
     case firstName
     case lastName
+    case userEmail
 }
 
 protocol LoginService {
@@ -59,10 +60,12 @@ final class LoginServiceImpl: LoginService {
                         
                         if let uid = res?.user.uid,
                            let givenName = appleIDCredential.fullName?.givenName,
-                           let familyName = appleIDCredential.fullName?.familyName {
+                           let familyName = appleIDCredential.fullName?.familyName,
+                           let userEmail = appleIDCredential.email {
                             
                             let values = [LoginWithAppleKeys.firstName.rawValue: givenName,
-                                          LoginWithAppleKeys.lastName.rawValue: familyName] as [String: Any]
+                                          LoginWithAppleKeys.lastName.rawValue: familyName,
+                                          LoginWithAppleKeys.userEmail.rawValue: userEmail] as [String: Any]
                             
                             let db = Firestore.firestore()
                             db.collection("users").document(uid).setData(values) { error in

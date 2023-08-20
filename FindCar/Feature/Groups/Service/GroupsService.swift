@@ -93,8 +93,6 @@ final class GroupsServiceImpl: GroupsService {
         .eraseToAnyPublisher()
     }
     
-    
-    
     func createGroup(with details: GroupDetails) -> AnyPublisher<Void, Error> {
         
         Deferred {
@@ -152,7 +150,8 @@ final class GroupsServiceImpl: GroupsService {
                         } else if let document = document, document.exists, let data = document.data() {
                             let firstName = data[RegistrationKeys.firstName.rawValue] as? String ?? ""
                             let lastName = data[RegistrationKeys.lastName.rawValue] as? String ?? ""
-                            userDetails.append(UserDetails(userId: userId, firstName: firstName, lastName: lastName))
+                            let userEmail = data[RegistrationKeys.userEmail.rawValue] as? String ?? ""
+                            userDetails.append(UserDetails(userId: userId, userEmail: userEmail, firstName: firstName, lastName: lastName))
                             dispatchGroup.leave()
                         } else {
                             dispatchGroup.leave()

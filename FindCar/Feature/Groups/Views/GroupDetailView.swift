@@ -10,6 +10,7 @@ import SwiftUI
 struct GroupDetailView: View {
     
     @EnvironmentObject var vm: GroupsViewModelImpl
+    @EnvironmentObject var sessionService: SessionServiceImpl
     
     @State private var showingInviteMember = false
     @State private var showingAddCar = false

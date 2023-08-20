@@ -13,6 +13,7 @@ import FirebaseFirestore
 enum RegistrationKeys: String {
     case firstName
     case lastName
+    case userEmail
 }
 
 protocol RegistrationService {
@@ -37,7 +38,8 @@ final class RegistrationServiceImpl: RegistrationService {
                             if let uid = res?.user.uid {
                                 
                                 let values = [RegistrationKeys.firstName.rawValue: details.firstName,
-                                              RegistrationKeys.lastName.rawValue: details.lastName] as [String: Any]
+                                              RegistrationKeys.lastName.rawValue: details.lastName,
+                                              RegistrationKeys.userEmail.rawValue: details.email] as [String: Any]
                                 
                                 let db = Firestore.firestore()
                                 db.collection("users").document(uid).setData(values) { err in

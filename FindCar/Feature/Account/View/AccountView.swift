@@ -25,6 +25,16 @@ struct AccountView: View {
                 
                 VStack(alignment: .leading, spacing: 25) {
                     
+                    Divider()
+                    
+                    VStack(alignment: .leading) {
+                        Text("Your user's email is:")
+                            .font(.headline)
+
+                        Text("\(sessionService.userDetails?.userEmail ?? "")")
+                    }
+
+                    
                     Text("List of group invitations for you to join:")
                         .font(.headline)
                     
@@ -80,6 +90,8 @@ struct AccountView: View {
                     }
 
                 }
+                
+                Divider()
                 
                 ButtonView(title: "Sign Out") {
                     sessionService.logout()
