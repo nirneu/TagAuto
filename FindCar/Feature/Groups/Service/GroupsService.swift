@@ -245,6 +245,8 @@ final class GroupsServiceImpl: GroupsService {
                             promise(.success(cars))
                         }
                         
+                    } else {
+                        promise(.success([]))
                     }
                 }
             }

@@ -32,12 +32,7 @@ struct GroupDetailView: View {
                             }
                         }
                     } else {
-                        ForEach(group.members, id: \.self) { member in
-                            HStack {
-                                Image(systemName: "person.fill")
-                                Text(member)
-                            }
-                        }
+                        Text("There are no members yet")
                     }
                 }
             }
@@ -59,12 +54,7 @@ struct GroupDetailView: View {
                             }
                         }
                     } else {
-                        ForEach(group.cars, id: \.self) { car in
-                            HStack {
-                                Image(systemName: "car.fill")
-                                Text(car)
-                            }
-                        }
+                        Text("There are no cars yet")
                     }
                 }
          

@@ -91,6 +91,10 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     }
     
     func fetchUserDetails(for members: [String]) {
+        
+        self.isLoadingMembers = true
+        self.memberDetails = []
+
         service.fetchUserDetails(for: members)
             .sink { [weak self] res in
                 switch res {
@@ -123,6 +127,10 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     }
     
     func fetchGroupCars(groupId: String) {
+        
+        self.isLoadingCars = true
+        self.groupCars = []
+
         service.getCars(of: groupId)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] res in
