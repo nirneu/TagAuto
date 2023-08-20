@@ -20,7 +20,7 @@ struct CarsView: View {
             
             Text("Cars")
                 .font(.system(.title2, weight: .bold))
-                .padding([.leading, .top])
+                .padding(.leading)
             
             List {
                 

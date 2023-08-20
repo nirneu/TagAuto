@@ -34,38 +34,51 @@ final class SessionServiceImpl: ObservableObject, SessionService {
     func logout() {
         try? Auth.auth().signOut()
     }
+    
+    deinit {
+        if let handler = handler {
+            Auth.auth().removeStateDidChangeListener(handler)
+        }
+    }
 }
 
 private extension SessionServiceImpl {
     
     func setupFirebaseAuthHandler() {
-        
         handler = Auth.auth().addStateDidChangeListener({ [weak self] res, user in
             guard let self = self else { return }
-            self.state = user == nil ? .loggedOut : .loggedIn
-            if let uid = user?.uid, let userEmail = user?.email {
+            if let user = user {
+                self.state = .loggedIn
+                let uid = user.uid
+                let userEmail = user.email ?? ""
                 self.handlerRefresh(uid: uid, userEmail: userEmail)
+            } else {
+                self.state = .loggedOut
+                self.userDetails = nil
             }
         })
     }
     
     func handlerRefresh(uid: String, userEmail: String) {
         
-        let db = Firestore.firestore()
-        let docRef = db.collection("users").document(uid)
-        
-        docRef.getDocument { [weak self] (document, error) in
+        if Auth.auth().currentUser != nil {
             
-            if let self = self {
-                if let document = document, document.exists {
-                    guard let dataDescription = document.data(),
-                          let firstName = dataDescription[RegistrationKeys.firstName.rawValue] as? String,
-                          let lastName = dataDescription[RegistrationKeys.lastName.rawValue] as? String else {
-                        return
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.userDetails = UserDetails(userId: uid, userEmail: userEmail, firstName: firstName, lastName: lastName)
+            let db = Firestore.firestore()
+            let docRef = db.collection("users").document(uid)
+            
+            docRef.getDocument { [weak self] (document, error) in
+                
+                if let self = self {
+                    if let document = document, document.exists {
+                        guard let dataDescription = document.data(),
+                              let firstName = dataDescription[RegistrationKeys.firstName.rawValue] as? String,
+                              let lastName = dataDescription[RegistrationKeys.lastName.rawValue] as? String else {
+                            return
+                        }
+                        
+                        DispatchQueue.main.async {
+                            self.userDetails = UserDetails(userId: uid, userEmail: userEmail, firstName: firstName, lastName: lastName)
+                        }
                     }
                 }
             }
