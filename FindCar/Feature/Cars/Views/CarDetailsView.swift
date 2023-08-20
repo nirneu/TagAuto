@@ -30,7 +30,14 @@ struct CarDetailsView: View {
                 if carsViewModel.isLoading {
                     ProgressView()
                 } else {
-                    Text(carsViewModel.carAdress)
+                    if carsViewModel.carAdress.isEmpty {
+                        HStack {
+                            Image(systemName: "exclamationmark.circle")
+                            Text("The car doesn't have a location yet")
+                        }
+                    } else {
+                        Text(carsViewModel.carAdress)
+                    }
                 }
             }
             .padding(.leading)

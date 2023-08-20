@@ -103,22 +103,29 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     func getAddress(from geopoint: CLLocationCoordinate2D) {
         
         self.isLoading = true
+        self.carAdress = ""
         
-        service.getAddress(from: geopoint)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] res in
-                switch res {
-                case .failure (let error):
+        if geopoint.latitude == 0 && geopoint.longitude == 0 {
+            self.carAdress = ""
+            self.isLoading = false
+        } else {
+            service.getAddress(from: geopoint)
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] res in
+                    switch res {
+                    case .failure (let error):
+                        self?.isLoading = false
+                        self?.state = .failed(error: error)
+                    default: break
+                    }
+                } receiveValue: { [weak self] adress in
+                    self?.carAdress = adress
                     self?.isLoading = false
-                    self?.state = .failed(error: error)
-                default: break
+                    self?.state = .successful
                 }
-            } receiveValue: { [weak self] adress in
-                self?.carAdress = adress
-                self?.isLoading = false
-                self?.state = .successful
-            }
-            .store(in: &subscriptions)
+                .store(in: &subscriptions)
+        }
+        
     }
     
 }

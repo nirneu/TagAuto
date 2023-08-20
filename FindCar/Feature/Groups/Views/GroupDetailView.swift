@@ -11,6 +11,7 @@ struct GroupDetailView: View {
     
     @EnvironmentObject var vm: GroupsViewModelImpl
     @EnvironmentObject var sessionService: SessionServiceImpl
+
     
     @State private var showingInviteMember = false
     @State private var showingAddCar = false
@@ -26,7 +27,7 @@ struct GroupDetailView: View {
                 } else {
                     
                     if !vm.memberDetails.isEmpty {
-                        ForEach(vm.memberDetails, id: \.self) { member in
+                        ForEach(vm.memberDetails.sorted { $0.firstName < $1.firstName }, id: \.self) { member in
                             HStack {
                                 Image(systemName: "person.fill")
                                 Text(member.firstName + " " + member.lastName)
@@ -48,7 +49,7 @@ struct GroupDetailView: View {
                 } else {
                     
                     if !vm.groupCars.isEmpty {
-                        ForEach(vm.groupCars, id: \.self) { car in
+                        ForEach(vm.groupCars.sorted { $0.name < $1.name }, id: \.self) { car in
                             HStack {
                                 Image(systemName: "car.fill")
                                 Text(car.name)

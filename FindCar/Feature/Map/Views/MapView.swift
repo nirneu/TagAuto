@@ -53,15 +53,18 @@ struct MapView: View {
             }
             .onChange(of: carsViewModel.selectedCar) { selectedCar in
                 guard let coordinate = selectedCar?.location else { return }
-                let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-                let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: span)
-                vm.region = region
+                
+                // Only if a car has a location show it on the map
+                if coordinate.latitude != 0 && coordinate.longitude != 0 {
+                    let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
+                    vm.region = region
+                }
+        
             }
             .onChange(of: carsViewModel.currentLocationFocus) { newLocation in
                 if let location = newLocation {
-                    let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
 
-                    vm.region = MKCoordinateRegion( center: location.coordinate, span: span)
+                    vm.region = MKCoordinateRegion( center: location.coordinate, span: MapDetails.defaultSpan)
                 }
             }
             .alert("Error", isPresented: $vm.hasError) {
