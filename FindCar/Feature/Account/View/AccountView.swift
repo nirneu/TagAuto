@@ -86,6 +86,11 @@ struct AccountView: View {
                             
                         }
                         .listStyle(.plain)
+                        .refreshable {
+                            if let userEmail = sessionService.userDetails?.userEmail {
+                                accountViewModel.fetchAccountInvitations(userEmail: userEmail)
+                            }
+                        }
             
                     }
 
@@ -98,11 +103,15 @@ struct AccountView: View {
                 }
             }
             .onAppear {
+                accountViewModel.isLoading = true
+
                 if let userEmail = sessionService.userDetails?.userEmail {
                     accountViewModel.fetchAccountInvitations(userEmail: userEmail)
                 }
             }
             .onChange(of: sessionService.userDetails) { newUserDetails in
+                accountViewModel.isLoading = true
+
                 if let userEmail = newUserDetails?.userEmail {
                     accountViewModel.fetchAccountInvitations(userEmail: userEmail)
                 }

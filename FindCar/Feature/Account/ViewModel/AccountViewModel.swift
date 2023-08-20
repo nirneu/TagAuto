@@ -42,9 +42,7 @@ final class AccountViewModelImpl: AccountViewModel, ObservableObject {
     }
     
     func fetchAccountInvitations(userEmail: String) {
-        
-        self.isLoading = true
-        
+                
         guard !userEmail.isEmpty else {
             return
         }
