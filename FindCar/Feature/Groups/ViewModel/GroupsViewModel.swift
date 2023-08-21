@@ -24,8 +24,11 @@ protocol GroupsViewModel {
     func fetchUserGroups(userId: String)
     func createGroup()
     func addCarToGroup(groupId: String, car: Car)
+    func deleteCar(groupId: String, car: Car)
     func sendInvitation(to email: String, for groupId: String, groupName: String)
+    func deleteMember(userId: String, groupId: String)
     func fetchGroupCars(groupId: String)
+    func getMembers(of groupId: String)
     init(service: GroupsService)
 }
 
@@ -40,7 +43,8 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     @Published var groupDetails: GroupDetails = GroupDetails.new
     @Published var memberDetails: [UserDetails] = []
     @Published var groupCreated: Bool = false
-    @Published var carCreated: Bool = false
+    @Published var userListReload: Bool = false
+    @Published var carListReload: Bool = false
     @Published var groupCars: [Car] = []
     @Published var isLoadingGroups: Bool = true
     @Published var isLoadingMembers: Bool = true
@@ -121,7 +125,22 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                 }
             } receiveValue: { [weak self] _ in
                 self?.state = .successful
-                self?.carCreated = true
+                self?.carListReload = true
+            }
+            .store(in: &subscriptions)
+    }
+    
+    func deleteCar(groupId: String, car: Car) {
+        service.deleteCar(groupId, car: car)
+            .sink { [weak self] res in
+                switch res {
+                case .failure(let error):
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] _ in
+                self?.state = .successful
+                self?.carListReload = true
             }
             .store(in: &subscriptions)
     }
@@ -160,6 +179,41 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                 }
             } receiveValue: { [weak self] _ in
                 self?.state = .successful
+            }
+            .store(in: &subscriptions)
+    }
+    
+    func deleteMember(userId: String, groupId: String) {
+        service.deleteMember(userId: userId, groupId: groupId)
+            .sink { [weak self] res in
+                switch res {
+                case .failure(let error):
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] _ in
+                self?.state = .successful
+                self?.userListReload = true
+            }
+            .store(in: &subscriptions)
+    }
+    
+    func getMembers(of groupId: String) {
+        
+        self.isLoadingMembers = true
+        
+        service.getMembersIds(of: groupId)
+            .sink { [weak self] res in
+                switch res {
+                case .failure(let error):
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] membersIds in
+                self?.state = .successful
+
+                // Fetch members details
+                self?.fetchUserDetails(for: membersIds)
             }
             .store(in: &subscriptions)
     }

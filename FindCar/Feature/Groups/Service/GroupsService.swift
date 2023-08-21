@@ -28,8 +28,11 @@ protocol GroupsService {
     func createGroup(with details: GroupDetails) -> AnyPublisher<Void, Error>
     func fetchUserDetails(for userIds: [String]) -> AnyPublisher<[UserDetails], Error>
     func addCarToGroup(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
+    func deleteCar(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
     func sendInvitation(to email: String, for group: String, groupName: String) -> AnyPublisher<Void, Error>
+    func deleteMember(userId: String, groupId: String) -> AnyPublisher<Void, Error>
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error>
+    func getMembersIds(of groupId: String) -> AnyPublisher<[String], Error>
 }
 
 final class GroupsServiceImpl: GroupsService {
@@ -37,6 +40,7 @@ final class GroupsServiceImpl: GroupsService {
     private let db = Firestore.firestore()
     private let groupsPath = "groups"
     private let usersPath = "users"
+    private let membersPath = "members"
     private let carsPath = "cars"
     private let invitationsPath = "invitations"
     
@@ -205,6 +209,35 @@ final class GroupsServiceImpl: GroupsService {
         .eraseToAnyPublisher()
     }
     
+    func deleteCar(_ groupId: String, car: Car) -> AnyPublisher<Void, Error> {
+
+        Deferred {
+            Future { promise in
+
+                // Delete the car from the 'cars' collection
+                self.db.collection(self.carsPath).document(car.id).delete() { error in
+                    if let error = error {
+                        promise(.failure(error))
+                        return
+                    }
+
+                    // Remove the car's ID from the respective group in the 'groups' collection
+                    self.db.collection(self.groupsPath).document(groupId).updateData([
+                        self.carsPath: FieldValue.arrayRemove([car.id])
+                    ]) { error in
+                        if let error = error {
+                            promise(.failure(error))
+                        } else {
+                            promise(.success(()))
+                        }
+                    }
+                }
+            }
+        }
+        .receive(on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+    
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error> {
         
         Deferred {
@@ -278,5 +311,79 @@ final class GroupsServiceImpl: GroupsService {
         .eraseToAnyPublisher()
     }
     
+    func deleteMember(userId: String, groupId: String) -> AnyPublisher<Void, Error> {
+        Deferred {
+            
+            Future { promise in
+                
+                // Fetch the current members of the group
+                self.db.collection(self.groupsPath).document(groupId).getDocument { (document, error) in
+                    
+                    if let error = error {
+                        promise(.failure(error))
+                        return
+                    }
+                    
+                    guard let document = document, document.exists else {
+                        promise(.failure(NSError(domain: "Document doesn't exist", code: 404)))
+                        return
+                    }
+                    
+                    if let members = document.data()?["members"] as? [String], members.count <= 1, members.contains(userId) {
+                        promise(.failure(NSError(domain: "Cannot leave group with only one member", code: 403)))
+                        return
+                    }
+                    
+                    // Remove groupId from user's groups
+                    self.db.collection(self.usersPath).document(userId).updateData([
+                        self.groupsPath: FieldValue.arrayRemove([groupId])
+                    ]) { error in
+                        if let error = error {
+                            promise(.failure(error))
+                            return
+                        }
+                        
+                        // Remove userId from members list of the group
+                        self.db.collection(self.groupsPath).document(groupId).updateData([
+                            self.membersPath: FieldValue.arrayRemove([userId])
+                        ]) { error in
+                            if let error = error {
+                                promise(.failure(error))
+                            } else {
+                                promise(.success(()))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .receive(on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+
+    func getMembersIds(of groupId: String) -> AnyPublisher<[String], Error> {
+        
+        Deferred {
+            
+            Future { promise in
+                
+                let docRef = self.db.collection(self.groupsPath).document(groupId)
+                
+                docRef.getDocument { (document, error) in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else if let document = document, document.exists, let membersIds = document.data()?[self.membersPath] as? [String] {
+                        
+                        promise(.success(membersIds))
+                                                
+                    } else {
+                        promise(.success([]))
+                    }
+                }
+            }
+        }
+        .receive (on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
     
 }

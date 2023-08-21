@@ -32,7 +32,7 @@ struct GroupsView: View {
                         Text("You don't have any Groups yet")
                     } else {
                         
-                        List(vm.groups, id: \.id) { group in
+                        List(vm.groups.sorted(by: { $0.name < $1.name }), id: \.id) { group in
                             NavigationLink(destination: GroupDetailView(group: group)
                                 .environmentObject(vm)) {
                                     HStack {

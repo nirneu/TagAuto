@@ -38,7 +38,7 @@ struct MapView: View {
         ZStack(alignment: .top) {
             Map(coordinateRegion: region, interactionModes: .all, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: carsViewModel.cars) { car in
                 MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: car.location.latitude, longitude: car.location.longitude)) {
-                    Image(systemName: "car.side")
+                    Image(systemName: "car")
                     Text(car.name).font(.system(.caption, weight: .bold))
                 }
             }

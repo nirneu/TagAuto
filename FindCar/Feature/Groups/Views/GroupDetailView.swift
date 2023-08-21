@@ -11,7 +11,6 @@ struct GroupDetailView: View {
     
     @EnvironmentObject var vm: GroupsViewModelImpl
     @EnvironmentObject var sessionService: SessionServiceImpl
-
     
     @State private var showingInviteMember = false
     @State private var showingAddCar = false
@@ -33,13 +32,20 @@ struct GroupDetailView: View {
                                 Text(member.firstName + " " + member.lastName)
                             }
                         }
+                        .onDelete(perform: deleteMember(at:))
                     } else {
                         Text("There are no members yet")
                     }
                 }
             }
             .onAppear {
-                vm.fetchUserDetails(for: group.members)
+                vm.getMembers(of: group.id)
+            }
+            .onReceive(vm.$userListReload) { change in
+                if change {
+                    vm.getMembers(of: group.id)
+                    vm.userListReload = false
+                }
             }
             
             Section(header: headerView(title: "Cars", action: { showingAddCar = true })) {
@@ -55,6 +61,7 @@ struct GroupDetailView: View {
                                 Text(car.name)
                             }
                         }
+                        .onDelete(perform: deleteCar(at:))
                     } else {
                         Text("There are no cars yet")
                     }
@@ -64,10 +71,10 @@ struct GroupDetailView: View {
             .onAppear {
                 vm.fetchGroupCars(groupId: group.id)
             }
-            .onReceive(vm.$carCreated) { created in
-                if created {
+            .onReceive(vm.$carListReload) { change in
+                if change {
                     vm.fetchGroupCars(groupId: group.id)
-                    vm.carCreated = false
+                    vm.carListReload = false
                 }
             }
         }
@@ -90,6 +97,21 @@ struct GroupDetailView: View {
             Button(action: action) {
                 Image(systemName: "plus")
             }
+        }
+    }
+    
+    private func deleteCar(at offsets: IndexSet) {
+        for index in offsets {
+            let carToDelete = vm.groupCars.sorted { $0.name < $1.name }[index]
+            vm.deleteCar(groupId: group.id, car: carToDelete)  
+        }
+    }
+    
+    private func deleteMember(at offsets: IndexSet) {
+        for index in offsets {
+            let memberToDelete = vm.memberDetails.sorted { $0.firstName < $1.firstName }[index]
+            
+            vm.deleteMember(userId: memberToDelete.userId, groupId: group.id)
         }
     }
 }
