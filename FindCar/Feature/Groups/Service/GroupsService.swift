@@ -26,6 +26,7 @@ enum InvitationKeys: String {
 protocol GroupsService {
     func getGroups(of userId: String) -> AnyPublisher<[GroupDetails], Error>
     func createGroup(with details: GroupDetails) -> AnyPublisher<Void, Error>
+    func deleteGroup(_ groupId: String) -> AnyPublisher<Void, Error>
     func fetchUserDetails(for userIds: [String]) -> AnyPublisher<[UserDetails], Error>
     func addCarToGroup(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
     func deleteCar(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
@@ -134,6 +135,80 @@ final class GroupsServiceImpl: GroupsService {
         .receive (on: RunLoop.main)
         .eraseToAnyPublisher()
     }
+    
+    func deleteGroup(_ groupId: String) -> AnyPublisher<Void, Error> {
+        Deferred {
+            Future { promise in
+                // Fetch the group document
+                let groupDocRef = self.db.collection(self.groupsPath).document(groupId)
+                
+                groupDocRef.getDocument { (document, error) in
+                    if let error = error {
+                        promise(.failure(error))
+                        return
+                    }
+                    
+                    guard let document = document, document.exists,
+                          let members = document.data()?["members"] as? [String] else {
+                        promise(.failure(NSError(domain: "Group not found or members not found", code: 404)))
+                        return
+                    }
+
+                    // Get cars if they exist, or default to an empty array
+                    let cars = document.data()?["cars"] as? [String] ?? []
+                    
+                    let dispatchGroup = DispatchGroup()
+                    var deletionError: Error? = nil
+                    
+                    // Iterate over the members and remove groupId from each member's groups
+                    for memberId in members {
+                        dispatchGroup.enter()
+                        let userDocRef = self.db.collection(self.usersPath).document(memberId)
+                        userDocRef.updateData([
+                            self.groupsPath: FieldValue.arrayRemove([groupId])
+                        ]) { error in
+                            if let error = error {
+                                deletionError = error
+                            }
+                            dispatchGroup.leave()
+                        }
+                    }
+                    
+                    // Iterate over the cars and delete each one from the cars collection
+                    for carId in cars {
+                        dispatchGroup.enter()
+                        let carDocRef = self.db.collection(self.carsPath).document(carId)
+                        carDocRef.delete() { error in
+                            if let error = error {
+                                deletionError = error
+                            }
+                            dispatchGroup.leave()
+                        }
+                    }
+                    
+                    dispatchGroup.notify(queue: .main) {
+                        if let deletionError = deletionError {
+                            promise(.failure(deletionError))
+                            return
+                        }
+                        
+                        // Delete the group itself after all members and cars have been processed
+                        groupDocRef.delete() { error in
+                            if let error = error {
+                                promise(.failure(error))
+                            } else {
+                                promise(.success(()))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .receive(on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+
+
     
     func fetchUserDetails(for userIds: [String]) -> AnyPublisher<[UserDetails], Error> {
         

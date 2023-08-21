@@ -23,6 +23,7 @@ protocol GroupsViewModel {
     var groupCars: [Car] { get }
     func fetchUserGroups(userId: String)
     func createGroup()
+    func deleteGroup(_ groupId: String)
     func addCarToGroup(groupId: String, car: Car)
     func deleteCar(groupId: String, car: Car)
     func sendInvitation(to email: String, for groupId: String, groupName: String)
@@ -94,6 +95,22 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
             .store(in: &subscriptions)
     }
     
+    func deleteGroup(_ groupId: String) {
+        service.deleteGroup(groupId)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] res in
+                switch res {
+                case .failure(let error):
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] in
+                self?.state = .successful
+                self?.groupCreated = true
+            }
+            .store(in: &subscriptions)
+    }
+
     func fetchUserDetails(for members: [String]) {
         
         self.isLoadingMembers = true

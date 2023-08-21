@@ -11,9 +11,11 @@ struct GroupDetailView: View {
     
     @EnvironmentObject var vm: GroupsViewModelImpl
     @EnvironmentObject var sessionService: SessionServiceImpl
+    @Environment(\.presentationMode) var presentationMode
     
     @State private var showingInviteMember = false
     @State private var showingAddCar = false
+    @State private var showDeleteGroup = false
     
     let group: GroupDetails
     
@@ -87,6 +89,27 @@ struct GroupDetailView: View {
         .sheet(isPresented: $showingAddCar) {
             AddCarView(showingSheet: $showingAddCar, group: group)
                 .environmentObject(vm)
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    showDeleteGroup.toggle()
+                } label: {
+                    Image(systemName: "trash")
+                }
+            }
+        }
+        .alert("Delete Group", isPresented: $showDeleteGroup) {
+            Button("Confirm", action: {
+                vm.deleteGroup(group.id)
+                self.showDeleteGroup = false
+                presentationMode.wrappedValue.dismiss()
+            })
+            Button("Cancel", role: .cancel) {
+                self.showDeleteGroup = false
+            }
+        } message: {
+            Text("Are you sure you want to delete the group: \(group.name)?")
         }
     }
     

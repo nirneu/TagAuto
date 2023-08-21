@@ -54,6 +54,10 @@ struct GroupsView: View {
                                         Spacer()
                                     }
                                 }
+
+                        }
+                        .refreshable {
+                            vm.fetchUserGroups(userId: sessionService.userDetails?.userId ?? "")
                         }
                     }
                 }
@@ -96,6 +100,7 @@ struct GroupsView: View {
         }
         
     }
+    
 }
 
 struct GroupsView_Previews: PreviewProvider {
