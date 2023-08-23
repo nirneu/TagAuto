@@ -24,8 +24,8 @@ protocol CarsViewModel {
     func selectCar(_ car: Car?)
     func updateCarLocation(_ car: Car)
     func updateCarNote(car: Car, note: String)
-    func getAddress(from geopoint: CLLocationCoordinate2D)
-    func getCarNote(car: Car) 
+    func getAddress(car: Car, geopoint: CLLocationCoordinate2D)
+    func getCarNote(car: Car)
     init(service: CarsServiceImpl)
 }
 
@@ -42,6 +42,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     @Published var carNewNote: String = ""
     @Published var isLocationLatest: Bool = false
     @Published var isLoading: Bool = true
+    @Published var isLoadingCars: Bool = true
     @Published var isLoadingLocationLatest: Bool = true
     @Published var selectedCar: Car?
     @Published var locationUpdated: Bool = false
@@ -58,21 +59,19 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
         guard !userId.isEmpty else {
             return
         }
-        
-        self.isLoading = true
-        
+                
         service.getCars(of: userId)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] res in
                 switch res {
                 case .failure (let error):
-                    self?.isLoading = false
+                    self?.isLoadingCars = false
                     self?.state = .failed(error: error)
                 default: break
                 }
             } receiveValue: { [weak self] cars in
                 self?.cars = cars
-                self?.isLoading = false
+                self?.isLoadingCars = false
                 self?.state = .successful
             }
             .store(in: &subscriptions)
@@ -83,6 +82,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
         self.isLoading = true
         
         if let currentLocation = locationManager.location {
+            
             service.updateCarLocation(car, location: currentLocation)
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] res in
@@ -96,8 +96,8 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                     self?.isLoading = false
                     self?.state = .successful
                     self?.currentLocationFocus = currentLocation
-                    self?.getAddress(from: CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude))
                     self?.getIsLocationLatest(for: car)
+                    self?.getAddress(car: car, geopoint: CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude))
                 }
                 .store(in: &subscriptions)
         } else {
@@ -133,8 +133,8 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
             .store(in: &subscriptions)
     }
     
-    func getAddress(from geopoint: CLLocationCoordinate2D) {
-        
+    func getAddress(car: Car, geopoint: CLLocationCoordinate2D) {
+
         self.isLoading = true
         self.carAdress = ""
         
@@ -142,7 +142,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
             self.carAdress = ""
             self.isLoading = false
         } else {
-            service.getAddress(from: geopoint)
+            service.getAddress(carId: car.id, geopoint: geopoint)
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] res in
                     switch res {
@@ -155,6 +155,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                     self?.carAdress = adress
                     self?.isLoading = false
                     self?.state = .successful
+                    self?.updateCarAddress(carId: car.id, adress: adress)
                 }
                 .store(in: &subscriptions)
         }
@@ -201,9 +202,30 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                 self?.isLocationLatest = isLocationLatest
                 self?.isLoadingLocationLatest = false
                 self?.state = .successful
+//                self?.getAddress(car: car, geopoint: <#CLLocationCoordinate2D#>)
             }
             .store(in: &subscriptions)
         
+    }
+    
+    func updateCarAddress(carId: String, adress: String) {
+        
+        self.isLoading = true
+        
+        service.updateCarAddress(carId: carId, adress: adress)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] res in
+                switch res {
+                case .failure (let error):
+                    self?.isLoading = false
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] _ in
+                self?.isLoading = false
+                self?.state = .successful
+            }
+            .store(in: &subscriptions)
     }
 
 }

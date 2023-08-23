@@ -14,6 +14,7 @@ enum CarKeys: String {
     case id
     case name
     case location
+    case adress
     case note
     case isLocationLatest
 }
@@ -22,9 +23,10 @@ protocol CarsService {
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error>
     func updateCarLocation(_ car: Car, location: CLLocation) -> AnyPublisher<GeoPoint, Error>
     func updateCarNote(_ car: Car, note: String) -> AnyPublisher<String, Error> 
-    func getAddress(from geopoint: CLLocationCoordinate2D) -> AnyPublisher<String, Error>
+    func getAddress(carId: String, geopoint: CLLocationCoordinate2D) -> AnyPublisher<String, Error>
     func getCarNote(_ car: Car) -> AnyPublisher<String, Error>
     func getIsLocationLatest(for car: Car) -> AnyPublisher<Bool, Error>
+    func updateCarAddress(carId: String, adress: String) -> AnyPublisher<Void, Error>
 }
 
 final class CarsServiceImpl: CarsService {
@@ -77,7 +79,7 @@ final class CarsServiceImpl: CarsService {
                                                 promise(.failure(error))
                                             } else if let document = document, document.exists, let data = document.data() {
 
-                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), groupName: groupName, note: data[CarKeys.note.rawValue] as? String ?? "", isLocationLatest: data[CarKeys.isLocationLatest.rawValue] as? Bool ?? true)
+                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, note: data[CarKeys.note.rawValue] as? String ?? "", isLocationLatest: data[CarKeys.isLocationLatest.rawValue] as? Bool ?? true)
                                                 cars.append(car)
                                                 
                                             }
@@ -197,7 +199,7 @@ final class CarsServiceImpl: CarsService {
         .eraseToAnyPublisher()
     }
     
-    func getAddress(from geopoint: CLLocationCoordinate2D) -> AnyPublisher<String, Error> {
+    func getAddress(carId: String, geopoint: CLLocationCoordinate2D) -> AnyPublisher<String, Error> {
         
         Deferred {
             
@@ -219,8 +221,31 @@ final class CarsServiceImpl: CarsService {
                         
                         let addressString = "\(street) \(number), \(city)"
                         promise(.success(addressString))
+                    
                     } else {
                         promise(.failure(CLError(.locationUnknown)))
+                    }
+                }
+                
+            }
+        }
+        .receive(on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+    
+    func updateCarAddress(carId: String, adress: String) -> AnyPublisher<Void, Error> {
+        
+        Deferred {
+            
+            Future { promise in
+                
+                self.db.collection(self.carsPath).document(carId).updateData([
+                    CarKeys.adress.rawValue: adress,
+                ]) { error in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(()))
                     }
                 }
             }

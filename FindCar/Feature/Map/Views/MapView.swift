@@ -85,7 +85,6 @@ struct MapView: View {
                     Text("Something went wrong")
                 }
             }
-            .navigationTitle("")
             
             HStack {
                 
@@ -98,7 +97,7 @@ struct MapView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .padding(.trailing, 15)
-                .padding(.top, 50)
+                .padding(.top, 10)
             }
             
         }

@@ -26,86 +26,77 @@ struct CarDetailsView: View {
         
         VStack(alignment: .leading) {
             
-            HStack {
+            if carsViewModel.isLoading || carsViewModel.isLoadingLocationLatest {
+                ProgressView()
+            } else {
                 
-                VStack(alignment: .leading) {
-                    Text(car.name)
-                        .font(.system(.title2, weight: .bold))
+                if carsViewModel.isLocationLatest == true {
                     
-                    if carsViewModel.isLoading || carsViewModel.isLoadingLocationLatest {
-                        ProgressView()
+                    if carsViewModel.carAdress.isEmpty {
+                        HStack {
+                            Image(systemName: "exclamationmark.circle")
+                            Text("The car doesn't have a location yet")
+                        }
                     } else {
-                        
-                        if carsViewModel.isLocationLatest {
-                            
-                            if carsViewModel.carAdress.isEmpty {
-                                HStack {
-                                    Image(systemName: "exclamationmark.circle")
-                                    Text("The car doesn't have a location yet")
-                                }
-                            } else {
-                                Text(carsViewModel.carAdress)
-                            }
-                            
-                        } else {
-                            
-                            if !carsViewModel.carNewNote.isEmpty {
-                                Text(carsViewModel.carNewNote)
-                            } else if !car.note.isEmpty {
-                                Text(car.note)
-                            } else {
-                                HStack {
-                                    Image(systemName: "exclamationmark.circle")
-                                    Text("The car doesn't have a location yet")
-                                }
-                            }
-                            
+                        Text(carsViewModel.carAdress)
+                    }
+                    
+                } else {
+                    
+                    if !carsViewModel.carNewNote.isEmpty {
+                        Text(carsViewModel.carNewNote)
+                    } else if !car.note.isEmpty {
+                        Text(car.note)
+                    } else {
+                        HStack {
+                            Image(systemName: "exclamationmark.circle")
+                            Text("The car doesn't have a location yet")
                         }
                     }
                     
-                    Button {
-                        carToUpdate = car
-                        self.showLocationUpdateAlert = true
-                    } label: {
-                        Image(systemName: "mappin.and.ellipse")
-                        Text("Update Location")
-                    }
-                    .buttonStyle(.bordered)
-                    
-                    
-                    Text("Or")
-                    
-                    Button {
-                        self.showNoteParkingAlert = true
-                    } label: {
-                        Image(systemName: "note.text")
-                        Text("Note Parking Spot")
-                    }
-                    .buttonStyle(.bordered)
-                    
                 }
-                
-                Spacer()
-                
             }
-            .padding(.leading)
+            
+            MapView()
+                .environmentObject(carsViewModel)
+                .frame(height: 250)
+            
+            Button {
+                carToUpdate = car
+                self.showLocationUpdateAlert = true
+            } label: {
+                Image(systemName: "mappin.and.ellipse")
+                Text("Update Location")
+            }
+            .buttonStyle(.bordered)
+            
+            
+            Text("Or")
+            
+            Button {
+                self.showNoteParkingAlert = true
+            } label: {
+                Image(systemName: "note.text")
+                Text("Note Parking Spot")
+            }
+            .buttonStyle(.bordered)
             
             Spacer()
             
         }
+        .navigationTitle(car.name)
+        .padding([.leading, .trailing])
         .onAppear {
             carsViewModel.selectCar(car)
             carsViewModel.carNewNote = ""
-            carsViewModel.getAddress(from: car.locationCorodinate)
             carsViewModel.getIsLocationLatest(for: car)
+            carsViewModel.getAddress(car: car, geopoint: car.locationCorodinate)
         }
         .alert("Update Location", isPresented: $showLocationUpdateAlert) {
             Button("Confirm", action: {
                 if let updatingCar = carToUpdate {
                     carsViewModel.updateCarLocation(updatingCar)
-                    if let userId = sessionService.userDetails?.userId {
-                        carsViewModel.fetchUserCars(userId: userId)
-                    }
+                    carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
                     self.showLocationUpdateAlert = false
                 }
             })
@@ -146,7 +137,7 @@ struct CarDetailsView_Previews: PreviewProvider {
         let sessionService = SessionServiceImpl()
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
         
-        CarDetailsView(car: Car(id: "1", name: "Car A", location: GeoPoint(latitude: Car.mockCars.first!.location.latitude, longitude: Car.mockCars.first!.location.longitude), groupName: "", note: "", isLocationLatest: true))
+        CarDetailsView(car: Car(id: "1", name: "Car A", location: GeoPoint(latitude: Car.mockCars.first!.location.latitude, longitude: Car.mockCars.first!.location.longitude), adress: "", groupName: "", note: "", isLocationLatest: true))
             .environmentObject(sessionService)
             .environmentObject(carsViewModel)
     }

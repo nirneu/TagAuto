@@ -12,7 +12,7 @@ struct AccountView: View {
     
     @EnvironmentObject var sessionService: SessionServiceImpl
     
-    @StateObject var accountViewModel: AccountViewModelImpl
+    @StateObject var accountViewModel = AccountViewModelImpl(service: AccountServiceImpl())
     
     var body: some View {
         

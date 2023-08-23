@@ -13,40 +13,15 @@ struct HomeView: View {
     
     @State private var selection = 1
     
-    @StateObject private var carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
-    
     var body: some View {
         
         TabView(selection: $selection) {
             
-            GeometryReader { geometry in
-                VStack {
-                    
-                    NavigationStack {
-                        
-                        CarsView()
-                            .environmentObject(carsViewModel)
-                            .environmentObject(sessionService)
-                            .navigationTitle("Cars")
-
-                        
-                    }
-                    .frame(height: geometry.size.height * 0.7)
-                    
-                    NavigationStack {
-                        
-                        MapView()
-                            .environmentObject(carsViewModel)
-                            .edgesIgnoringSafeArea(.top)
-                        
-                    }
-                    .frame(height: (geometry.size.height * 0.3) - 15)
+            CarsView(mockCars: [])
+                .tabItem {
+                    Label("Cars", systemImage: "car.2.fill")
                 }
-            }
-            .tabItem {
-                Label("Cars", systemImage: "map")
-            }
-            .tag(1)
+                .tag(1)
             
             GroupsView(selection: $selection)
                 .tabItem {
@@ -54,12 +29,11 @@ struct HomeView: View {
                 }
                 .tag(2)
             
-            AccountView(accountViewModel: AccountViewModelImpl(service: AccountServiceImpl()))
-            .tabItem {
-                Label("Account", systemImage: "person.crop.circle")
-            }
-            .tag(3)
-            
+            AccountView()
+                .tabItem {
+                    Label("Account", systemImage: "person.crop.circle")
+                }
+                .tag(3)
         }
     }
     
