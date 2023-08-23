@@ -16,73 +16,66 @@ struct CarsView: View {
     
     var body: some View {
         
-        VStack(alignment: .leading, spacing: 0) {
+        List {
             
-            Text("Cars")
-                .font(.system(.title2, weight: .bold))
-                .padding(.leading)
-            
-            List {
+            if carsViewModel.isLoading {
+                ProgressView()
+            } else {
                 
-                if carsViewModel.isLoading {
-                    ProgressView()
-                } else {
+                if !carsViewModel.cars.isEmpty {
                     
-                    if !carsViewModel.cars.isEmpty {
+                    let sortedUniqueGroupNames = Array(Set(carsViewModel.cars.map { $0.groupName })).sorted(by: <)
+                    
+                    ForEach(sortedUniqueGroupNames) { groupName in
                         
-                        let sortedUniqueGroupNames = Array(Set(carsViewModel.cars.map { $0.groupName })).sorted(by: <)
-
-                        ForEach(sortedUniqueGroupNames) { groupName in
+                        Section(header: Text(groupName)) {
                             
-                            Section(header: Text(groupName)) {
+                            ForEach(carsViewModel.cars.filter { $0.groupName == groupName }.sorted(by: { $0.name < $1.name }), id: \.self) { car in
                                 
-                                ForEach(carsViewModel.cars.filter { $0.groupName == groupName }.sorted(by: { $0.name < $1.name }), id: \.self) { car in
-
-                                        NavigationLink {
-                                            CarDetailsView(car: car)
-                                                .environmentObject(sessionService)
-                                                .environmentObject(carsViewModel)
-                                        } label: {
-                                            Image(systemName: "car.fill")
-                                            Text(car.name)
-                                        }
-                                        
+                                NavigationLink {
+                                    CarDetailsView(car: car)
+                                        .environmentObject(sessionService)
+                                        .environmentObject(carsViewModel)
+                                } label: {
+                                    Image(systemName: "car.fill")
+                                    Text(car.name)
                                 }
-                                .frame(height: 40)
                                 
                             }
+                            .frame(height: 40)
                             
                         }
-                                 
-                    } else {
-                        
-                        Text("You still don't have cars. Go ahead for the Groups section to add one.")
                         
                     }
-                }
-            }
-            
-            .onAppear {
-                if let userId = sessionService.userDetails?.userId {
-                    carsViewModel.fetchUserCars(userId: userId)
-                }
-            }
-            .onChange(of: sessionService.userDetails) { newUserDetails in
-                if let userId = newUserDetails?.userId {
-                    carsViewModel.fetchUserCars(userId: userId)
-                }
-            }
-            .listStyle(.plain)
-            .alert("Error", isPresented: $carsViewModel.hasError) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                if case .failed(let error) = carsViewModel.state {
-                    Text(error.localizedDescription)
+                    
                 } else {
-                    Text("Something went wrong")
+                    
+                    Text("You still don't have cars. Go ahead for the Groups section to add one.")
+                    
                 }
             }
         }
+        .onAppear {
+            if let userId = sessionService.userDetails?.userId {
+                carsViewModel.fetchUserCars(userId: userId)
+            }
+        }
+        .onChange(of: sessionService.userDetails) { newUserDetails in
+            if let userId = newUserDetails?.userId {
+                carsViewModel.fetchUserCars(userId: userId)
+            }
+        }
+        .listStyle(.plain)
+        .alert("Error", isPresented: $carsViewModel.hasError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            if case .failed(let error) = carsViewModel.state {
+                Text(error.localizedDescription)
+            } else {
+                Text("Something went wrong")
+            }
+        }
+        
     }
     
 }

@@ -36,11 +36,13 @@ struct MapView: View {
     var body: some View {
         
         ZStack(alignment: .top) {
-            Map(coordinateRegion: region, interactionModes: .all, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: carsViewModel.cars) { car in
+            Map(coordinateRegion: region, interactionModes: .all, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: carsViewModel.cars.filter { $0.isLocationLatest }) { car in
+                
                 MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: car.location.latitude, longitude: car.location.longitude)) {
                     Image(systemName: "car")
                     Text(car.name).font(.system(.caption, weight: .bold))
                 }
+                
             }
             .onAppear {
                 DispatchQueue.main.async {
@@ -52,18 +54,23 @@ struct MapView: View {
                 }
             }
             .onChange(of: carsViewModel.selectedCar) { selectedCar in
-                guard let coordinate = selectedCar?.location else { return }
                 
-                // Only if a car has a location show it on the map
-                if coordinate.latitude != 0 && coordinate.longitude != 0 {
-                    let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
-                    vm.region = region
+                guard let isLocationLatest = selectedCar?.isLocationLatest else { return }
+                
+                if isLocationLatest {
+                    guard let coordinate = selectedCar?.location else { return }
+                    
+                    // Only if a car has a location show it on the map
+                    if coordinate.latitude != 0 && coordinate.longitude != 0 {
+                        let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
+                        vm.region = region
+                    }
                 }
-        
+                
             }
             .onChange(of: carsViewModel.currentLocationFocus) { newLocation in
                 if let location = newLocation {
-
+                    
                     vm.region = MKCoordinateRegion( center: location.coordinate, span: MapDetails.defaultSpan)
                 }
             }
@@ -103,7 +110,7 @@ struct MapView_Previews: PreviewProvider {
         
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
         let sessionService = SessionServiceImpl()
-
+        
         MapView()
             .environmentObject(carsViewModel)
             .environmentObject(sessionService)

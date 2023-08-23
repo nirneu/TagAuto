@@ -207,8 +207,6 @@ final class GroupsServiceImpl: GroupsService {
         .receive(on: RunLoop.main)
         .eraseToAnyPublisher()
     }
-
-
     
     func fetchUserDetails(for userIds: [String]) -> AnyPublisher<[UserDetails], Error> {
         
@@ -340,7 +338,7 @@ final class GroupsServiceImpl: GroupsService {
                                     promise(.failure(error))
                                 } else if let document = document, document.exists, let data = document.data() {
                                     
-                                    let car = Car(id: document.documentID, name: data["name"] as? String ?? "", location: data["location"] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), groupName: groupName)
+                                    let car = Car(id: document.documentID, name: data["name"] as? String ?? "", location: data["location"] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), groupName: groupName, note: data["note"] as? String ?? "", isLocationLatest: data["isLocationLatest"] as? Bool ?? true)
                                     cars.append(car)
                                     
                                 }
