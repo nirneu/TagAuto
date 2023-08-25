@@ -10,8 +10,7 @@ import MapKit
 
 struct MapView: View {
     
-    @StateObject private var vm = MapViewModelImpl(service: MapServiceImpl())
-    
+    @EnvironmentObject var mapViewModel: MapViewModelImpl
     @EnvironmentObject var carsViewModel: CarsViewModelImpl
     
     @EnvironmentObject var sessionService: SessionServiceImpl
@@ -22,12 +21,12 @@ struct MapView: View {
         
         Binding {
             
-            vm.region
+            mapViewModel.region
             
         } set: { region in
             
             DispatchQueue.main.async {
-                vm.region = region
+                mapViewModel.region = region
                 carsViewModel.selectedCar = nil
             }
         }
@@ -47,7 +46,7 @@ struct MapView: View {
             .onAppear {
                 DispatchQueue.main.async {
                     
-                    vm.checkIfLocationServicesIsEnabled()
+                    mapViewModel.checkIfLocationServicesIsEnabled()
                     if let userId = sessionService.userDetails?.userId {
                         carsViewModel.fetchUserCars(userId: userId)
                     }
@@ -63,7 +62,7 @@ struct MapView: View {
                     // Only if a car has a location show it on the map
                     if coordinate.latitude != 0 && coordinate.longitude != 0 {
                         let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
-                        vm.region = region
+                        mapViewModel.region = region
                     }
                 }
                 
@@ -71,15 +70,15 @@ struct MapView: View {
             .onChange(of: carsViewModel.currentLocationFocus) { newLocation in
                 if let location = newLocation {
                     
-                    vm.region = MKCoordinateRegion( center: location.coordinate, span: MapDetails.defaultSpan)
+                    mapViewModel.region = MKCoordinateRegion( center: location.coordinate, span: MapDetails.defaultSpan)
                 }
             }
-            .alert("Error", isPresented: $vm.hasError) {
+            .alert("Error", isPresented: $mapViewModel.hasError) {
                 Button("OK", role: .cancel) { }
             } message: {
-                if case .failed(let error) = vm.state {
+                if case .failed(let error) = mapViewModel.state {
                     Text(error.localizedDescription)
-                } else if case .unauthorized(let reason) = vm.state {
+                } else if case .unauthorized(let reason) = mapViewModel.state {
                     Text(reason)
                 } else {
                     Text("Something went wrong")
@@ -91,13 +90,13 @@ struct MapView: View {
                 Spacer()
                 
                 Button {
-                    vm.getCurrentLocation()
+                    mapViewModel.getCurrentLocation()
                 } label: {
                     Image(systemName: "location.fill" )
                 }
                 .buttonStyle(.borderedProminent)
                 .padding(.trailing, 15)
-                .padding(.top, 10)
+                .padding(.top, 40)
             }
             
         }

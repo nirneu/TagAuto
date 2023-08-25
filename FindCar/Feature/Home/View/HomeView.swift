@@ -11,17 +11,30 @@ struct HomeView: View {
     
     @EnvironmentObject var sessionService: SessionServiceImpl
     
+    @StateObject var carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
+    @StateObject var mapViewModel = MapViewModelImpl(service: MapServiceImpl())
+    
     @State private var selection = 1
     
     var body: some View {
         
         TabView(selection: $selection) {
             
-            CarsView(mockCars: [])
-                .tabItem {
-                    Label("Cars", systemImage: "car.2.fill")
-                }
-                .tag(1)
+            VStack {
+                MapView()
+                    .environmentObject(carsViewModel)
+                    .environmentObject(mapViewModel)
+                    .ignoresSafeArea(edges: .top)
+                
+                CarsView(mockCars: [])
+                    .environmentObject(carsViewModel)
+                    .environmentObject(mapViewModel)
+            }
+            .tabItem {
+                Label("Cars", systemImage: "car.2.fill")
+            }
+            .tag(1)
+            .frame(maxWidth: .infinity)
             
             GroupsView(selection: $selection)
                 .tabItem {

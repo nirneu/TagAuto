@@ -10,9 +10,8 @@ import SwiftUI
 struct CarsView: View {
     
     @EnvironmentObject var sessionService: SessionServiceImpl
-    
-    @StateObject var carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
-    
+    @EnvironmentObject var carsViewModel: CarsViewModelImpl
+        
     @State private var showLocationUpdateAlert = false
     
     var mockCars: [Car]
@@ -105,7 +104,6 @@ struct CarsView: View {
                 }
                 
             }
-            .navigationTitle("Cars")
             .onAppear {
                 carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
             }

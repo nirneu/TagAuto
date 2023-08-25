@@ -8,6 +8,7 @@
 import MapKit
 import Combine
 import FirebaseFirestore
+import CoreLocation
 
 enum MapDetails {
     static let startingLocation = CLLocationCoordinate2D(latitude: 37.331516, longitude: -121.891054)
@@ -40,7 +41,22 @@ protocol MapViewModel {
     init(service: MapService)
 }
 
-final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel {
+final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapViewDelegate{
+    
+    //MARK: Properties
+    @Published var mapView: MKMapView = .init()
+    @Published var manager: CLLocationManager = .init()
+    
+    //MARK: Search Bar Text
+    @Published var searchText: String = ""
+    @Published var fetchedPlaces: [CLPlacemark]?
+    
+    //MARK: User Location
+    @Published var userLocation: CLLocation?
+    
+    //MARK: Final Location
+    @Published var pickedLocation: CLLocation?
+    @Published var pickedPlaceMark: CLPlacemark?
     
     @Published var state: LocationAuthState = .na
     @Published var hasError: Bool = false
@@ -53,10 +69,31 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel {
     
     private var subscriptions = Set<AnyCancellable>()
     
+    var cancellable: AnyCancellable?
+    
     init(service: MapService) {
         self.service = service
         super.init()
         setupErrorSubscription()
+        
+        //MARK: Setting Delegates
+        manager.delegate = self
+        mapView.delegate = self
+        
+        //MARK: Requesting Location Access
+        manager.requestWhenInUseAuthorization()
+        
+        //MARK: Search TextField Watching
+        cancellable = $searchText
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink(receiveValue: { value in
+                if value != "" {
+                    self.fetchPlaces(value: value)
+                } else {
+                    self.fetchedPlaces = nil
+                }
+            })
     }
     
     func checkIfLocationServicesIsEnabled() {
@@ -78,10 +115,74 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel {
         }
     }
     
+    func fetchPlaces(value: String) {
+        //MARK: Fetching places using MKLocalSearch & Async/Await
+        Task {
+            do {
+                let request = MKLocalSearch.Request()
+                request.naturalLanguageQuery = value.lowercased()
+                request.region = self.region
+                
+                let response = try await MKLocalSearch(request: request).start()
+                // We can also use Mainactor to publish changes in Main Thread
+                await MainActor.run(body: {
+                    self.fetchedPlaces = response.mapItems.compactMap({ item -> CLPlacemark? in
+                        return item.placemark
+                    })
+                })
+            } catch {
+                 
+            }
+        }
+    }
+    
     func regionForCar(_ car: Car?) -> MKCoordinateRegion {
         guard let coordinate = car?.location else { return self.region }
         let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
         return MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: span)
+    }
+    
+    //MARK: Add Draggable Pin to MapView
+    func addDragabblePin(coordinate: CLLocationCoordinate2D) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        annotation.title = "Drag to your parking spot"
+        
+        mapView.addAnnotation(annotation)
+    }
+    
+    // MARK: Enabling Dragging
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let marker = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "PARKINGPIN")
+        marker.isDraggable = true
+        marker.canShowCallout = false
+        marker.glyphImage = UIImage(systemName: "car")
+        return marker
+    }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+        guard let newLocation = view.annotation?.coordinate else {return}
+        self.pickedLocation = .init(latitude: newLocation.latitude, longitude: newLocation.longitude)
+        updatePlacemark(location: .init(latitude: newLocation.latitude, longitude: newLocation.longitude))
+    }
+    
+    func updatePlacemark(location: CLLocation) {
+        Task {
+            do {
+                guard let place = try await reverseLocationCoordinates(location: location) else {return}
+                await MainActor.run(body: {
+                    self.pickedPlaceMark = place
+                })
+            } catch {
+                
+            }
+        }
+    }
+    
+    //MARK: Displaying New Location Data
+    func reverseLocationCoordinates(location: CLLocation) async throws -> CLPlacemark? {
+        let place = try await CLGeocoder().reverseGeocodeLocation(location).first
+        return place
     }
     
 }
@@ -130,19 +231,6 @@ private extension MapViewModelImpl {
             }
         }
         .assign(to: &$hasError)
-    }
-    
-}
-
-extension MKCoordinateRegion {
-    
-    func isApproximatelyEqual(to region: MKCoordinateRegion, tolerance: Double = 0.0001) -> Bool {
-        let areLatitudesClose = abs(self.center.latitude - region.center.latitude) < tolerance
-        let areLongitudesClose = abs(self.center.longitude - region.center.longitude) < tolerance
-        let areLatitudeDeltasClose = abs(self.span.latitudeDelta - region.span.latitudeDelta) < tolerance
-        let areLongitudeDeltasClose = abs(self.span.longitudeDelta - region.span.longitudeDelta) < tolerance
-        
-        return areLatitudesClose && areLongitudesClose && areLatitudeDeltasClose && areLongitudeDeltasClose
     }
     
 }

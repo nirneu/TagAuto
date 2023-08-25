@@ -13,6 +13,7 @@ struct CarDetailsView: View {
     
     @EnvironmentObject var sessionService: SessionServiceImpl
     @EnvironmentObject var carsViewModel: CarsViewModelImpl
+    @EnvironmentObject var mapViewModel: MapViewModelImpl
     
     @State private var showLocationUpdateAlert = false
     @State private var showNoteParkingAlert = false
@@ -57,10 +58,6 @@ struct CarDetailsView: View {
                 }
             }
             
-            MapView()
-                .environmentObject(carsViewModel)
-                .frame(height: 250)
-            
             Button {
                 carToUpdate = car
                 self.showLocationUpdateAlert = true
@@ -68,23 +65,24 @@ struct CarDetailsView: View {
                 Image(systemName: "mappin.and.ellipse")
                 Text("Update Location")
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.borderedProminent)
             
             
-            Text("Or")
+            //            Text("Or")
+            //
+            //            Button {
+            //                self.showNoteParkingAlert = true
+            //            } label: {
+            //                Image(systemName: "note.text")
+            //                Text("Note Parking Spot")
+            //            }
+            //            .buttonStyle(.bordered)
             
-            Button {
-                self.showNoteParkingAlert = true
-            } label: {
-                Image(systemName: "note.text")
-                Text("Note Parking Spot")
-            }
-            .buttonStyle(.bordered)
-            
-            Spacer()
             
         }
         .navigationTitle(car.name)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxHeight: .infinity, alignment: .top)
         .padding([.leading, .trailing])
         .onAppear {
             carsViewModel.selectCar(car)
@@ -92,20 +90,27 @@ struct CarDetailsView: View {
             carsViewModel.getIsLocationLatest(for: car)
             carsViewModel.getAddress(car: car, geopoint: car.locationCorodinate)
         }
-        .alert("Update Location", isPresented: $showLocationUpdateAlert) {
-            Button("Confirm", action: {
-                if let updatingCar = carToUpdate {
-                    carsViewModel.updateCarLocation(updatingCar)
-                    carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
-                    self.showLocationUpdateAlert = false
-                }
-            })
-            Button("Cancel", role: .cancel) {
-                self.showLocationUpdateAlert = false
+        .sheet(isPresented: $showLocationUpdateAlert, content: {
+            NavigationStack {
+                SearchView()
+                    .environmentObject(mapViewModel)
+                    .environmentObject(carsViewModel)
             }
-        } message: {
-            Text("You are about to update the car's location to your current spot")
-        }
+        })
+        //        .alert("Update Location", isPresented: $showLocationUpdateAlert) {
+        //            Button("Confirm", action: {
+        //                if let updatingCar = carToUpdate {
+        //                    carsViewModel.updateCarLocation(updatingCar)
+        //                    carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
+        //                    self.showLocationUpdateAlert = false
+        //                }
+        //            })
+        //            Button("Cancel", role: .cancel) {
+        //                self.showLocationUpdateAlert = false
+        //            }
+        //        } message: {
+        //            Text("You are about to update the car's location to your current spot")
+        //        }
         .alert("Note Parking Spot", isPresented: $showNoteParkingAlert, actions: {
             
             TextField(
@@ -129,6 +134,7 @@ struct CarDetailsView: View {
             Text("Write down where you parked")
         })
     }
+    
 }
 
 struct CarDetailsView_Previews: PreviewProvider {
