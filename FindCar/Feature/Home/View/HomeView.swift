@@ -20,13 +20,13 @@ struct HomeView: View {
         
         TabView(selection: $selection) {
             
-            VStack {
+            VStack(spacing: 0) {
                 MapView()
                     .environmentObject(carsViewModel)
                     .environmentObject(mapViewModel)
                     .ignoresSafeArea(edges: .top)
                 
-                CarsView(mockCars: [])
+                CarsView()
                     .environmentObject(carsViewModel)
                     .environmentObject(mapViewModel)
             }

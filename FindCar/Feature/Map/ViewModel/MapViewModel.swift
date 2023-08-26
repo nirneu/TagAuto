@@ -33,10 +33,12 @@ protocol MapViewModel {
     var locationManager: CLLocationManager? { get }
     var service: MapService { get }
     var region: MKCoordinateRegion { get }
+    var newLocationRegion: MKCoordinateRegion { get }
     var state: LocationAuthState { get }
     var hasError: Bool { get }
     func checkIfLocationServicesIsEnabled()
     func getCurrentLocation()
+    func getCurrentLocationForNewLocationMap()
     func regionForCar(_ car: Car?) -> MKCoordinateRegion
     init(service: MapService)
 }
@@ -61,6 +63,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
     @Published var state: LocationAuthState = .na
     @Published var hasError: Bool = false
     @Published var region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
+    @Published var newLocationRegion = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
     @Published var selectedCoordinate: CLLocationCoordinate2D?
     
     var locationManager: CLLocationManager?
@@ -115,6 +118,18 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
         }
     }
     
+    func getCurrentLocationForNewLocationMap() {
+        DispatchQueue.main.async {
+            if let location = self.locationManager?.location {
+                let currentLocation = MKCoordinateRegion(center: location.coordinate,
+                                                         span: MapDetails.defaultSpan)
+                self.newLocationRegion = currentLocation
+            } else {
+                self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+            }
+        }
+    }
+    
     func fetchPlaces(value: String) {
         //MARK: Fetching places using MKLocalSearch & Async/Await
         Task {
@@ -146,7 +161,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
     func addDragabblePin(coordinate: CLLocationCoordinate2D) {
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
-        annotation.title = "Drag to your parking spot"
+        annotation.title = "Tap and Drag to your parking spot"
         
         mapView.addAnnotation(annotation)
     }
@@ -157,6 +172,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
         marker.isDraggable = true
         marker.canShowCallout = false
         marker.glyphImage = UIImage(systemName: "car")
+        marker.markerTintColor = .systemBlue
         return marker
     }
     

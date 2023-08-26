@@ -35,7 +35,7 @@ struct MapView: View {
     var body: some View {
         
         ZStack(alignment: .top) {
-            Map(coordinateRegion: region, interactionModes: .all, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: carsViewModel.cars.filter { $0.isLocationLatest }) { car in
+            Map(coordinateRegion: region, interactionModes: .all, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: carsViewModel.cars) { car in
                 
                 MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: car.location.latitude, longitude: car.location.longitude)) {
                     Image(systemName: "car")
@@ -53,10 +53,7 @@ struct MapView: View {
                 }
             }
             .onChange(of: carsViewModel.selectedCar) { selectedCar in
-                
-                guard let isLocationLatest = selectedCar?.isLocationLatest else { return }
-                
-                if isLocationLatest {
+
                     guard let coordinate = selectedCar?.location else { return }
                     
                     // Only if a car has a location show it on the map
@@ -64,7 +61,7 @@ struct MapView: View {
                         let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
                         mapViewModel.region = region
                     }
-                }
+                
                 
             }
             .onChange(of: carsViewModel.currentLocationFocus) { newLocation in

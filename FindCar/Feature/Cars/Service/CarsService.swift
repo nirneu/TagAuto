@@ -16,7 +16,6 @@ enum CarKeys: String {
     case location
     case adress
     case note
-    case isLocationLatest
 }
 
 protocol CarsService {
@@ -25,7 +24,6 @@ protocol CarsService {
     func updateCarNote(_ car: Car, note: String) -> AnyPublisher<String, Error> 
     func getAddress(carId: String, geopoint: CLLocationCoordinate2D) -> AnyPublisher<String, Error>
     func getCarNote(_ car: Car) -> AnyPublisher<String, Error>
-    func getIsLocationLatest(for car: Car) -> AnyPublisher<Bool, Error>
     func updateCarAddress(carId: String, adress: String) -> AnyPublisher<Void, Error>
 }
 
@@ -79,7 +77,7 @@ final class CarsServiceImpl: CarsService {
                                                 promise(.failure(error))
                                             } else if let document = document, document.exists, let data = document.data() {
 
-                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, note: data[CarKeys.note.rawValue] as? String ?? "", isLocationLatest: data[CarKeys.isLocationLatest.rawValue] as? Bool ?? true)
+                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, note: data[CarKeys.note.rawValue] as? String ?? "")
                                                 cars.append(car)
                                                 
                                             }
@@ -117,7 +115,6 @@ final class CarsServiceImpl: CarsService {
                 // update the location in Firestore
                 self.db.collection(self.carsPath).document(car.id).updateData([
                     CarKeys.location.rawValue: geoPoint,
-                    CarKeys.isLocationLatest.rawValue: true
                 ]) { error in
                     if let error = error {
                         promise(.failure(error))
@@ -139,7 +136,6 @@ final class CarsServiceImpl: CarsService {
                 
                 self.db.collection(self.carsPath).document(car.id).updateData([
                     CarKeys.note.rawValue: note,
-                    CarKeys.isLocationLatest.rawValue: false
                 ]) { error in
                     if let error = error {
                         promise(.failure(error))
@@ -166,30 +162,6 @@ final class CarsServiceImpl: CarsService {
                         
                         if let document = document, document.exists, let note = document.data()?[CarKeys.note.rawValue] as? String {
                             promise(.success(note))
-                        }
-                    }
-                }
-            }
-        }
-        .receive(on: RunLoop.main)
-        .eraseToAnyPublisher()
-    }
-    
-    func getIsLocationLatest(for car: Car) -> AnyPublisher<Bool, Error> {
-        
-        Deferred {
-            
-            Future { promise in
-                
-                self.db.collection(self.carsPath).document(car.id).getDocument() { (document, error) in
-                    if let error = error {
-                        promise(.failure(error))
-                    } else {
-                        
-                        if let document = document, document.exists, let isLocationLatest = document.data()?[CarKeys.isLocationLatest.rawValue] as? Bool {
-                            promise(.success(isLocationLatest))
-                        } else {
-                            promise(.success(false))
                         }
                     }
                 }

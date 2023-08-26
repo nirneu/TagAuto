@@ -11,114 +11,74 @@ struct CarsView: View {
     
     @EnvironmentObject var sessionService: SessionServiceImpl
     @EnvironmentObject var carsViewModel: CarsViewModelImpl
-        
+    
     @State private var showLocationUpdateAlert = false
-    
-    var mockCars: [Car]
-    
+        
     var body: some View {
         
         NavigationStack {
             
             List {
                 
-                if !mockCars.isEmpty {
-                    let sortedUniqueCarsNames = Array(Set(mockCars.map { $0.groupName })).sorted(by: <)
+                if carsViewModel.isLoadingCars {
+                    ProgressView()
+                } else {
                     
-                    ForEach(sortedUniqueCarsNames) { groupName in
+                    if !carsViewModel.cars.isEmpty {
                         
-                        Section(header: Text(groupName)) {
+                        let sortedUniqueCarsNames = Array(Set(carsViewModel.cars.map { $0.groupName })).sorted(by: <)
+                        
+                        ForEach(sortedUniqueCarsNames) { groupName in
                             
-                            ForEach(mockCars.filter { $0.groupName == groupName }.sorted(by: { $0.name < $1.name }), id: \.self) { car in
+                            Section(header: Text(groupName)) {
                                 
-                                NavigationLink {
-                                    CarDetailsView(car: car)
-                                        .environmentObject(sessionService)
-                                        .environmentObject(carsViewModel)
-                                } label: {
-                                    Image(systemName: "car.fill")
-                                        .font(.system(.title2))
+                                ForEach(carsViewModel.cars.filter { $0.groupName == groupName }.sorted(by: { $0.name < $1.name }), id: \.self) { car in
                                     
-                                    VStack(alignment: .leading) {
-                                        Text(car.name)
-                                            .font(.system(.headline, weight: .bold))
-                                        if car.isLocationLatest {
-                                            Text(car.adress)
-                                        } else {
-                                            Text(car.note)
+                                    NavigationLink(destination: CarDetailsView(car: car)
+                                        .environmentObject(sessionService)
+                                        .environmentObject(carsViewModel)) {
+                                            Image(systemName: "car.fill")
+                                                .font(.title2)
+                                            
+                                            VStack(alignment: .leading) {
+                                                Text(car.name)
+                                                    .font(.title3.bold())
+                                                Text(car.adress)
+                                                    .font(.caption)
+                                                    .foregroundColor(.gray)
+                                            }
                                         }
-                                    }
+                                    
                                 }
+                                .frame(height: 40)
                                 
                             }
-                            .frame(height: 40)
                             
                         }
                         
-                    }
-                } else {
-                    if carsViewModel.isLoadingCars {
-                        ProgressView()
                     } else {
                         
-                        if !carsViewModel.cars.isEmpty {
-                            
-                            let sortedUniqueCarsNames = Array(Set(carsViewModel.cars.map { $0.groupName })).sorted(by: <)
-                            
-                            ForEach(sortedUniqueCarsNames) { groupName in
-                                
-                                Section(header: Text(groupName)) {
-                                    
-                                    ForEach(carsViewModel.cars.filter { $0.groupName == groupName }.sorted(by: { $0.name < $1.name }), id: \.self) { car in
-                                        
-                                        NavigationLink(destination: CarDetailsView(car: car)
-                                            .environmentObject(sessionService)
-                                            .environmentObject(carsViewModel)) {
-                                                Image(systemName: "car.fill")
-                                                    .font(.system(.title2))
-                                                
-                                                VStack(alignment: .leading) {
-                                                    Text(car.name)
-                                                        .font(.system(.headline, weight: .bold))
-                                                    if car.isLocationLatest {
-                                                        Text(car.adress)
-                                                    } else {
-                                                        Text(car.note)
-                                                    }
-                                                }
-                                            } 
-                                        
-                                    }
-                                    .frame(height: 40)
-                                    
-                                }
-                                
-                            }
-                            
-                        } else {
-                            
-                            Text("You still don't have cars. Go ahead for the Groups section to add one.")
-                            
-                        }
+                        Text("You still don't have cars. Go ahead for the Groups section to add one.")
+                        
                     }
                 }
-                
             }
-            .onAppear {
-                carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
-            }
-            .onChange(of: sessionService.userDetails) { newUserDetails in
-                carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
-            }
-            .listStyle(.plain)
-            .alert("Error", isPresented: $carsViewModel.hasError) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                if case .failed(let error) = carsViewModel.state {
-                    Text(error.localizedDescription)
-                } else {
-                    Text("Something went wrong")
-                }
+            
+        }
+        .onAppear {
+            carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
+        }
+        .onChange(of: sessionService.userDetails) { newUserDetails in
+            carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
+        }
+        .listStyle(.plain)
+        .alert("Error", isPresented: $carsViewModel.hasError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            if case .failed(let error) = carsViewModel.state {
+                Text(error.localizedDescription)
+            } else {
+                Text("Something went wrong")
             }
         }
     }
@@ -138,7 +98,7 @@ struct CarsView_Previews: PreviewProvider {
         let sessionService = SessionServiceImpl()
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
         
-        CarsView(mockCars: Car.mockCars)
+        CarsView()
             .environmentObject(sessionService)
             .environmentObject(carsViewModel)
         
