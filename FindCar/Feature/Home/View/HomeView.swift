@@ -20,21 +20,25 @@ struct HomeView: View {
         
         TabView(selection: $selection) {
             
-            VStack(spacing: 0) {
-                MapView()
-                    .environmentObject(carsViewModel)
-                    .environmentObject(mapViewModel)
-                    .ignoresSafeArea(edges: .top)
-                
-                CarsView()
-                    .environmentObject(carsViewModel)
-                    .environmentObject(mapViewModel)
+            GeometryReader { geometry in
+                VStack {
+                    MapView()
+                        .environmentObject(carsViewModel)
+                        .environmentObject(mapViewModel)
+                        .frame(height: geometry.size.height * 0.65)
+                    
+                    CarsView()
+                        .environmentObject(carsViewModel)
+                        .environmentObject(mapViewModel)
+                        .frame(height: geometry.size.height * 0.35)
+
+                }
+
             }
             .tabItem {
                 Label("Cars", systemImage: "car.2.fill")
             }
             .tag(1)
-            .frame(maxWidth: .infinity)
             
             GroupsView(selection: $selection)
                 .tabItem {

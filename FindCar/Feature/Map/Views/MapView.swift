@@ -12,7 +12,6 @@ struct MapView: View {
     
     @EnvironmentObject var mapViewModel: MapViewModelImpl
     @EnvironmentObject var carsViewModel: CarsViewModelImpl
-    
     @EnvironmentObject var sessionService: SessionServiceImpl
     
     @State var tracking = MapUserTrackingMode.follow
@@ -38,11 +37,12 @@ struct MapView: View {
             Map(coordinateRegion: region, interactionModes: .all, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: carsViewModel.cars) { car in
                 
                 MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: car.location.latitude, longitude: car.location.longitude)) {
-                    Image(systemName: "car")
+                    Text("🚘")
                     Text(car.name).font(.system(.caption, weight: .bold))
                 }
                 
             }
+            .ignoresSafeArea(edges: .top)
             .onAppear {
                 DispatchQueue.main.async {
                     
@@ -53,14 +53,14 @@ struct MapView: View {
                 }
             }
             .onChange(of: carsViewModel.selectedCar) { selectedCar in
-
-                    guard let coordinate = selectedCar?.location else { return }
-                    
-                    // Only if a car has a location show it on the map
-                    if coordinate.latitude != 0 && coordinate.longitude != 0 {
-                        let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
-                        mapViewModel.region = region
-                    }
+                
+                guard let coordinate = selectedCar?.location else { return }
+                
+                // Only if a car has a location show it on the map
+                if coordinate.latitude != 0 && coordinate.longitude != 0 {
+                    let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
+                    mapViewModel.region = region
+                }
                 
                 
             }
@@ -93,7 +93,6 @@ struct MapView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .padding(.trailing, 15)
-                .padding(.top, 40)
             }
             
         }
@@ -104,11 +103,13 @@ struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
+        let mapViewModel = MapViewModelImpl(service: MapServiceImpl())
         let sessionService = SessionServiceImpl()
-        
+
         MapView()
             .environmentObject(carsViewModel)
             .environmentObject(sessionService)
+            .environmentObject(mapViewModel)
         
     }
 }

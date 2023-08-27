@@ -37,9 +37,8 @@ struct CarsView: View {
                                     NavigationLink(destination: CarDetailsView(car: car)
                                         .environmentObject(sessionService)
                                         .environmentObject(carsViewModel)) {
-                                            Image(systemName: "car.fill")
+                                            Text("🚘")
                                                 .font(.title2)
-                                            
                                             VStack(alignment: .leading) {
                                                 Text(car.name)
                                                     .font(.title3.bold())
