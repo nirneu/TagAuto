@@ -171,8 +171,9 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
         let marker = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "PARKINGPIN")
         marker.isDraggable = true
         marker.canShowCallout = false
-        marker.glyphImage = UIImage(systemName: "car")
-        marker.markerTintColor = .systemBlue
+        marker.glyphImage = UIImage(systemName: "car.fill")
+        marker.glyphTintColor = .black
+        
         return marker
     }
     

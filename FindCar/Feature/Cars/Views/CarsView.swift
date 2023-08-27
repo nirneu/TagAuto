@@ -62,7 +62,7 @@ struct CarsView: View {
                     }
                 }
             }
-            
+            .listStyle(.sidebar)
         }
         .onAppear {
             carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
@@ -70,7 +70,6 @@ struct CarsView: View {
         .onChange(of: sessionService.userDetails) { newUserDetails in
             carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
         }
-        .listStyle(.plain)
         .alert("Error", isPresented: $carsViewModel.hasError) {
             Button("OK", role: .cancel) { }
         } message: {

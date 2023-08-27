@@ -88,7 +88,7 @@ struct CarDetailsView: View {
                  
         }
         .navigationTitle(car.name)
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(maxHeight: .infinity, alignment: .top)
         .padding([.leading, .trailing])

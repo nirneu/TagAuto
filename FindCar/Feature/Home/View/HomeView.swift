@@ -21,16 +21,16 @@ struct HomeView: View {
         TabView(selection: $selection) {
             
             GeometryReader { geometry in
-                VStack {
+                VStack(spacing: 0) {
                     MapView()
                         .environmentObject(carsViewModel)
                         .environmentObject(mapViewModel)
-                        .frame(height: geometry.size.height * 0.65)
-                    
+                        .frame(height: geometry.size.height * 0.70)
+
                     CarsView()
                         .environmentObject(carsViewModel)
                         .environmentObject(mapViewModel)
-                        .frame(height: geometry.size.height * 0.35)
+                        .frame(height: geometry.size.height * 0.30)
 
                 }
 
