@@ -25,48 +25,31 @@ struct CarDetailsView: View {
     
     var body: some View {
         
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 10) {
             
-            if carsViewModel.isLoading {
-                ProgressView()
-            } else {
-                
-                if carsViewModel.carAdress.isEmpty {
-                    HStack {
-                        Image(systemName: "exclamationmark.circle")
-                        Text("The car doesn't have a location yet")
-                    }
+            VStack {
+                if carsViewModel.isLoading {
+                    ProgressView()
                 } else {
-                    VStack(alignment: .leading) {
-                        Text("Last Known Adress:")
-                            .bold()
-                        Text(carsViewModel.carAdress)
-                            .foregroundColor(.gray)
-
+                    
+                    if carsViewModel.carAdress.isEmpty {
+                        HStack {
+                            Image(systemName: "exclamationmark.circle")
+                            Text("The car doesn't have a location yet")
+                        }
+                    } else {
+                        VStack(alignment: .leading) {
+                            Text("Last Known Adress:")
+                                .bold()
+                            Text(carsViewModel.carAdress)
+                                .foregroundColor(.gray)
+                            
+                        }
+                        .padding(.bottom, 5)
                     }
-                    .padding(.bottom, 5)
+                    
                 }
-                
-                if !carsViewModel.carNewNote.isEmpty {
-                    VStack(alignment: .leading) {
-                        Text("Last Written Note:")
-                            .bold()
-                        Text(carsViewModel.carNewNote)
-                            .foregroundColor(.gray)
-
-                    }
-                } else if !car.note.isEmpty {
-                    VStack(alignment: .leading) {
-                        Text("Last Written Note:")
-                            .bold()
-                        Text(car.note)
-                            .foregroundColor(.gray)
-
-                    }
-                }
-                
             }
-            
             HStack {
                 Button {
                     carToUpdate = car
@@ -85,13 +68,9 @@ struct CarDetailsView: View {
                 }
                 .buttonStyle(.borderedProminent)
             }
-                 
+               
         }
-        .navigationTitle(car.name)
-        .navigationBarTitleDisplayMode(.inline)
-        .frame(maxWidth: .infinity, alignment: .leading)
         .frame(maxHeight: .infinity, alignment: .top)
-        .padding([.leading, .trailing])
         .onAppear {
             carsViewModel.selectCar(car)
             carsViewModel.carNewNote = ""

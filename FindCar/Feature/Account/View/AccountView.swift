@@ -20,9 +20,6 @@ struct AccountView: View {
             
             VStack(alignment: .leading, spacing: 20) {
                 
-                Text("\(BaseFunctions.greetingLogic()), \(sessionService.userDetails?.firstName ?? "")")
-                    .font(.title)
-                
                 VStack(alignment: .leading, spacing: 25) {
                     
                     Divider()

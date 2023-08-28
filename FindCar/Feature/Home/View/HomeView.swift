@@ -14,44 +14,103 @@ struct HomeView: View {
     @StateObject var carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
     @StateObject var mapViewModel = MapViewModelImpl(service: MapServiceImpl())
     
-    @State private var selection = 1
+    @State private var showCarsSheet = true
+    @State private var showMoreSheet = false
+    @State private var sheetDetentSelection = PresentationDetent.fraction(0.3)
+    @State private var selectedCar: Car?
+    @State private var dismissCarsView = true
     
     var body: some View {
         
-        TabView(selection: $selection) {
-            
-            GeometryReader { geometry in
-                VStack(spacing: 0) {
-                    MapView()
-                        .environmentObject(carsViewModel)
-                        .environmentObject(mapViewModel)
-                        .frame(height: geometry.size.height * 0.70)
+        MapView()
+            .environmentObject(carsViewModel)
+            .environmentObject(mapViewModel)
+            .sheet(isPresented: $showCarsSheet) {
+                
+                VStack(alignment: .leading, spacing: 0) {
+  
+                    if let car = selectedCar {
+                        
+                        HStack {
+                            Text(car.name)
+                                .font(.title2.bold())
+                            
+                            Spacer()
+                            Button {
+                                selectedCar = nil
+                            } label: {
+                                Image(systemName: "xmark.circle")
+                                    .font(.title2)
+                            }
+                            
+                        }
+                        .padding([.top, .leading, .trailing, .bottom])
+                        
+                        CarDetailsView(car: car)
+                            .environmentObject(sessionService)
+                            .environmentObject(mapViewModel)
+                            .environmentObject(carsViewModel)
+                            .padding([.leading, .trailing])
+                    } else {
+                        HStack {
+                            Text("Cars")
+                                .font(.title2.bold())
+                            Spacer()
+                            Button {
+                                showMoreSheet = true
+                            } label: {
+                                Image(systemName: "ellipsis.circle")
+                                    .font(.title2)
+                            }
+                            
+                        }
+                        .padding([.top, .leading, .trailing])
+                        
+                        CarsView(selectedCar: $selectedCar, dismissCarsView: $dismissCarsView)
+                            .environmentObject(carsViewModel)
+                            .environmentObject(mapViewModel)
+                            .environmentObject(sessionService)
+                            .sheet(isPresented: $showMoreSheet) {
+                                NavigationStack {
+                                    
+                                    List {
+                                        Section(header: Text("Groups")) {
+                                            NavigationLink(destination: GroupsView()) {
+                                                    Label("Groups", systemImage: "person.3")
+                                                }
+                                            
+                                        }
+                                        Section(header: Text("Account")) {
+                                            NavigationLink(destination: AccountView()) {
+                                                    Label("Account", systemImage: "person.crop.circle")
+                                                }
+                                        }
+                                    }
+                                    .navigationTitle("More")
+                                    .toolbar {
+                                        ToolbarItem(placement: .navigationBarTrailing) {
+                                            Button {
+                                                showMoreSheet = false
+                                            } label: {
+                                                Text("Done")
+                                            }
 
-                    CarsView()
-                        .environmentObject(carsViewModel)
-                        .environmentObject(mapViewModel)
-                        .frame(height: geometry.size.height * 0.30)
+                                        }
+                                    }
+                                }
+                                .presentationDetents([.large])
+                                .presentationDragIndicator(.visible)
+                            }
 
+                    }
+                 
                 }
-
+                .background(.thinMaterial)
+                .presentationDetents([.fraction(0.3), .large], selection: $sheetDetentSelection)
+                .presentationDragIndicator(.visible)
+                .interactiveDismissDisabled()
+                .presentationBackgroundInteraction(.enabled)
             }
-            .tabItem {
-                Label("Cars", systemImage: "car.2.fill")
-            }
-            .tag(1)
-            
-            GroupsView(selection: $selection)
-                .tabItem {
-                    Label("Groups", systemImage: "person.3")
-                }
-                .tag(2)
-            
-            AccountView()
-                .tabItem {
-                    Label("Account", systemImage: "person.crop.circle")
-                }
-                .tag(3)
-        }
     }
     
 }

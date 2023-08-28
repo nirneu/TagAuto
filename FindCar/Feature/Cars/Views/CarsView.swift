@@ -13,7 +13,15 @@ struct CarsView: View {
     @EnvironmentObject var carsViewModel: CarsViewModelImpl
     
     @State private var showLocationUpdateAlert = false
-        
+    
+    @Binding var selectedCar: Car?
+    @Binding var dismissCarsView: Bool
+    
+    func handleTap(_ car: Car) {
+        self.selectedCar = car
+        self.dismissCarsView = true
+    }
+    
     var body: some View {
         
         NavigationStack {
@@ -22,6 +30,7 @@ struct CarsView: View {
                 
                 if carsViewModel.isLoadingCars {
                     ProgressView()
+                        .listRowBackground(Color.clear)
                 } else {
                     
                     if !carsViewModel.cars.isEmpty {
@@ -34,22 +43,25 @@ struct CarsView: View {
                                 
                                 ForEach(carsViewModel.cars.filter { $0.groupName == groupName }.sorted(by: { $0.name < $1.name }), id: \.self) { car in
                                     
-                                    NavigationLink(destination: CarDetailsView(car: car)
-                                        .environmentObject(sessionService)
-                                        .environmentObject(carsViewModel)) {
-                                            Text("🚘")
-                                                .font(.title2)
-                                            VStack(alignment: .leading) {
-                                                Text(car.name)
-                                                    .font(.title3.bold())
-                                                Text(car.adress)
-                                                    .font(.caption)
-                                                    .foregroundColor(.gray)
-                                            }
+                                    HStack {
+                                        Text("🚘")
+                                            .font(.title2)
+                                        VStack(alignment: .leading) {
+                                            Text(car.name)
+                                                .font(.title3.bold())
+                                            Text(car.adress)
+                                                .font(.caption)
+                                                .foregroundColor(.gray)
                                         }
+                                    }
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        self.handleTap(car)
+                                    }
                                     
                                 }
                                 .frame(height: 40)
+                                .listRowBackground(Color.clear)
                                 
                             }
                             
@@ -62,7 +74,9 @@ struct CarsView: View {
                     }
                 }
             }
-            .listStyle(.sidebar)
+            .listStyle(.plain)
+            .background(.thinMaterial)
+
         }
         .onAppear {
             carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
@@ -93,10 +107,13 @@ extension String: Identifiable {
 struct CarsView_Previews: PreviewProvider {
     static var previews: some View {
         
+        @State var selectedCar: Car?
+        @State var dismissCarsViews: Bool = false
+        
         let sessionService = SessionServiceImpl()
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
-        
-        CarsView()
+
+        CarsView(selectedCar: $selectedCar, dismissCarsView: $dismissCarsViews)
             .environmentObject(sessionService)
             .environmentObject(carsViewModel)
         
