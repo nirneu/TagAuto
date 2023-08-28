@@ -177,7 +177,7 @@ struct MapViewSelection: View {
             //MARK: Displaying Data
             if let place = mapViewModel.pickedPlaceMark {
                 VStack(spacing: 15) {
-                    Text("Confirm Car's New Location")
+                    Text("Confirm Vehicle's New Location")
                         .font(.title2.bold())
                     
                     HStack(spacing: 15) {
@@ -201,9 +201,8 @@ struct MapViewSelection: View {
                         
                     HStack(spacing: 15) {
                         
-                        Image(systemName: "car.fill")
+                        Text(car.icon)
                             .font(.title2)
-                            .foregroundColor(.gray)
                         
                         Text(car.name)
                             .font(.title3.bold())

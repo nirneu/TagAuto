@@ -32,12 +32,15 @@ struct HomeView: View {
                     if let car = selectedCar {
                         
                         HStack {
+                            Text(car.icon)
+                                .font(.title2.bold())
                             Text(car.name)
                                 .font(.title2.bold())
                             
                             Spacer()
                             Button {
                                 selectedCar = nil
+                                carsViewModel.selectedCar = nil
                             } label: {
                                 Image(systemName: "xmark.circle")
                                     .font(.title2)
@@ -53,7 +56,7 @@ struct HomeView: View {
                             .padding([.leading, .trailing])
                     } else {
                         HStack {
-                            Text("Cars")
+                            Text("Vehicles")
                                 .font(.title2.bold())
                             Spacer()
                             Button {
@@ -66,11 +69,16 @@ struct HomeView: View {
                         }
                         .padding([.top, .leading, .trailing])
                         
-                        CarsView(selectedCar: $selectedCar, dismissCarsView: $dismissCarsView)
+                        CarsView(selectedCar: $selectedCar, sheetDetentSelection: $sheetDetentSelection)
                             .environmentObject(carsViewModel)
                             .environmentObject(mapViewModel)
                             .environmentObject(sessionService)
-                            .sheet(isPresented: $showMoreSheet) {
+                            .sheet(isPresented: $showMoreSheet, onDismiss: {
+                                if let userId = sessionService.userDetails?.userId {
+                                    carsViewModel.isLoadingCars = true
+                                    carsViewModel.fetchUserCars(userId: userId)
+                                }
+                            }) {
                                 NavigationStack {
                                     
                                     List {
@@ -110,6 +118,11 @@ struct HomeView: View {
                 .presentationDragIndicator(.visible)
                 .interactiveDismissDisabled()
                 .presentationBackgroundInteraction(.enabled)
+                .onChange(of: carsViewModel.selectedCar) { newCar in
+                    DispatchQueue.main.async {
+                        selectedCar = newCar
+                    }
+                }
             }
     }
     

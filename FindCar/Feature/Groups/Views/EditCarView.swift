@@ -1,49 +1,53 @@
 //
-//  AddCarView.swift
+//  EditCarView.swift
 //  FindCar
 //
-//  Created by Nir Neuman on 02/08/2023.
+//  Created by Nir Neuman on 28/08/2023.
 //
 
 import SwiftUI
 import FirebaseFirestore
 
-struct AddCarView: View {
-
+struct EditCarView: View {
+    
     @EnvironmentObject var vm: GroupsViewModelImpl
-    
-    @Binding var showingSheet: Bool
-    
+        
     @State private var carName = ""
     @State private var selectedEmoji: String = ""
     
+    @Environment(\.dismiss) var dismiss
+    
     let group: GroupDetails
-
+    let car: Car
+    
     var body: some View {
-        
         NavigationStack {
             
             VStack(spacing: 32) {
                 
                 VStack(spacing: 16) {
                     
-                    InputTextFieldView(text: $carName, placeholder: "Vehicle Name", keyboardType: .default, sfSymbol: nil)
+                    InputTextFieldView(text: $carName, placeholder: "Car Name", keyboardType: .default, sfSymbol: nil)
                     
                     VehicleEmojiPicker(selectedEmoji: $selectedEmoji)
                 }
                 
-                ButtonView(title: "Add Vehicle", handler: {
+                ButtonView(title: "Edit Car", handler: {
                     if !carName.trimmingCharacters(in: .whitespaces).isEmpty && !selectedEmoji.isEmpty {
-                        vm.addCarToGroup(groupId: group.id, car: Car(id: "", name: carName, location: GeoPoint(latitude: 0, longitude: 0), adress: "", groupName: group.name, note: "", icon: selectedEmoji))
+                        vm.updateCarDetails(Car(id: car.id, name: carName, location: car.location, adress: car.adress, groupName: car.groupName, note: car.note, icon: selectedEmoji))
                     }
-                    showingSheet = false
+                    dismiss()
                 }, disabled: Binding<Bool>(
                     get: { carName.trimmingCharacters(in: .whitespaces).isEmpty || selectedEmoji.isEmpty },
                     set: { _ in }
                 ))
             }
+            .onAppear {
+                carName = car.name
+                selectedEmoji = car.icon
+            }
             .padding(.horizontal, 15)
-            .navigationTitle("Add Vehicle")
+            .navigationTitle("Edit Car")
             .alert("Error", isPresented: $vm.hasError) {
                 Button("OK", role: .cancel) { }
             } message: {
@@ -54,16 +58,17 @@ struct AddCarView: View {
                 }
             }
             .applyClose()
+        
         }
     }
 }
 
-struct AddCarView_Previews: PreviewProvider {
+struct EditCarView_Previews: PreviewProvider {
     static var previews: some View {
         
         let viewModel = GroupsViewModelImpl(service: GroupsServiceImpl())
-        
-        AddCarView(showingSheet: .constant(true), group: GroupDetails(id: "0", name: "Preview", members: [], cars: []))
+
+        EditCarView(group: GroupDetails(id: "0", name: "Preview", members: [], cars: []), car: Car.new)
             .environmentObject(viewModel)
     }
 }

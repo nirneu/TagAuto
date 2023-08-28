@@ -15,11 +15,11 @@ struct CarsView: View {
     @State private var showLocationUpdateAlert = false
     
     @Binding var selectedCar: Car?
-    @Binding var dismissCarsView: Bool
+    @Binding var sheetDetentSelection: PresentationDetent
     
     func handleTap(_ car: Car) {
         self.selectedCar = car
-        self.dismissCarsView = true
+        self.sheetDetentSelection = PresentationDetent.fraction(0.3)
     }
     
     var body: some View {
@@ -44,14 +44,25 @@ struct CarsView: View {
                                 ForEach(carsViewModel.cars.filter { $0.groupName == groupName }.sorted(by: { $0.name < $1.name }), id: \.self) { car in
                                     
                                     HStack {
-                                        Text("🚘")
+                                        Text(car.icon)
                                             .font(.title2)
                                         VStack(alignment: .leading) {
                                             Text(car.name)
                                                 .font(.title3.bold())
-                                            Text(car.adress)
-                                                .font(.caption)
-                                                .foregroundColor(.gray)
+                                            if car.adress.isEmpty {
+                                                HStack(spacing: 5) {
+                                                    Image(systemName: "exclamationmark.circle")
+                                                        .font(.caption)
+                                                        .foregroundColor(.gray)
+                                                    Text("The vehicle doesn't have a location yet")
+                                                        .font(.caption)
+                                                        .foregroundColor(.gray)
+                                                }
+                                            } else {
+                                                Text(car.adress)
+                                                    .font(.caption)
+                                                    .foregroundColor(.gray)
+                                            }
                                         }
                                     }
                                     .contentShape(Rectangle())
@@ -108,12 +119,12 @@ struct CarsView_Previews: PreviewProvider {
     static var previews: some View {
         
         @State var selectedCar: Car?
-        @State var dismissCarsViews: Bool = false
-        
+        @State var sheetDetentSelection = PresentationDetent.fraction(0.3)
+
         let sessionService = SessionServiceImpl()
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
 
-        CarsView(selectedCar: $selectedCar, dismissCarsView: $dismissCarsViews)
+        CarsView(selectedCar: $selectedCar, sheetDetentSelection: $sheetDetentSelection)
             .environmentObject(sessionService)
             .environmentObject(carsViewModel)
         

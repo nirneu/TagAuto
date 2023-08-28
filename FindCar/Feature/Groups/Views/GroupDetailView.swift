@@ -16,6 +16,7 @@ struct GroupDetailView: View {
     @State private var showingInviteMember = false
     @State private var showingAddCar = false
     @State private var showDeleteGroup = false
+    @State var selectedCar: Car?
     
     let group: GroupDetails
     
@@ -30,11 +31,13 @@ struct GroupDetailView: View {
                     if !vm.memberDetails.isEmpty {
                         ForEach(vm.memberDetails.sorted { $0.firstName < $1.firstName }, id: \.self) { member in
                             HStack {
-                                Image(systemName: "person.fill")
+                                Image(systemName: "person.crop.circle")
+                                    .foregroundColor(Color(uiColor: .systemBlue))
                                 Text(member.firstName + " " + member.lastName)
                             }
                         }
                         .onDelete(perform: deleteMember(at:))
+                        
                     } else {
                         Text("There are no members yet")
                     }
@@ -50,7 +53,7 @@ struct GroupDetailView: View {
                 }
             }
             
-            Section(header: headerView(title: "Cars", action: { showingAddCar = true })) {
+            Section(header: headerView(title: "Vehicles", action: { showingAddCar = true })) {
                 
                 if vm.isLoadingCars {
                     ProgressView()
@@ -59,11 +62,18 @@ struct GroupDetailView: View {
                     if !vm.groupCars.isEmpty {
                         ForEach(vm.groupCars.sorted { $0.name < $1.name }, id: \.self) { car in
                             HStack {
-                                Image(systemName: "car.fill")
+                                Text(car.icon)
                                 Text(car.name)
+                            }
+                            .swipeActions(edge: .leading) {
+                                Button("Edit") {
+                                    selectedCar = car
+                                }
+                                .tint(.orange)
                             }
                         }
                         .onDelete(perform: deleteCar(at:))
+                  
                     } else {
                         Text("There are no cars yet")
                     }
@@ -90,6 +100,10 @@ struct GroupDetailView: View {
             AddCarView(showingSheet: $showingAddCar, group: group)
                 .environmentObject(vm)
         }
+        .sheet(item: $selectedCar, content: { car in
+            EditCarView(group: group, car: car)
+                .environmentObject(vm)
+        })
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {

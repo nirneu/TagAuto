@@ -147,6 +147,23 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
             .store(in: &subscriptions)
     }
     
+    
+    func updateCarDetails(_ car: Car) {
+        service.updateCarDetails(car)
+            .sink { [weak self] res in
+                switch res {
+                case .failure(let error):
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] _ in
+                self?.state = .successful
+                self?.carListReload = true
+            }
+            .store(in: &subscriptions)
+    }
+    
+    
     func deleteCar(groupId: String, car: Car) {
         service.deleteCar(groupId, car: car)
             .sink { [weak self] res in

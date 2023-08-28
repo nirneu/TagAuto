@@ -35,11 +35,11 @@ struct CarDetailsView: View {
                     if carsViewModel.carAdress.isEmpty {
                         HStack {
                             Image(systemName: "exclamationmark.circle")
-                            Text("The car doesn't have a location yet")
+                            Text("The vehicle doesn't have a location yet")
                         }
                     } else {
                         VStack(alignment: .leading) {
-                            Text("Last Known Adress:")
+                            Text("Last Known Address:")
                                 .bold()
                             Text(carsViewModel.carAdress)
                                 .foregroundColor(.gray)
@@ -60,13 +60,13 @@ struct CarDetailsView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 
-                Button {
-                    self.showNoteParkingAlert = true
-                } label: {
-                    Image(systemName: "note.text")
-                    Text("Take a Note")
-                }
-                .buttonStyle(.borderedProminent)
+//                Button {
+//                    self.showNoteParkingAlert = true
+//                } label: {
+//                    Image(systemName: "note.text")
+//                    Text("Take a Note")
+//                }
+//                .buttonStyle(.borderedProminent)
             }
                
         }
@@ -81,6 +81,12 @@ struct CarDetailsView: View {
             mapViewModel.pickedPlaceMark = nil
             mapViewModel.searchText = ""
             mapViewModel.mapView.removeAnnotations(mapViewModel.mapView.annotations)
+            DispatchQueue.main.async {
+                if let userId = sessionService.userDetails?.userId {
+                    carsViewModel.isLoadingCars = true
+                    carsViewModel.fetchUserCars(userId: userId)
+                }
+            }
         }, content: {
         
             SearchView(showingSheet: $showLocationUpdateAlert, car: car)

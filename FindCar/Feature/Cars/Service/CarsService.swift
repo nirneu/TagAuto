@@ -16,6 +16,7 @@ enum CarKeys: String {
     case location
     case adress
     case note
+    case icon
 }
 
 protocol CarsService {
@@ -77,7 +78,7 @@ final class CarsServiceImpl: CarsService {
                                                 promise(.failure(error))
                                             } else if let document = document, document.exists, let data = document.data() {
 
-                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, note: data[CarKeys.note.rawValue] as? String ?? "")
+                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, note: data[CarKeys.note.rawValue] as? String ?? "", icon: data[CarKeys.icon.rawValue] as? String ?? "")
                                                 cars.append(car)
                                                 
                                             }

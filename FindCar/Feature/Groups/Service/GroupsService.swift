@@ -30,6 +30,7 @@ protocol GroupsService {
     func fetchUserDetails(for userIds: [String]) -> AnyPublisher<[UserDetails], Error>
     func addCarToGroup(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
     func deleteCar(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
+    func updateCarDetails(_ car: Car) -> AnyPublisher<Void, Error> 
     func sendInvitation(to email: String, for group: String, groupName: String) -> AnyPublisher<Void, Error>
     func deleteMember(userId: String, groupId: String) -> AnyPublisher<Void, Error>
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error>
@@ -254,7 +255,9 @@ final class GroupsServiceImpl: GroupsService {
                 var newCarRef: DocumentReference? = nil
                 newCarRef = self.db.collection(self.carsPath).addDocument(data: [
                     "name": car.name,
-                    "group": groupId
+                    "icon": car.icon,
+                    "group": groupId,
+                    "location": car.location
                 ]) { error in
                     if let error = error {
                         promise(.failure(error))
@@ -338,7 +341,7 @@ final class GroupsServiceImpl: GroupsService {
                                     promise(.failure(error))
                                 } else if let document = document, document.exists, let data = document.data() {
                                     
-                                    let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, note: data[CarKeys.note.rawValue] as? String ?? "")
+                                    let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, note: data[CarKeys.note.rawValue] as? String ?? "", icon: data[CarKeys.icon.rawValue] as? String ?? "")
                                     cars.append(car)
                                     
                                 }
@@ -459,4 +462,26 @@ final class GroupsServiceImpl: GroupsService {
         .eraseToAnyPublisher()
     }
     
+    func updateCarDetails(_ car: Car) -> AnyPublisher<Void, Error> {
+        
+        Deferred {
+            
+            Future { promise in
+                
+                // update the location in Firestore
+                self.db.collection(self.carsPath).document(car.id).updateData([
+                    CarKeys.name.rawValue: car.name,
+                    CarKeys.icon.rawValue: car.icon,
+                ]) { error in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(()))
+                    }
+                }
+            }
+        }
+        .receive(on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
 }

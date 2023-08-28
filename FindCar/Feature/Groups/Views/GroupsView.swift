@@ -35,6 +35,7 @@ struct GroupsView: View {
                                     Image(systemName: "person.3")
                                         .frame(width: 20, height: 20)
                                         .padding(.trailing, 10)
+                                        .foregroundColor(Color(uiColor: .systemBlue))
                                     
                                     VStack(alignment: .leading) {
                                         Text("\(group.name)")
@@ -42,7 +43,7 @@ struct GroupsView: View {
                                         Text("Members: \(group.members.count)")
                                             .font(.subheadline)
                                             .foregroundColor(.gray)
-                                        Text("Cars: \(group.cars.count)")
+                                        Text("Vehicles: \(group.cars.count)")
                                             .font(.subheadline)
                                             .foregroundColor(.gray)
                                     }
@@ -85,7 +86,6 @@ struct GroupsView: View {
                     Image(systemName: "plus")
                 }
                 .sheet(isPresented: $showCreateGroup, onDismiss: {
-                    //                        selection = 2
                 }) {
                     CreateGroupView(showingSheet: $showCreateGroup)
                         .environmentObject(vm)
@@ -103,9 +103,6 @@ struct GroupsView_Previews: PreviewProvider {
         let sessionService = SessionServiceImpl()
         let viewModel = GroupsViewModelImpl(service: GroupsServiceImpl())
         
-        //        @State var mockInt: Int = 2
-        
-        //        GroupsView(selection: $mockInt)
         GroupsView()
             .environmentObject(sessionService)
             .environmentObject(viewModel)

@@ -26,7 +26,6 @@ struct MapView: View {
             
             DispatchQueue.main.async {
                 mapViewModel.region = region
-                carsViewModel.selectedCar = nil
             }
         }
     }
@@ -34,23 +33,29 @@ struct MapView: View {
     var body: some View {
         
         ZStack(alignment: .top) {
-            Map(coordinateRegion: region, interactionModes: .all, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: carsViewModel.cars) { car in
+            Map(coordinateRegion: region, interactionModes: .all, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: carsViewModel.cars.filter { $0.location.latitude != 0 && $0.location.longitude != 0 }) { car in
                 
                 MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: car.location.latitude, longitude: car.location.longitude)) {
-                    Text("🚘")
-                    Text(car.name).font(.system(.caption, weight: .bold))
-                }
-                
-            }
-            .ignoresSafeArea(edges: .top)
-            .onAppear {
-                DispatchQueue.main.async {
-                    
-                    mapViewModel.checkIfLocationServicesIsEnabled()
-                    if let userId = sessionService.userDetails?.userId {
-                        carsViewModel.fetchUserCars(userId: userId)
+                    VStack {
+                        Text(car.icon)
+                        Text(car.name).font(.system(.caption, weight: .bold))
+                    }
+                    .onTapGesture {
+                        carsViewModel.selectCar(car)
                     }
                 }
+            
+                
+            }
+            .id(carsViewModel.cars.count)
+            .ignoresSafeArea(edges: .top)
+            .onAppear {
+                
+                mapViewModel.checkIfLocationServicesIsEnabled()
+                if let userId = sessionService.userDetails?.userId {
+                    carsViewModel.fetchUserCars(userId: userId)
+                }
+                
             }
             .onChange(of: carsViewModel.selectedCar) { selectedCar in
                 
@@ -59,15 +64,17 @@ struct MapView: View {
                 // Only if a car has a location show it on the map
                 if coordinate.latitude != 0 && coordinate.longitude != 0 {
                     let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
-                    mapViewModel.region = region
+                    DispatchQueue.main.async {
+                        mapViewModel.region = region
+                    }
                 }
-                
                 
             }
             .onChange(of: carsViewModel.currentLocationFocus) { newLocation in
                 if let location = newLocation {
-                    
-                    mapViewModel.region = MKCoordinateRegion( center: location.coordinate, span: MapDetails.defaultSpan)
+                    DispatchQueue.main.async {
+                        mapViewModel.region = MKCoordinateRegion( center: location.coordinate, span: MapDetails.defaultSpan)
+                    }
                 }
             }
             .alert("Error", isPresented: $mapViewModel.hasError) {
@@ -105,7 +112,7 @@ struct MapView_Previews: PreviewProvider {
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
         let mapViewModel = MapViewModelImpl(service: MapServiceImpl())
         let sessionService = SessionServiceImpl()
-
+        
         MapView()
             .environmentObject(carsViewModel)
             .environmentObject(sessionService)

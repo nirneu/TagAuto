@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A802B1A22A9CA68F004A2370 /* VehicleEmojiPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A802B1A12A9CA68F004A2370 /* VehicleEmojiPicker.swift */; };
+		A802B1A82A9CE38A004A2370 /* EditCarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A802B1A72A9CE38A004A2370 /* EditCarView.swift */; };
 		A827F2CC2A895C75002F6567 /* CarDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A827F2CB2A895C75002F6567 /* CarDetailsView.swift */; };
 		A8285A932A793F2D007D3305 /* GroupDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8285A922A793F2D007D3305 /* GroupDetailView.swift */; };
 		A8285A952A7950AE007D3305 /* CreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8285A942A7950AE007D3305 /* CreateGroupView.swift */; };
@@ -57,6 +59,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A802B1A12A9CA68F004A2370 /* VehicleEmojiPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleEmojiPicker.swift; sourceTree = "<group>"; };
+		A802B1A72A9CE38A004A2370 /* EditCarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCarView.swift; sourceTree = "<group>"; };
 		A827F2CB2A895C75002F6567 /* CarDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarDetailsView.swift; sourceTree = "<group>"; };
 		A8285A922A793F2D007D3305 /* GroupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailView.swift; sourceTree = "<group>"; };
 		A8285A942A7950AE007D3305 /* CreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupView.swift; sourceTree = "<group>"; };
@@ -256,6 +260,7 @@
 				A842D86C2A5F11D1008F8C8F /* InputTextFieldView.swift */,
 				A842D8712A606514008F8C8F /* InputPasswordView.swift */,
 				A842D8732A607988008F8C8F /* ButtonView.swift */,
+				A802B1A12A9CA68F004A2370 /* VehicleEmojiPicker.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -452,6 +457,7 @@
 				A8285A942A7950AE007D3305 /* CreateGroupView.swift */,
 				A8CF46D22A7A6A6200F39C7A /* AddCarView.swift */,
 				A8F7596F2A8E608E009443BB /* InviteMemberView.swift */,
+				A802B1A72A9CE38A004A2370 /* EditCarView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -629,6 +635,7 @@
 				A8F759732A8E6CAB009443BB /* BaseFuntions.swift in Sources */,
 				A8F759702A8E608E009443BB /* InviteMemberView.swift in Sources */,
 				A842D8992A63FC72008F8C8F /* LoginService.swift in Sources */,
+				A802B1A82A9CE38A004A2370 /* EditCarView.swift in Sources */,
 				A842D87F2A608926008F8C8F /* HomeView.swift in Sources */,
 				A842D8722A606514008F8C8F /* InputPasswordView.swift in Sources */,
 				A8FF95C42A7D16F30025C516 /* CarsService.swift in Sources */,
@@ -668,6 +675,7 @@
 				A8F759802A8E71CF009443BB /* Invitation.swift in Sources */,
 				A8CF46D32A7A6A6200F39C7A /* AddCarView.swift in Sources */,
 				A842D86D2A5F11D1008F8C8F /* InputTextFieldView.swift in Sources */,
+				A802B1A22A9CA68F004A2370 /* VehicleEmojiPicker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
