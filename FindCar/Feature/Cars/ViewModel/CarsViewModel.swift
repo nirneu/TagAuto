@@ -20,9 +20,9 @@ protocol CarsViewModel {
     var state: CarsState { get }
     var hasError: Bool { get }
     var cars: [Car] { get }
-    func fetchUserCars(userId: String)
+    func fetchUserCars(userId: String, newLocation: CLLocation?)
     func selectCar(_ car: Car?)
-    func updateCarLocation(car: Car, newLocation: CLLocation)
+    func updateCarLocation(car: Car, newLocation: CLLocation, userId: String)
     func updateCarNote(car: Car, note: String)
     func getAddress(car: Car, geopoint: CLLocationCoordinate2D)
     func getCarNote(car: Car)
@@ -51,12 +51,14 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
         setupErrorSubscription()
     }
     
-    func fetchUserCars(userId: String) {
+    func fetchUserCars(userId: String, newLocation: CLLocation? = nil) {
         
         guard !userId.isEmpty else {
             return
         }
                 
+        self.isLoadingCars = true
+        
         service.getCars(of: userId)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] res in
@@ -67,14 +69,21 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                 default: break
                 }
             } receiveValue: { [weak self] cars in
-                self?.cars = cars
-                self?.isLoadingCars = false
-                self?.state = .successful
+                DispatchQueue.main.async {
+                    self?.cars = cars
+                    if newLocation != nil {
+                        if let location = newLocation {
+                            self?.currentLocationFocus = location
+                        }
+                    }
+                    self?.isLoadingCars = false
+                    self?.state = .successful
+                }
             }
             .store(in: &subscriptions)
     }
     
-    func updateCarLocation(car: Car, newLocation: CLLocation) {
+    func updateCarLocation(car: Car, newLocation: CLLocation, userId: String) {
         
         self.isLoading = true
     
@@ -90,7 +99,8 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
             } receiveValue: { [weak self] geoPoint in
                 self?.isLoading = false
                 self?.state = .successful
-                self?.currentLocationFocus = newLocation
+                self?.fetchUserCars(userId: userId, newLocation: newLocation)
+                self?.selectCar(car)
                 self?.getAddress(car: car, geopoint: CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude))
             }
             .store(in: &subscriptions)
@@ -98,7 +108,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     }
     
     func selectCar(_ car: Car?) {
-        selectedCar = car
+        self.selectedCar = car
     }
     
     func updateCarNote(car: Car, note: String) {

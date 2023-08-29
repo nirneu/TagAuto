@@ -82,12 +82,6 @@ struct CarDetailsView: View {
             mapViewModel.pickedPlaceMark = nil
             mapViewModel.searchText = ""
             mapViewModel.mapView.removeAnnotations(mapViewModel.mapView.annotations)
-            DispatchQueue.main.async {
-                if let userId = sessionService.userDetails?.userId {
-                    carsViewModel.isLoadingCars = true
-                    carsViewModel.fetchUserCars(userId: userId)
-                }
-            }
         }, content: {
         
             SearchView(showingSheet: $showLocationUpdateAlert, car: car)

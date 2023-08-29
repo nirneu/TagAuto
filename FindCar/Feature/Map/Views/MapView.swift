@@ -50,7 +50,6 @@ struct MapView: View {
             .gesture(DragGesture().onChanged({ newValue in
                 mapViewModel.isCurrentLocationClicked = false
             }))
-            .id(carsViewModel.cars.count)
             .ignoresSafeArea(edges: .top)
             .onAppear {
                 
@@ -75,13 +74,7 @@ struct MapView: View {
                 mapViewModel.isCurrentLocationClicked = false
                 
             }
-            .onChange(of: carsViewModel.currentLocationFocus) { newLocation in
-                if let location = newLocation {
-                    DispatchQueue.main.async {
-                        mapViewModel.region = MKCoordinateRegion( center: location.coordinate, span: MapDetails.defaultSpan)
-                    }
-                }
-            }
+   
             .alert("Error", isPresented: $mapViewModel.hasError) {
                 Button("OK", role: .cancel) { }
             } message: {
@@ -108,6 +101,11 @@ struct MapView: View {
                 .padding(.trailing, 15)
             }
             
+        }
+        .onChange(of: carsViewModel.currentLocationFocus) { newLocation in
+            if let location = newLocation {
+                mapViewModel.region = MKCoordinateRegion( center: location.coordinate, span: MapDetails.defaultSpan)
+            }
         }
     }
 }

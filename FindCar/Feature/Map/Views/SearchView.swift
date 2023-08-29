@@ -215,11 +215,9 @@ struct MapViewSelection: View {
                     .padding(.vertical, 10)
                     
                     Button {
-                        if let pickedLcoation = mapViewModel.pickedLocation {
-                            carsViewModel.updateCarLocation(car: car, newLocation: pickedLcoation)
-                            carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
-                            carsViewModel.getAddress(car: car, geopoint: CLLocationCoordinate2D(latitude: pickedLcoation.coordinate.latitude, longitude: pickedLcoation.coordinate.longitude))
-                            showingSheet = false 
+                        if let pickedLcoation = mapViewModel.pickedLocation, let userId = sessionService.userDetails?.userId {
+                            carsViewModel.updateCarLocation(car: car, newLocation: pickedLcoation, userId: userId)
+                            showingSheet = false
                         }
                     } label: {
                         Text("Confirm Location")
@@ -240,6 +238,18 @@ struct MapViewSelection: View {
                         .ignoresSafeArea()
                 }
                 .frame(maxHeight: .infinity, alignment: .bottom)
+            }
+        }
+        .onAppear {
+            if let initialAnnotation = mapViewModel.mapView.annotations.first {
+                DispatchQueue.main.async {
+                    mapViewModel.mapView.selectAnnotation(initialAnnotation, animated: true)
+                }
+            }
+        }
+        .onDisappear {
+            DispatchQueue.main.async {
+                mapViewModel.mapView.removeAnnotations(mapViewModel.mapView.annotations)
             }
         }
     }

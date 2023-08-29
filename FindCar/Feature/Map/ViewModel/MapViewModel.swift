@@ -163,9 +163,11 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
     func addDragabblePin(coordinate: CLLocationCoordinate2D) {
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
-        annotation.title = "Tap and Drag to your parking spot"
+        annotation.title = "Drag to your parking spot"
         
-        mapView.addAnnotation(annotation)
+        DispatchQueue.main.async {
+            self.mapView.addAnnotation(annotation)
+        }
     }
     
     // MARK: Enabling Dragging
@@ -175,7 +177,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
         marker.canShowCallout = false
         marker.glyphImage = UIImage(systemName: "mappin")
         marker.glyphTintColor = .black
-        
+
         return marker
     }
     
@@ -193,7 +195,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
                     self.pickedPlaceMark = place
                 })
             } catch {
-                
+
             }
         }
     }
