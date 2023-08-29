@@ -114,7 +114,7 @@ struct HomeView: View {
                  
                 }
                 .background(.thinMaterial)
-                .presentationDetents([.fraction(0.3), .large], selection: $sheetDetentSelection)
+                .presentationDetents([.fraction(0.1), .fraction(0.3), .large], selection: $sheetDetentSelection)
                 .presentationDragIndicator(.visible)
                 .interactiveDismissDisabled()
                 .presentationBackgroundInteraction(.enabled)

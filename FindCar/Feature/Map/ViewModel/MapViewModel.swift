@@ -63,6 +63,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
     @Published var state: LocationAuthState = .na
     @Published var hasError: Bool = false
     @Published var region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
+    @Published var isCurrentLocationClicked = true
     @Published var newLocationRegion = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
     @Published var selectedCoordinate: CLLocationCoordinate2D?
     
@@ -112,6 +113,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
                 let currentLocation = MKCoordinateRegion(center: location.coordinate,
                                                          span: MapDetails.defaultSpan)
                 self.region = currentLocation
+                self.isCurrentLocationClicked = true
             } else {
                 self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
             }

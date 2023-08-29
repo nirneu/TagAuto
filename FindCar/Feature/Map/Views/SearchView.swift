@@ -167,8 +167,11 @@ struct MapViewSelection: View {
                 dismiss()
             } label: {
                 Image(systemName: "chevron.left")
-                    .font(.title2.bold())
-                    .foregroundColor(.primary)
+                    .font(.title2)
+//                    .foregroundColor(.gray)
+                Text("Back")
+//                    .foregroundColor(.gray)
+
             }
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -227,18 +230,13 @@ struct MapViewSelection: View {
                                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                                     .fill(.green)
                             }
-                            .overlay(alignment: .trailing) {
-                                Image(systemName: "arrow.right")
-                                    .font(.title3.bold())
-                                    .padding(.trailing)
-                            }
                             .foregroundColor(.white)
                     }
                 }
                 .padding()
                 .background {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(.white)
+                        .fill(.thinMaterial)
                         .ignoresSafeArea()
                 }
                 .frame(maxHeight: .infinity, alignment: .bottom)

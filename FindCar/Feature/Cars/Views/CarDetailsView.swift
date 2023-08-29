@@ -59,6 +59,7 @@ struct CarDetailsView: View {
                     Text("Update Location")
                 }
                 .buttonStyle(.borderedProminent)
+                .cornerRadius(50)
                 
 //                Button {
 //                    self.showNoteParkingAlert = true

@@ -47,6 +47,9 @@ struct MapView: View {
             
                 
             }
+            .gesture(DragGesture().onChanged({ newValue in
+                mapViewModel.isCurrentLocationClicked = false
+            }))
             .id(carsViewModel.cars.count)
             .ignoresSafeArea(edges: .top)
             .onAppear {
@@ -68,6 +71,8 @@ struct MapView: View {
                         mapViewModel.region = region
                     }
                 }
+                
+                mapViewModel.isCurrentLocationClicked = false
                 
             }
             .onChange(of: carsViewModel.currentLocationFocus) { newLocation in
@@ -96,9 +101,10 @@ struct MapView: View {
                 Button {
                     mapViewModel.getCurrentLocation()
                 } label: {
-                    Image(systemName: "location.fill" )
+                    Image(systemName: mapViewModel.isCurrentLocationClicked ? "location.fill" : "location")
                 }
                 .buttonStyle(.borderedProminent)
+                .cornerRadius(50)
                 .padding(.trailing, 15)
             }
             
