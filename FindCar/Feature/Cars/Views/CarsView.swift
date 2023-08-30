@@ -19,6 +19,7 @@ struct CarsView: View {
     
     func handleTap(_ car: Car) {
         self.selectedCar = car
+        carsViewModel.selectCar(car)
         self.sheetDetentSelection = PresentationDetent.fraction(0.3)
     }
     
@@ -46,22 +47,34 @@ struct CarsView: View {
                                     HStack {
                                         Text(car.icon)
                                             .font(.title2)
-                                        VStack(alignment: .leading) {
+                                        VStack(alignment: .leading, spacing: 5) {
                                             Text(car.name)
                                                 .font(.title3.bold())
-                                            if car.adress.isEmpty {
+                                            if car.currentlyInUse {
                                                 HStack(spacing: 5) {
-                                                    Image(systemName: "exclamationmark.circle")
-                                                        .font(.caption)
+                                                    Image(systemName: "person.badge.key")
+                                                        .font(.caption.bold())
                                                         .foregroundColor(.gray)
-                                                    Text("The vehicle doesn't have a location yet")
-                                                        .font(.caption)
+
+                                                    Text("The vehicle is currently in use")
+                                                        .font(.caption.bold())
                                                         .foregroundColor(.gray)
                                                 }
                                             } else {
-                                                Text(car.adress)
-                                                    .font(.caption)
-                                                    .foregroundColor(.gray)
+                                                if car.adress.isEmpty {
+                                                    HStack(spacing: 5) {
+                                                        Image(systemName: "exclamationmark.circle")
+                                                            .font(.caption)
+                                                            .foregroundColor(.gray)
+                                                        Text("The vehicle doesn't have a location yet")
+                                                            .font(.caption)
+                                                            .foregroundColor(.gray)
+                                                    }
+                                                } else {
+                                                    Text(car.adress)
+                                                        .font(.caption)
+                                                        .foregroundColor(.gray)
+                                                }
                                             }
                                         }
                                     }
@@ -71,7 +84,7 @@ struct CarsView: View {
                                     }
                                     
                                 }
-                                .frame(height: 40)
+                                .frame(height: 50)
                                 .listRowBackground(Color.clear)
                                 
                             }

@@ -18,7 +18,7 @@ struct ButtonView: View {
     @Binding var disabled: Bool
     let handler: ActionHandler
 
-    private let cornerRadius: CGFloat = 10
+    private let cornerRadius: CGFloat = 50
     
     internal init(title: String, background: Color = .blue, foreground: Color = .white, border: Color = .clear, handler: @escaping ButtonView.ActionHandler, disabled: Binding<Bool> = .constant(false)) {
         self.title = title

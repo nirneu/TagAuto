@@ -28,7 +28,7 @@ struct RegisterView: View {
                     InputTextFieldView(text: $vm.userDetails.firstName, placeholder: "First Name", keyboardType: .namePhonePad, sfSymbol: nil)
                     
                     InputTextFieldView(text: $vm.userDetails.lastName, placeholder: "Last Name", keyboardType: .namePhonePad, sfSymbol: nil)
-                    
+
                 }
                 
                 ButtonView(title: "Sign up") {

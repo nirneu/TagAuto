@@ -34,7 +34,7 @@ struct AddCarView: View {
                 
                 ButtonView(title: "Add Vehicle", handler: {
                     if !carName.trimmingCharacters(in: .whitespaces).isEmpty && !selectedEmoji.isEmpty {
-                        vm.addCarToGroup(groupId: group.id, car: Car(id: "", name: carName, location: GeoPoint(latitude: 0, longitude: 0), adress: "", groupName: group.name, note: "", icon: selectedEmoji))
+                        vm.addCarToGroup(groupId: group.id, car: Car(id: "", name: carName, location: GeoPoint(latitude: 0, longitude: 0), adress: "", groupName: "", groupId: "", note: "", icon: selectedEmoji, currentlyInUse: false, currentlyUsedById: "", currentlyUsedByFullName: ""))
                     }
                     showingSheet = false
                 }, disabled: Binding<Bool>(

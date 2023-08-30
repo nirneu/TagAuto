@@ -31,7 +31,6 @@ enum LocationAuthMessages {
 
 protocol MapViewModel {
     var locationManager: CLLocationManager? { get }
-    var service: MapService { get }
     var region: MKCoordinateRegion { get }
     var newLocationRegion: MKCoordinateRegion { get }
     var state: LocationAuthState { get }
@@ -40,7 +39,7 @@ protocol MapViewModel {
     func getCurrentLocation()
     func getCurrentLocationForNewLocationMap()
     func regionForCar(_ car: Car?) -> MKCoordinateRegion
-    init(service: MapService)
+    init()
 }
 
 final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapViewDelegate{
@@ -68,15 +67,12 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
     @Published var selectedCoordinate: CLLocationCoordinate2D?
     
     var locationManager: CLLocationManager?
-    
-    let service: MapService
-    
+        
     private var subscriptions = Set<AnyCancellable>()
     
     var cancellable: AnyCancellable?
     
-    init(service: MapService) {
-        self.service = service
+    override init() {
         super.init()
         setupErrorSubscription()
         

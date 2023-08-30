@@ -15,10 +15,14 @@ struct CloseModifier: ViewModifier {
         
         content
             .toolbar {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .foregroundColor(Color(uiColor: .lightGray))
+                            .font(.headline)
+                    }
                 }
             }
     }

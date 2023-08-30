@@ -97,8 +97,8 @@ struct MapView: View {
                     Image(systemName: mapViewModel.isCurrentLocationClicked ? "location.fill" : "location")
                 }
                 .buttonStyle(.borderedProminent)
-                .cornerRadius(50)
-                .padding(.trailing, 15)
+                .clipShape(Circle())
+                .padding(.trailing, 5)
             }
             
         }
@@ -114,7 +114,7 @@ struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
-        let mapViewModel = MapViewModelImpl(service: MapServiceImpl())
+        let mapViewModel = MapViewModelImpl()
         let sessionService = SessionServiceImpl()
         
         MapView()

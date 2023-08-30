@@ -16,7 +16,6 @@
 		A82D1A062A6EBCC700687364 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A052A6EBCC700687364 /* ForgotPasswordViewModel.swift */; };
 		A82D1A0B2A71722700687364 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A0A2A71722700687364 /* MapView.swift */; };
 		A82D1A0E2A7172BB00687364 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A0D2A7172BB00687364 /* MapViewModel.swift */; };
-		A82DF7D52A77DD30005AD7B0 /* MapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82DF7D42A77DD30005AD7B0 /* MapService.swift */; };
 		A842D8512A5EBAFC008F8C8F /* FindCarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8502A5EBAFC008F8C8F /* FindCarApp.swift */; };
 		A842D8552A5EBAFD008F8C8F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A842D8542A5EBAFD008F8C8F /* Assets.xcassets */; };
 		A842D8582A5EBAFD008F8C8F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A842D8572A5EBAFD008F8C8F /* Preview Assets.xcassets */; };
@@ -69,7 +68,6 @@
 		A82D1A072A6FF67D00687364 /* FindCar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FindCar.entitlements; sourceTree = "<group>"; };
 		A82D1A0A2A71722700687364 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		A82D1A0D2A7172BB00687364 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
-		A82DF7D42A77DD30005AD7B0 /* MapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapService.swift; sourceTree = "<group>"; };
 		A842D84D2A5EBAFC008F8C8F /* FindCar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FindCar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A842D8502A5EBAFC008F8C8F /* FindCarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindCarApp.swift; sourceTree = "<group>"; };
 		A842D8542A5EBAFD008F8C8F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -169,7 +167,6 @@
 		A82DF7D32A77DD22005AD7B0 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				A82DF7D42A77DD30005AD7B0 /* MapService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -663,7 +660,6 @@
 				A8F7597A2A8E70FA009443BB /* AccountViewModel.swift in Sources */,
 				A82D1A0E2A7172BB00687364 /* MapViewModel.swift in Sources */,
 				A842D8862A6172D8008F8C8F /* RegistrationDetails.swift in Sources */,
-				A82DF7D52A77DD30005AD7B0 /* MapService.swift in Sources */,
 				A89F2E672A7938FA00C97665 /* GroupsViewModel.swift in Sources */,
 				A8FF95C22A7D16A60025C516 /* Car.swift in Sources */,
 				A8F7597D2A8E7176009443BB /* AccountService.swift in Sources */,

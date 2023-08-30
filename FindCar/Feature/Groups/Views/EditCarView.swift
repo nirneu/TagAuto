@@ -34,7 +34,7 @@ struct EditCarView: View {
                 
                 ButtonView(title: "Edit Car", handler: {
                     if !carName.trimmingCharacters(in: .whitespaces).isEmpty && !selectedEmoji.isEmpty {
-                        vm.updateCarDetails(Car(id: car.id, name: carName, location: car.location, adress: car.adress, groupName: car.groupName, note: car.note, icon: selectedEmoji))
+                        vm.updateCarDetails(Car(id: car.id, name: carName, location: car.location, adress: car.adress, groupName: car.groupName , groupId: car.groupId, note: car.note, icon: selectedEmoji, currentlyInUse: car.currentlyInUse, currentlyUsedById: car.currentlyUsedById, currentlyUsedByFullName: car.currentlyUsedByFullName))
                     }
                     dismiss()
                 }, disabled: Binding<Bool>(

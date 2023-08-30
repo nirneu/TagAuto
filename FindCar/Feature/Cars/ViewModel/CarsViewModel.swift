@@ -20,11 +20,13 @@ protocol CarsViewModel {
     var state: CarsState { get }
     var hasError: Bool { get }
     var cars: [Car] { get }
+    var currentCarInfo: Car { get }
     func fetchUserCars(userId: String, newLocation: CLLocation?)
     func selectCar(_ car: Car?)
     func updateCarLocation(car: Car, newLocation: CLLocation, userId: String)
+    func markCarAsUsed(carId: String, userId: String, userFullName: String)
     func updateCarNote(car: Car, note: String)
-    func getAddress(car: Car, geopoint: CLLocationCoordinate2D)
+    func getAddress(carId: String, geopoint: CLLocationCoordinate2D)
     func getCarNote(car: Car)
     init(service: CarsServiceImpl)
 }
@@ -38,6 +40,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     @Published var state: CarsState = .na
     @Published var hasError: Bool = false
     @Published var cars: [Car] = []
+    @Published var currentCarInfo: Car = Car.new
     @Published var carAdress: String = ""
     @Published var carNewNote: String = ""
     @Published var isLoading: Bool = true
@@ -45,7 +48,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     @Published var selectedCar: Car?
     @Published var locationUpdated: Bool = false
     @Published var currentLocationFocus: CLLocation?
-    
+
     init(service: CarsServiceImpl) {
         self.service = service
         setupErrorSubscription()
@@ -83,6 +86,28 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
             .store(in: &subscriptions)
     }
     
+    func getCar(carId: String) {
+        self.isLoading = true
+        self.carNewNote = ""
+        
+        service.getCar(carId: carId)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] res in
+                switch res {
+                case .failure (let error):
+                    self?.isLoading = false
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] car in
+                self?.state = .successful
+                self?.currentCarInfo = car
+                self?.isLoading = false
+            }
+            .store(in: &subscriptions)
+    }
+    
+    // updateCarLocation -> getAddress -> updateCarAddress -> getCar -> Finish isLoading and show data for user
     func updateCarLocation(car: Car, newLocation: CLLocation, userId: String) {
         
         self.isLoading = true
@@ -97,11 +122,11 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                 default: break
                 }
             } receiveValue: { [weak self] geoPoint in
-                self?.isLoading = false
+//                self?.isLoading = false
                 self?.state = .successful
                 self?.fetchUserCars(userId: userId, newLocation: newLocation)
                 self?.selectCar(car)
-                self?.getAddress(car: car, geopoint: CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude))
+                self?.getAddress(carId: car.id, geopoint: CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude))
             }
             .store(in: &subscriptions)
         
@@ -111,6 +136,27 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
         self.selectedCar = car
     }
     
+    func markCarAsUsed(carId: String, userId: String, userFullName: String) {
+        self.isLoading = true
+        
+        service.markCarAsUsed(carId: carId, userId: userId, userFullName: userFullName)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] res in
+                switch res {
+                case .failure (let error):
+                    self?.isLoading = false
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] _ in
+                self?.isLoading = false
+                self?.state = .successful
+                self?.fetchUserCars(userId: userId)
+                self?.getCar(carId: carId)
+            }
+            .store(in: &subscriptions)
+    }
+
     func updateCarNote(car: Car, note: String) {
         
         self.isLoading = true
@@ -133,16 +179,15 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
             .store(in: &subscriptions)
     }
     
-    func getAddress(car: Car, geopoint: CLLocationCoordinate2D) {
+    func getAddress(carId: String, geopoint: CLLocationCoordinate2D) {
 
-        self.isLoading = true
         self.carAdress = ""
         
         if geopoint.latitude == 0 && geopoint.longitude == 0 {
             self.carAdress = ""
             self.isLoading = false
         } else {
-            service.getAddress(carId: car.id, geopoint: geopoint)
+            service.getAddress(carId: carId, geopoint: geopoint)
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] res in
                     switch res {
@@ -155,7 +200,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                     self?.carAdress = adress
                     self?.isLoading = false
                     self?.state = .successful
-                    self?.updateCarAddress(carId: car.id, adress: adress)
+                    self?.updateCarAddress(carId: carId, adress: adress)
                 }
                 .store(in: &subscriptions)
         }
@@ -186,9 +231,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     }
     
     func updateCarAddress(carId: String, adress: String) {
-        
-        self.isLoading = true
-        
+                
         service.updateCarAddress(carId: carId, adress: adress)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] res in
@@ -199,8 +242,8 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                 default: break
                 }
             } receiveValue: { [weak self] _ in
-                self?.isLoading = false
                 self?.state = .successful
+                self?.getCar(carId: carId)
             }
             .store(in: &subscriptions)
     }

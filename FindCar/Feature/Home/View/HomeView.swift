@@ -12,7 +12,7 @@ struct HomeView: View {
     @EnvironmentObject var sessionService: SessionServiceImpl
     
     @StateObject var carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
-    @StateObject var mapViewModel = MapViewModelImpl(service: MapServiceImpl())
+    @StateObject var mapViewModel = MapViewModelImpl()
     
     @State private var showCarsSheet = true
     @State private var showMoreSheet = false
@@ -43,13 +43,14 @@ struct HomeView: View {
                                 carsViewModel.selectedCar = nil
                             } label: {
                                 Image(systemName: "xmark.circle")
+                                    .foregroundColor(Color(uiColor: .lightGray))
                                     .font(.title2)
                             }
                             
                         }
                         .padding([.top, .leading, .trailing, .bottom])
                         
-                        CarDetailsView(car: car)
+                        CarDetailsView(carId: car.id)
                             .environmentObject(sessionService)
                             .environmentObject(mapViewModel)
                             .environmentObject(carsViewModel)
@@ -63,6 +64,7 @@ struct HomeView: View {
                                 showMoreSheet = true
                             } label: {
                                 Image(systemName: "ellipsis.circle")
+                                    .foregroundColor(Color(uiColor: .lightGray))
                                     .font(.title2)
                             }
                             
@@ -114,7 +116,7 @@ struct HomeView: View {
                  
                 }
                 .background(.thinMaterial)
-                .presentationDetents([.fraction(0.1), .fraction(0.3), .large], selection: $sheetDetentSelection)
+                .presentationDetents([.fraction(0.3), .large], selection: $sheetDetentSelection)
                 .presentationDragIndicator(.visible)
                 .interactiveDismissDisabled()
                 .presentationBackgroundInteraction(.enabled)

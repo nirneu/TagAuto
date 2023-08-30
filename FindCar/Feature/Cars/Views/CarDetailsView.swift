@@ -17,22 +17,20 @@ struct CarDetailsView: View {
     
     @State private var showLocationUpdateAlert = false
     @State private var showNoteParkingAlert = false
-    @State private var carToUpdate: Car?
-    @State private var selectedCar: Car?
     @State private var locationText: String = ""
     
-    var car: Car
+    var carId: String
     
     var body: some View {
         
         VStack(alignment: .leading, spacing: 10) {
             
-            VStack {
+            VStack(alignment: .leading, spacing: 10) {
                 if carsViewModel.isLoading {
                     ProgressView()
                 } else {
                     
-                    if carsViewModel.carAdress.isEmpty {
+                    if carsViewModel.currentCarInfo.adress.isEmpty {
                         HStack {
                             Image(systemName: "exclamationmark.circle")
                             Text("The vehicle doesn't have a location yet")
@@ -41,41 +39,72 @@ struct CarDetailsView: View {
                         VStack(alignment: .leading) {
                             Text("Last Known Address:")
                                 .bold()
-                            Text(carsViewModel.carAdress)
+                            
+                            Text(carsViewModel.currentCarInfo.adress)
                                 .foregroundColor(.gray)
                             
                         }
                         .padding(.bottom, 5)
                     }
                     
+                    if carsViewModel.currentCarInfo.currentlyInUse {
+                        
+                        VStack(alignment: .leading) {
+                            Text("Currently used by:")
+                                .bold()
+                            
+                            Text(carsViewModel.currentCarInfo.currentlyUsedByFullName)
+                                .foregroundColor(.gray)
+                        }
+                    }
                 }
             }
             HStack {
-                Button {
-                    carToUpdate = car
-                    self.showLocationUpdateAlert = true
-                } label: {
-                    Image(systemName: "mappin.and.ellipse")
-                    Text("Update Location")
-                }
-                .buttonStyle(.borderedProminent)
-                .cornerRadius(50)
                 
-//                Button {
-//                    self.showNoteParkingAlert = true
-//                } label: {
-//                    Image(systemName: "note.text")
-//                    Text("Take a Note")
-//                }
-//                .buttonStyle(.borderedProminent)
+                if carsViewModel.currentCarInfo.currentlyInUse {
+                    
+                    if let userDetails = sessionService.userDetails {
+                        
+                        if userDetails.userId == carsViewModel.currentCarInfo.currentlyUsedById {
+                            Button {
+                                self.showLocationUpdateAlert = true
+                            } label: {
+                                Image(systemName: "mappin.and.ellipse")
+                                Text("Park Vehicle")
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .cornerRadius(50)
+                            
+                        } else {
+                            Button {
+                                carsViewModel.markCarAsUsed(carId: carId, userId: userDetails.userId, userFullName: userDetails.firstName + " " + userDetails.lastName)
+                            } label: {
+                                Image(systemName: "person.badge.key")
+                                Text("Mark as using")
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .cornerRadius(50)
+                        }
+                    }
+                    
+                } else {
+                    Button {
+                        if let userDetails = sessionService.userDetails {
+                            carsViewModel.markCarAsUsed(carId: carId, userId: userDetails.userId, userFullName: userDetails.firstName + " " + userDetails.lastName)
+                        }
+                    } label: {
+                        Image(systemName: "person.badge.key")
+                        Text("Mark as using")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .cornerRadius(50)
+                }
             }
-               
         }
         .frame(maxHeight: .infinity, alignment: .top)
         .onAppear {
-            carsViewModel.selectCar(car)
             carsViewModel.carNewNote = ""
-            carsViewModel.getAddress(car: car, geopoint: car.locationCorodinate)
+            carsViewModel.getCar(carId: carId)
         }
         .sheet(isPresented: $showLocationUpdateAlert,onDismiss: {
             mapViewModel.pickedLocation = nil
@@ -83,38 +112,15 @@ struct CarDetailsView: View {
             mapViewModel.searchText = ""
             mapViewModel.mapView.removeAnnotations(mapViewModel.mapView.annotations)
         }, content: {
-        
-            SearchView(showingSheet: $showLocationUpdateAlert, car: car)
+            
+            SearchView(showingSheet: $showLocationUpdateAlert, car: carsViewModel.currentCarInfo)
                 .environmentObject(mapViewModel)
                 .environmentObject(carsViewModel)
                 .environmentObject(sessionService)
                 .presentationDragIndicator(.visible)
             
         })
-        .alert("Note Parking Spot", isPresented: $showNoteParkingAlert, actions: {
-            
-            TextField(
-                "Where have you parked?",
-                text: $locationText
-            )
-            
-            Button("Save", action: {
-                if !locationText.isEmpty {
-                    carsViewModel.updateCarNote(car: car, note: locationText)
-                    if let userId = sessionService.userDetails?.userId {
-                        carsViewModel.fetchUserCars(userId: userId)
-                    }
-                }
-                self.showNoteParkingAlert = false
-            })
-            Button("Cancel", role: .cancel) {
-                self.showNoteParkingAlert = false
-            }
-        }, message: {
-            Text("Write down where you parked")
-        })
     }
-    
 }
 
 struct CarDetailsView_Previews: PreviewProvider {
@@ -122,9 +128,13 @@ struct CarDetailsView_Previews: PreviewProvider {
         
         let sessionService = SessionServiceImpl()
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
+        let mapViewModel = MapViewModelImpl()
         
-        CarDetailsView(car: Car.new)
+        @State var selectedCar: Car?
+        
+        CarDetailsView(carId: Car.new.id)
             .environmentObject(sessionService)
             .environmentObject(carsViewModel)
+            .environmentObject(mapViewModel)
     }
 }

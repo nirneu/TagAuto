@@ -17,11 +17,17 @@ enum CarKeys: String {
     case adress
     case note
     case icon
+    case group
+    case currentlyInUse
+    case currentlyUsedById
+    case currentlyUsedByFullName
 }
 
 protocol CarsService {
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error>
+    func getCar(carId: String) -> AnyPublisher<Car, Error>
     func updateCarLocation(_ car: Car, location: CLLocation) -> AnyPublisher<GeoPoint, Error>
+    func markCarAsUsed(carId: String, userId: String, userFullName: String) -> AnyPublisher<Void, Error>
     func updateCarNote(_ car: Car, note: String) -> AnyPublisher<String, Error> 
     func getAddress(carId: String, geopoint: CLLocationCoordinate2D) -> AnyPublisher<String, Error>
     func getCarNote(_ car: Car) -> AnyPublisher<String, Error>
@@ -78,7 +84,7 @@ final class CarsServiceImpl: CarsService {
                                                 promise(.failure(error))
                                             } else if let document = document, document.exists, let data = document.data() {
 
-                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, note: data[CarKeys.note.rawValue] as? String ?? "", icon: data[CarKeys.icon.rawValue] as? String ?? "")
+                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, groupId: "", note: data[CarKeys.note.rawValue] as? String ?? "", icon: data[CarKeys.icon.rawValue] as? String ?? "", currentlyInUse: data[CarKeys.currentlyInUse.rawValue] as? Bool ?? false, currentlyUsedById: data[CarKeys.currentlyUsedById.rawValue] as? String ?? "", currentlyUsedByFullName: data[CarKeys.currentlyUsedByFullName.rawValue] as? String ?? "")
                                                 cars.append(car)
                                                 
                                             }
@@ -104,6 +110,29 @@ final class CarsServiceImpl: CarsService {
         .eraseToAnyPublisher()
     }
     
+    func getCar(carId: String) -> AnyPublisher<Car, Error> {
+        Deferred {
+            
+            Future { promise in
+                
+                self.db.collection(self.carsPath).document(carId).getDocument() { (document, error) in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        
+                        if let document = document, document.exists, let data = document.data() {
+                            let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: "", groupId: data[CarKeys.group.rawValue] as? String ?? "", note: data[CarKeys.note.rawValue] as? String ?? "", icon: data[CarKeys.icon.rawValue] as? String ?? "", currentlyInUse: data[CarKeys.currentlyInUse.rawValue] as? Bool ?? false, currentlyUsedById: data[CarKeys.currentlyUsedById.rawValue] as? String ?? "", currentlyUsedByFullName: data[CarKeys.currentlyUsedByFullName.rawValue] as? String ?? "")
+                            
+                            promise(.success(car))
+                        }
+                    }
+                }
+            }
+        }
+        .receive(on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+
     func updateCarLocation(_ car: Car, location: CLLocation) -> AnyPublisher<GeoPoint, Error> {
         
         Deferred {
@@ -116,11 +145,38 @@ final class CarsServiceImpl: CarsService {
                 // update the location in Firestore
                 self.db.collection(self.carsPath).document(car.id).updateData([
                     CarKeys.location.rawValue: geoPoint,
+                    // When someone parks there's no one using it anymore
+                    CarKeys.currentlyInUse.rawValue: false,
+                    CarKeys.currentlyUsedById.rawValue: "",
+                    CarKeys.currentlyUsedByFullName.rawValue: "",
                 ]) { error in
                     if let error = error {
                         promise(.failure(error))
                     } else {
                         promise(.success((geoPoint)))
+                    }
+                }
+            }
+        }
+        .receive(on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+    
+    func markCarAsUsed(carId: String, userId: String, userFullName: String) -> AnyPublisher<Void, Error> {
+        
+        Deferred {
+            
+            Future { promise in
+                
+                self.db.collection(self.carsPath).document(carId).updateData([
+                    CarKeys.currentlyInUse.rawValue: true,
+                    CarKeys.currentlyUsedById.rawValue: userId,
+                    CarKeys.currentlyUsedByFullName.rawValue: userFullName
+                ]) { error in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(()))
                     }
                 }
             }
