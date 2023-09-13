@@ -21,73 +21,79 @@ struct LoginView: View {
         
         NavigationStack {
             
-            VStack(spacing: 16) {
+            ScrollView {
                 
                 VStack(spacing: 16) {
                     
-                    InputTextFieldView(text: $vm.credentials.email, placeholder: "Email", keyboardType: .emailAddress, sfSymbol: "envelope")
-                    
-                    InputPasswordView(password: $vm.credentials.password, placeholder: "Password", sfSymbol: "lock")
-                }
-                
-                HStack {
-                    Spacer()
-                    Button {
-                        showForgotPassword.toggle()
-                    } label: {
-                        Text("Forgot Password?")
-                    }
-                    .font(.system(size: 16, weight: .bold))
-                    .sheet(isPresented: $showForgotPassword) {
-                        ForgotPasswordView()
-                    }
-                }
-                
-                VStack(spacing: 16) {
-                    
-                    ButtonView(title: "Login") {
-                        vm.login()
+                    VStack(spacing: 16) {
+                        
+                        InputTextFieldView(text: $vm.credentials.email, placeholder: "Email", keyboardType: .emailAddress, sfSymbol: "envelope")
+                        
+                        InputPasswordView(password: $vm.credentials.password, placeholder: "Password", sfSymbol: "lock")
                     }
                     
-                    ButtonView(title: "Register", background: .clear, foreground: .blue, border: .blue) {
-                        showRegistration.toggle()
-                    }
-                    .sheet(isPresented: $showRegistration) {
-                        RegisterView()
-                    }
-                }
-                
-                HStack {
-                    VStack { Divider() }
-                    Text("or")
-                    VStack { Divider() }
-                }
-                
-                VStack(spacing: 16) {
-                    SignInWithAppleButton(
-                        onRequest: { request in
-                            vm.handleSignInWithAppleRequest(with: request)
-                        },
-                        onCompletion: { result in
-                            vm.handleSignInWithAppleCompletion(with: result)
+                    HStack {
+                        Spacer()
+                        Button {
+                            showForgotPassword.toggle()
+                        } label: {
+                            Text("Forgot Password?")
                         }
-                    )
-                    .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
-                    .frame(maxWidth: .infinity, maxHeight: 50)
-                    .cornerRadius(50)
+                        .font(.system(size: 16, weight: .bold))
+                        .sheet(isPresented: $showForgotPassword) {
+                            ForgotPasswordView()
+                        }
+                    }
+                    
+                    VStack(spacing: 16) {
+                        
+                        ButtonView(title: "Login") {
+                            vm.login()
+                        }
+                        
+                        ButtonView(title: "Register", background: .clear, foreground: .blue, border: .blue) {
+                            showRegistration.toggle()
+                        }
+                        .sheet(isPresented: $showRegistration) {
+                            RegisterView()
+                        }
+                    }
+                    
+                    HStack {
+                        VStack { Divider() }
+                        Text("or")
+                        VStack { Divider() }
+                    }
+                    
+                    VStack(spacing: 16) {
+                        SignInWithAppleButton(
+                            onRequest: { request in
+                                vm.handleSignInWithAppleRequest(with: request)
+                            },
+                            onCompletion: { result in
+                                vm.handleSignInWithAppleCompletion(with: result)
+                            }
+                        )
+                        .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                        .cornerRadius(50)
+                    }
+                }
+                .padding([.horizontal, .top], 15)
+                .navigationTitle("Login")
+                .alert("Error", isPresented: $vm.hasError) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    if case .failed(let error) = vm.state {
+                        Text(error.localizedDescription)
+                    } else {
+                        Text("Something went wrong")
+                    }
                 }
             }
-            .padding(.horizontal, 15)
-            .navigationTitle("Login")
-            .alert("Error", isPresented: $vm.hasError) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                if case .failed(let error) = vm.state {
-                    Text(error.localizedDescription)
-                } else {
-                    Text("Something went wrong")
-                }
-            }
+        }
+        .onTapGesture {
+            self.endTextEditing()
         }
     }
 }
