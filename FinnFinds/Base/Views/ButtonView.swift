@@ -32,8 +32,8 @@ struct ButtonView: View {
     var body: some View {
         Button(action: handler) {
             Text(title)
-                .frame(maxWidth: .infinity, maxHeight: 50)
         }
+        .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 50)
         .background(disabled ? Color.gray : background)
         .foregroundColor(foreground)
         .font(.system(size: 16, weight: .bold))

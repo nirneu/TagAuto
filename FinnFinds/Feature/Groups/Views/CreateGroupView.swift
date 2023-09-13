@@ -19,40 +19,46 @@ struct CreateGroupView: View {
         
         NavigationStack {
             
-            VStack(spacing: 32) {
+            ScrollView {
                 
-                VStack(spacing: 16) {
+                VStack(spacing: 32) {
                     
-                    InputTextFieldView(text: $vm.groupDetails.name, placeholder: "Name", keyboardType: .namePhonePad, sfSymbol: nil)
-                    
-                }
-                
-                ButtonView(title: "Create", handler: {
-                    if let userId = sessionService.userDetails?.userId, !userId.isEmpty {
-                        vm.groupDetails.members.append(userId)
-                        vm.createGroup()
+                    VStack(spacing: 16) {
+                        
+                        InputTextFieldView(text: $vm.groupDetails.name, placeholder: "Name", keyboardType: .namePhonePad, sfSymbol: nil)
+                        
                     }
-                    showingSheet = false
-                }, disabled: Binding<Bool>(
-                    get: { vm.groupDetails.name.trimmingCharacters(in: .whitespaces).isEmpty ||
-                        sessionService.userDetails?.userId == nil ||
-                        sessionService.userDetails?.userId.trimmingCharacters(in: .whitespaces).isEmpty ?? true },
-                    set: { _ in }
-                ))
-            }
-            .padding(.horizontal, 15)
-            .navigationTitle("Create Group")
-            .alert("Error", isPresented: $vm.hasError) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                if case .failed(let error) = vm.state {
-                    Text(error.localizedDescription)
-                } else {
-                    Text("Something went wrong")
+                    
+                    ButtonView(title: "Create", handler: {
+                        if let userId = sessionService.userDetails?.userId, !userId.isEmpty {
+                            vm.groupDetails.members.append(userId)
+                            vm.createGroup()
+                        }
+                        showingSheet = false
+                    }, disabled: Binding<Bool>(
+                        get: { vm.groupDetails.name.trimmingCharacters(in: .whitespaces).isEmpty ||
+                            sessionService.userDetails?.userId == nil ||
+                            sessionService.userDetails?.userId.trimmingCharacters(in: .whitespaces).isEmpty ?? true },
+                        set: { _ in }
+                    ))
+                    
                 }
+                .padding([.horizontal, .top], 15)
+                .navigationTitle("Create Group")
+                .alert("Error", isPresented: $vm.hasError) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    if case .failed(let error) = vm.state {
+                        Text(error.localizedDescription)
+                    } else {
+                        Text("Something went wrong")
+                    }
+                }
+                .applyClose()
             }
-            .applyClose()
-            
+        }
+        .onTapGesture {
+              self.endTextEditing()
         }
     }
 }

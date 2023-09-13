@@ -23,37 +23,47 @@ struct AddCarView: View {
         
         NavigationStack {
             
-            VStack(spacing: 32) {
+            ScrollView {
                 
-                VStack(spacing: 16) {
+                VStack(spacing: 32) {
                     
-                    InputTextFieldView(text: $carName, placeholder: "Vehicle Name", keyboardType: .default, sfSymbol: nil)
-                    
-                    VehicleEmojiPicker(selectedEmoji: $selectedEmoji)
-                }
-                
-                ButtonView(title: "Add Vehicle", handler: {
-                    if !carName.trimmingCharacters(in: .whitespaces).isEmpty && !selectedEmoji.isEmpty {
-                        vm.addCarToGroup(groupId: group.id, car: Car(id: "", name: carName, location: GeoPoint(latitude: 0, longitude: 0), adress: "", groupName: "", groupId: "", note: "", icon: selectedEmoji, currentlyInUse: false, currentlyUsedById: "", currentlyUsedByFullName: ""))
+                    VStack(spacing: 16) {
+                        
+                        InputTextFieldView(text: $carName, placeholder: "Vehicle Name", keyboardType: .default, sfSymbol: nil)
+                        
+                        VehicleEmojiPicker(selectedEmoji: $selectedEmoji)
+                        
                     }
-                    showingSheet = false
-                }, disabled: Binding<Bool>(
-                    get: { carName.trimmingCharacters(in: .whitespaces).isEmpty || selectedEmoji.isEmpty },
-                    set: { _ in }
-                ))
-            }
-            .padding(.horizontal, 15)
-            .navigationTitle("Add Vehicle")
-            .alert("Error", isPresented: $vm.hasError) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                if case .failed(let error) = vm.state {
-                    Text(error.localizedDescription)
-                } else {
-                    Text("Something went wrong")
+                    .padding(.top)
+                    
+                    ButtonView(title: "Add Vehicle", handler: {
+                        if !carName.trimmingCharacters(in: .whitespaces).isEmpty && !selectedEmoji.isEmpty {
+                            vm.addCarToGroup(groupId: group.id, car: Car(id: "", name: carName, location: GeoPoint(latitude: 0, longitude: 0), adress: "", groupName: "", groupId: "", note: "", icon: selectedEmoji, currentlyInUse: false, currentlyUsedById: "", currentlyUsedByFullName: ""))
+                        }
+                        showingSheet = false
+                    }, disabled: Binding<Bool>(
+                        get: { carName.trimmingCharacters(in: .whitespaces).isEmpty || selectedEmoji.isEmpty },
+                        set: { _ in }
+                    ))
+                    
                 }
+                .padding(.horizontal, 15)
+                .navigationTitle("Add Vehicle")
+                .alert("Error", isPresented: $vm.hasError) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    if case .failed(let error) = vm.state {
+                        Text(error.localizedDescription)
+                    } else {
+                        Text("Something went wrong")
+                    }
+                }
+                .applyClose()
+                
             }
-            .applyClose()
+        }
+        .onTapGesture {
+              self.endTextEditing()
         }
     }
 }

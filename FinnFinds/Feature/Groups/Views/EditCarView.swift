@@ -23,42 +23,48 @@ struct EditCarView: View {
     var body: some View {
         NavigationStack {
             
-            VStack(spacing: 32) {
+            ScrollView {
                 
-                VStack(spacing: 16) {
+                VStack(spacing: 32) {
                     
-                    InputTextFieldView(text: $carName, placeholder: "Car Name", keyboardType: .default, sfSymbol: nil)
-                    
-                    VehicleEmojiPicker(selectedEmoji: $selectedEmoji)
-                }
-                
-                ButtonView(title: "Edit Car", handler: {
-                    if !carName.trimmingCharacters(in: .whitespaces).isEmpty && !selectedEmoji.isEmpty {
-                        vm.updateCarDetails(Car(id: car.id, name: carName, location: car.location, adress: car.adress, groupName: car.groupName , groupId: car.groupId, note: car.note, icon: selectedEmoji, currentlyInUse: car.currentlyInUse, currentlyUsedById: car.currentlyUsedById, currentlyUsedByFullName: car.currentlyUsedByFullName))
+                    VStack(spacing: 16) {
+                        
+                        InputTextFieldView(text: $carName, placeholder: "Car Name", keyboardType: .default, sfSymbol: nil)
+                        
+                        VehicleEmojiPicker(selectedEmoji: $selectedEmoji)
                     }
-                    dismiss()
-                }, disabled: Binding<Bool>(
-                    get: { carName.trimmingCharacters(in: .whitespaces).isEmpty || selectedEmoji.isEmpty },
-                    set: { _ in }
-                ))
-            }
-            .onAppear {
-                carName = car.name
-                selectedEmoji = car.icon
-            }
-            .padding(.horizontal, 15)
-            .navigationTitle("Edit Car")
-            .alert("Error", isPresented: $vm.hasError) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                if case .failed(let error) = vm.state {
-                    Text(error.localizedDescription)
-                } else {
-                    Text("Something went wrong")
+                    .padding(.top)
+                    
+                    ButtonView(title: "Edit Car", handler: {
+                        if !carName.trimmingCharacters(in: .whitespaces).isEmpty && !selectedEmoji.isEmpty {
+                            vm.updateCarDetails(Car(id: car.id, name: carName, location: car.location, adress: car.adress, groupName: car.groupName , groupId: car.groupId, note: car.note, icon: selectedEmoji, currentlyInUse: car.currentlyInUse, currentlyUsedById: car.currentlyUsedById, currentlyUsedByFullName: car.currentlyUsedByFullName))
+                        }
+                        dismiss()
+                    }, disabled: Binding<Bool>(
+                        get: { carName.trimmingCharacters(in: .whitespaces).isEmpty || selectedEmoji.isEmpty },
+                        set: { _ in }
+                    ))
                 }
+                .onAppear {
+                    carName = car.name
+                    selectedEmoji = car.icon
+                }
+                .padding(.horizontal, 15)
+                .navigationTitle("Edit Car")
+                .alert("Error", isPresented: $vm.hasError) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    if case .failed(let error) = vm.state {
+                        Text(error.localizedDescription)
+                    } else {
+                        Text("Something went wrong")
+                    }
+                }
+                .applyClose()
             }
-            .applyClose()
-        
+        }
+        .onTapGesture {
+              self.endTextEditing()
         }
     }
 }
