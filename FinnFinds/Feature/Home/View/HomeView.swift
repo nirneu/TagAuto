@@ -16,10 +16,10 @@ struct HomeView: View {
     
     @State private var showCarsSheet = true
     @State private var showMoreSheet = false
-    @State private var sheetDetentSelection = PresentationDetent.fraction(0.3)
+    @State private var sheetDetentSelection = PresentationDetent.fraction(Constants.defaultPresentationDetentFraction)
     @State private var selectedCar: Car?
     @State private var dismissCarsView = true
-    
+            
     var body: some View {
         
         MapView()
@@ -116,7 +116,7 @@ struct HomeView: View {
                  
                 }
                 .background(.thinMaterial)
-                .presentationDetents([.fraction(0.3), .large], selection: $sheetDetentSelection)
+                .presentationDetents([.fraction(Constants.defaultPresentationDetentFraction), .large], selection: $sheetDetentSelection)
                 .presentationDragIndicator(.visible)
                 .interactiveDismissDisabled()
                 .presentationBackgroundInteraction(.enabled)

@@ -65,7 +65,8 @@ struct MapView: View {
                 
                 // Only if a car has a location show it on the map
                 if coordinate.latitude != 0 && coordinate.longitude != 0 {
-                    let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
+                    
+                    let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
                     DispatchQueue.main.async {
                         mapViewModel.region = region
                     }
@@ -104,7 +105,9 @@ struct MapView: View {
         }
         .onChange(of: carsViewModel.currentLocationFocus) { newLocation in
             if let location = newLocation {
-                mapViewModel.region = MKCoordinateRegion( center: location.coordinate, span: MapDetails.defaultSpan)
+                // Center the camera focus in proportion with the bottom sheet
+                let centeredLocation = CLLocationCoordinate2D(latitude: location.coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: location.coordinate.longitude)
+                mapViewModel.region = MKCoordinateRegion( center: centeredLocation, span: MapDetails.defaultSpan)
             }
         }
     }

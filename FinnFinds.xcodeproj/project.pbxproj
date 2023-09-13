@@ -37,6 +37,7 @@
 		A842D8962A63FC28008F8C8F /* LoginCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8952A63FC28008F8C8F /* LoginCredentials.swift */; };
 		A842D8992A63FC72008F8C8F /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8982A63FC72008F8C8F /* LoginService.swift */; };
 		A87139AC2AB0AFA10053C187 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A87139AB2AB0AFA10053C187 /* GoogleService-Info.plist */; };
+		A87139AF2AB2027D0053C187 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A87139AE2AB2027D0053C187 /* Constants.swift */; };
 		A885FD862A6E78F300C3CBD4 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A885FD852A6E78F300C3CBD4 /* LoginViewModel.swift */; };
 		A88B86F82A99130300F90C54 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88B86F72A99130300F90C54 /* SearchView.swift */; };
 		A89F2E642A79359800C97665 /* GroupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E632A79359800C97665 /* GroupsService.swift */; };
@@ -88,6 +89,7 @@
 		A842D8952A63FC28008F8C8F /* LoginCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCredentials.swift; sourceTree = "<group>"; };
 		A842D8982A63FC72008F8C8F /* LoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
 		A87139AB2AB0AFA10053C187 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A87139AE2AB2027D0053C187 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A885FD852A6E78F300C3CBD4 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		A88B86F72A99130300F90C54 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		A89F2E632A79359800C97665 /* GroupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsService.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 		A842D85E2A5EBB09008F8C8F /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				A87139AD2AB2026B0053C187 /* Constants */,
 				A8F759712A8E6C8A009443BB /* Functions */,
 				A842D86E2A5F1C62008F8C8F /* Modifier */,
 				A842D86B2A5F11B8008F8C8F /* Views */,
@@ -387,6 +390,14 @@
 				A842D8982A63FC72008F8C8F /* LoginService.swift */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		A87139AD2AB2026B0053C187 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				A87139AE2AB2027D0053C187 /* Constants.swift */,
+			);
+			path = Constants;
 			sourceTree = "<group>";
 		};
 		A885FD842A6E78D000C3CBD4 /* ViewModel */ = {
@@ -652,6 +663,7 @@
 				A89F2E6A2A793BCA00C97665 /* GroupsView.swift in Sources */,
 				A8A863702A7BB5EA0046995D /* UserDetails.swift in Sources */,
 				A842D8512A5EBAFC008F8C8F /* FinnFindsApp.swift in Sources */,
+				A87139AF2AB2027D0053C187 /* Constants.swift in Sources */,
 				A842D8742A607988008F8C8F /* ButtonView.swift in Sources */,
 				A842D88C2A619088008F8C8F /* RegistrationViewModel.swift in Sources */,
 				A82D1A032A6EB65100687364 /* ForgotPasswordService.swift in Sources */,

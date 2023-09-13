@@ -20,7 +20,7 @@ struct CarsView: View {
     func handleTap(_ car: Car) {
         self.selectedCar = car
         carsViewModel.selectCar(car)
-        self.sheetDetentSelection = PresentationDetent.fraction(0.3)
+        self.sheetDetentSelection = PresentationDetent.fraction(Constants.defaultPresentationDetentFraction)
     }
     
     var body: some View {
@@ -94,7 +94,8 @@ struct CarsView: View {
                     } else {
                         
                         Text("You still don't have cars. Go ahead for the Groups section to add one.")
-                        
+                            .listRowBackground(Color.clear)
+
                     }
                 }
             }
@@ -132,7 +133,7 @@ struct CarsView_Previews: PreviewProvider {
     static var previews: some View {
         
         @State var selectedCar: Car?
-        @State var sheetDetentSelection = PresentationDetent.fraction(0.3)
+        @State var sheetDetentSelection = PresentationDetent.fraction(Constants.defaultPresentationDetentFraction)
 
         let sessionService = SessionServiceImpl()
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())

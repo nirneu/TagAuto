@@ -12,7 +12,8 @@ import CoreLocation
 
 enum MapDetails {
     static let startingLocation = CLLocationCoordinate2D(latitude: 37.331516, longitude: -121.891054)
-    static let defaultSpan = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+    static let defaultCLLocationDegrees = 0.005
+    static let defaultSpan = MKCoordinateSpan(latitudeDelta: defaultCLLocationDegrees, longitudeDelta: defaultCLLocationDegrees)
 }
 
 enum LocationAuthState {
@@ -106,7 +107,9 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
     func getCurrentLocation() {
         DispatchQueue.main.async {
             if let location = self.locationManager?.location {
-                let currentLocation = MKCoordinateRegion(center: location.coordinate,
+                // Center the camera focus in proportion with the bottom sheet
+                let centeredLocation = CLLocationCoordinate2D(latitude: location.coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: location.coordinate.longitude)
+                let currentLocation = MKCoordinateRegion(center: centeredLocation,
                                                          span: MapDetails.defaultSpan)
                 self.region = currentLocation
                 self.isCurrentLocationClicked = true
@@ -151,7 +154,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
     
     func regionForCar(_ car: Car?) -> MKCoordinateRegion {
         guard let coordinate = car?.location else { return self.region }
-        let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+        let span = MKCoordinateSpan(latitudeDelta: MapDetails.defaultCLLocationDegrees, longitudeDelta: MapDetails.defaultCLLocationDegrees)
         return MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: span)
     }
     
@@ -218,8 +221,10 @@ extension MapViewModelImpl: CLLocationManagerDelegate {
                 self.state = .unauthorized(reason: LocationAuthMessages.denied)
             case .authorizedAlways, .authorizedWhenInUse:
                 if let location = manager.location {
+                    // Center the camera focus in proportion with the bottom sheet
+                    let centeredLocation = CLLocationCoordinate2D(latitude: location.coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: location.coordinate.longitude)
                     DispatchQueue.main.async {
-                        self.region = MKCoordinateRegion(center: location.coordinate,
+                        self.region = MKCoordinateRegion(center: centeredLocation,
                                                          span: MapDetails.defaultSpan)
                     }
                 } else {
