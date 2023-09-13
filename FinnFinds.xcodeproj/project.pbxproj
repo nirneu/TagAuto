@@ -92,6 +92,7 @@
 		A87139AB2AB0AFA10053C187 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A87139AE2AB2027D0053C187 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A87139B02AB227020053C187 /* KeyboardDismissOnTap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardDismissOnTap.swift; sourceTree = "<group>"; };
+		A87139B22AB244D60053C187 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A885FD852A6E78F300C3CBD4 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		A88B86F72A99130300F90C54 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		A89F2E632A79359800C97665 /* GroupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsService.swift; sourceTree = "<group>"; };
@@ -194,6 +195,7 @@
 		A842D84F2A5EBAFC008F8C8F /* FinnFinds */ = {
 			isa = PBXGroup;
 			children = (
+				A87139B22AB244D60053C187 /* Info.plist */,
 				A82D1A072A6FF67D00687364 /* FinnFinds.entitlements */,
 				A842D85F2A5EBB0D008F8C8F /* Feature */,
 				A842D85E2A5EBB09008F8C8F /* Base */,
@@ -820,6 +822,7 @@
 				DEVELOPMENT_TEAM = 2A8JYJ93YV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FinnFinds/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FinnFinds;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app needs your location to find it on the map.";
@@ -856,6 +859,7 @@
 				DEVELOPMENT_TEAM = 2A8JYJ93YV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FinnFinds/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FinnFinds;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app needs your location to find it on the map.";
