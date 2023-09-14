@@ -16,7 +16,7 @@ struct LoginView: View {
     @State private var showForgotPassword = false
     
     @StateObject private var vm = LoginViewModelImpl(service: LoginServiceImpl())
-    
+        
     var body: some View {
         
         NavigationStack {
@@ -30,6 +30,7 @@ struct LoginView: View {
                         InputTextFieldView(text: $vm.credentials.email, placeholder: "Email", keyboardType: .emailAddress, sfSymbol: "envelope")
                         
                         InputPasswordView(password: $vm.credentials.password, placeholder: "Password", sfSymbol: "lock")
+                        
                     }
                     
                     HStack {
@@ -91,9 +92,6 @@ struct LoginView: View {
                     }
                 }
             }
-        }
-        .onTapGesture {
-            self.endTextEditing()
         }
     }
 }

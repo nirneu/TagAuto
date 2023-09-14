@@ -87,9 +87,6 @@ struct InviteMemberView: View {
                 .applyClose()
             }
         }
-        .onTapGesture {
-            self.endTextEditing()
-        }
     }
 }
 

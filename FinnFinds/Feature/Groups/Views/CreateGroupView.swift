@@ -57,9 +57,6 @@ struct CreateGroupView: View {
                 .applyClose()
             }
         }
-        .onTapGesture {
-              self.endTextEditing()
-        }
     }
 }
 

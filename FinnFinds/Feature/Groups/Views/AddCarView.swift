@@ -62,9 +62,6 @@ struct AddCarView: View {
                 
             }
         }
-        .onTapGesture {
-              self.endTextEditing()
-        }
     }
 }
 

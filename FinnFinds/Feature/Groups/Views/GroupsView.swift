@@ -86,6 +86,8 @@ struct GroupsView: View {
                     Image(systemName: "plus")
                 }
                 .sheet(isPresented: $showCreateGroup, onDismiss: {
+                    vm.groupDetails.members = []
+                    vm.groupDetails.name = ""
                 }) {
                     CreateGroupView(showingSheet: $showCreateGroup)
                         .environmentObject(vm)
