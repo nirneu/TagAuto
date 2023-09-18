@@ -36,7 +36,21 @@ struct MapView: View {
                 MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: car.location.latitude, longitude: car.location.longitude)) {
                     VStack {
                         Text(car.icon)
-                        Text(car.name).font(.system(.caption, weight: .bold))
+                        
+                        if car.currentlyInUse {
+                            Text(car.name)
+                                .font(.system(.caption))
+                                .foregroundStyle(.gray)
+                            HStack(spacing: 5) {
+                                Image(systemName: "exclamationmark.circle")
+                                Text("Unavailable")
+                            }
+                            .font(.system(.caption))
+                            .foregroundStyle(.gray)
+
+                        } else {
+                            Text(car.name).font(.system(.caption, weight: .bold))
+                        }
                     }
                     .onTapGesture {
                         carsViewModel.selectCar(car)

@@ -52,28 +52,33 @@ struct CarsView: View {
                                                 .font(.title3.bold())
                                             if car.currentlyInUse {
                                                 HStack(spacing: 5) {
-                                                    Image(systemName: "person.badge.key")
-                                                        .font(.caption.bold())
+                                                    Image(systemName: "exclamationmark.circle")
+                                                        .font(.subheadline)
+                                                        .bold()
                                                         .foregroundColor(.gray)
 
                                                     Text("The vehicle is currently in use")
-                                                        .font(.caption.bold())
+                                                        .bold()
+                                                        .font(.subheadline)
                                                         .foregroundColor(.gray)
                                                 }
                                             } else {
                                                 if car.adress.isEmpty {
                                                     HStack(spacing: 5) {
                                                         Image(systemName: "exclamationmark.circle")
-                                                            .font(.caption)
                                                             .foregroundColor(.gray)
+                                                            .font(.subheadline)
+
                                                         Text("The vehicle doesn't have a location yet")
-                                                            .font(.caption)
+                                                            .font(.subheadline)
+
                                                             .foregroundColor(.gray)
                                                     }
                                                 } else {
                                                     Text(car.adress)
-                                                        .font(.caption)
                                                         .foregroundColor(.gray)
+                                                        .font(.subheadline)
+
                                                 }
                                             }
                                         }
@@ -84,7 +89,7 @@ struct CarsView: View {
                                     }
                                     
                                 }
-                                .frame(height: 40)
+                                .frame(height: 50)
                                 .listRowBackground(Color.clear)
                                 
                             }

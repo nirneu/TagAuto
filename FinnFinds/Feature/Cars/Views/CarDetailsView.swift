@@ -18,17 +18,18 @@ struct CarDetailsView: View {
     @State private var showLocationUpdateAlert = false
     @State private var showNoteParkingAlert = false
     @State private var locationText: String = ""
-        
+    
     var carId: String
     
     var body: some View {
         
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 20) {
             
-            VStack(alignment: .leading, spacing: 10) {
-                if carsViewModel.isLoading {
-                    ProgressView()
-                } else {
+            if carsViewModel.isLoading {
+                ProgressView()
+            } else {
+                
+                VStack(alignment: .leading, spacing: 10) {
                     
                     if carsViewModel.currentCarInfo.adress.isEmpty {
                         HStack {
@@ -45,6 +46,8 @@ struct CarDetailsView: View {
                             
                         }
                         .padding(.bottom, 5)
+                        .font(.system(.headline))
+                        
                     }
                     
                     if carsViewModel.currentCarInfo.currentlyInUse {
@@ -56,48 +59,41 @@ struct CarDetailsView: View {
                             Text(carsViewModel.currentCarInfo.currentlyUsedByFullName)
                                 .foregroundColor(.gray)
                         }
+                        .font(.system(.headline))
+                        
                     }
                 }
-            }
-            HStack {
                 
-                if carsViewModel.currentCarInfo.currentlyInUse {
+                HStack {
                     
                     if let userDetails = sessionService.userDetails {
                         
-                        if userDetails.userId == carsViewModel.currentCarInfo.currentlyUsedById {
-                            Button {
-                                self.showLocationUpdateAlert = true
-                            } label: {
-                                Image(systemName: "mappin.and.ellipse")
-                                Text("Park Vehicle")
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .cornerRadius(50)
+                        if userDetails.userId != carsViewModel.currentCarInfo.currentlyUsedById {
                             
-                        } else {
                             Button {
                                 carsViewModel.markCarAsUsed(carId: carId, userId: userDetails.userId, userFullName: userDetails.firstName + " " + userDetails.lastName)
+                                
                             } label: {
                                 Image(systemName: "person.badge.key")
-                                Text("Mark as using")
+                                Text("Claim")
                             }
                             .buttonStyle(.borderedProminent)
                             .cornerRadius(50)
+                            .font(.title2)
                         }
+                        
                     }
                     
-                } else {
                     Button {
-                        if let userDetails = sessionService.userDetails {
-                            carsViewModel.markCarAsUsed(carId: carId, userId: userDetails.userId, userFullName: userDetails.firstName + " " + userDetails.lastName)
-                        }
+                        self.showLocationUpdateAlert = true
                     } label: {
-                        Image(systemName: "person.badge.key")
-                        Text("Mark as using")
+                        Image(systemName: "mappin.and.ellipse")
+                        Text("Park")
                     }
                     .buttonStyle(.borderedProminent)
                     .cornerRadius(50)
+                    .font(.title2)
+                    
                 }
             }
         }
@@ -129,7 +125,7 @@ struct CarDetailsView_Previews: PreviewProvider {
         let sessionService = SessionServiceImpl()
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
         let mapViewModel = MapViewModelImpl()
-                
+        
         CarDetailsView(carId: Car.new.id)
             .environmentObject(sessionService)
             .environmentObject(carsViewModel)
