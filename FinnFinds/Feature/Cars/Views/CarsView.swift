@@ -93,15 +93,13 @@ struct CarsView: View {
                         
                     } else {
                         
-                        Text("You still don't have cars. Go ahead for the Groups section to add one.")
+                        Text("You still don't have any vehicles. Click on the ellipsis button, and then go to the 'Groups' section to add one.")
                             .listRowBackground(Color.clear)
 
                     }
                 }
             }
             .listStyle(.plain)
-            .background(.thinMaterial)
-
         }
         .onAppear {
             carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
@@ -118,6 +116,7 @@ struct CarsView: View {
                 Text("Something went wrong")
             }
         }
+        
     }
     
 }

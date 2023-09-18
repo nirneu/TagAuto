@@ -19,7 +19,7 @@ struct HomeView: View {
     @State private var sheetDetentSelection = PresentationDetent.fraction(Constants.defaultPresentationDetentFraction)
     @State private var selectedCar: Car?
     @State private var dismissCarsView = true
-            
+    
     var body: some View {
         
         MapView()
@@ -28,7 +28,7 @@ struct HomeView: View {
             .sheet(isPresented: $showCarsSheet) {
                 
                 VStack(alignment: .leading, spacing: 0) {
-  
+                    
                     if let car = selectedCar {
                         
                         HStack {
@@ -86,14 +86,14 @@ struct HomeView: View {
                                     List {
                                         Section(header: Text("Groups")) {
                                             NavigationLink(destination: GroupsView()) {
-                                                    Label("Groups", systemImage: "person.3")
-                                                }
+                                                Label("Groups", systemImage: "person.3")
+                                            }
                                             
                                         }
                                         Section(header: Text("Account")) {
                                             NavigationLink(destination: AccountView()) {
-                                                    Label("Account", systemImage: "person.crop.circle")
-                                                }
+                                                Label("Account", systemImage: "person.crop.circle")
+                                            }
                                         }
                                     }
                                     .navigationTitle("More")
@@ -104,18 +104,17 @@ struct HomeView: View {
                                             } label: {
                                                 Text("Done")
                                             }
-
+                                            
                                         }
                                     }
                                 }
                                 .presentationDetents([.large])
                                 .presentationDragIndicator(.visible)
                             }
-
+                        
                     }
-                 
+                    
                 }
-                .background(.thinMaterial)
                 .presentationDetents([.fraction(Constants.defaultPresentationDetentFraction), .large], selection: $sheetDetentSelection)
                 .presentationDragIndicator(.visible)
                 .interactiveDismissDisabled()

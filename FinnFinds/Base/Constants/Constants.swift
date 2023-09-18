@@ -9,5 +9,6 @@ import Foundation
 
 enum Constants {
    static let defaultPresentationDetentFraction = 0.4
-   static let defaultSubtractionForMapAnnotation = 0.001 // For centering the camera focus in proportion with the bottom sheet
+   static let minPresentationDetentFraction = 0.05
+   static let defaultSubtractionForMapAnnotation = 0.00125 // For centering the camera focus in proportion with the bottom sheet
 }

@@ -224,8 +224,7 @@ extension MapViewModelImpl: CLLocationManagerDelegate {
                     // Center the camera focus in proportion with the bottom sheet
                     let centeredLocation = CLLocationCoordinate2D(latitude: location.coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: location.coordinate.longitude)
                     DispatchQueue.main.async {
-                        self.region = MKCoordinateRegion(center: centeredLocation,
-                                                         span: MapDetails.defaultSpan)
+                        self.region = MKCoordinateRegion(center: centeredLocation, span: MapDetails.defaultSpan)
                     }
                 } else {
                     self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)

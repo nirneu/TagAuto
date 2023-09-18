@@ -134,6 +134,9 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     
     func selectCar(_ car: Car?) {
         self.selectedCar = car
+        if let car = car {
+            self.getCar(carId: car.id)
+        }
     }
     
     func markCarAsUsed(carId: String, userId: String, userFullName: String) {

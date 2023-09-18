@@ -75,7 +75,7 @@ struct GroupDetailView: View {
                         .onDelete(perform: deleteCar(at:))
                   
                     } else {
-                        Text("There are no cars yet")
+                        Text("There are no vehicles yet")
                     }
                 }
          

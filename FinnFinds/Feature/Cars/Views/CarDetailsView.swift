@@ -18,7 +18,7 @@ struct CarDetailsView: View {
     @State private var showLocationUpdateAlert = false
     @State private var showNoteParkingAlert = false
     @State private var locationText: String = ""
-    
+        
     var carId: String
     
     var body: some View {
@@ -129,9 +129,7 @@ struct CarDetailsView_Previews: PreviewProvider {
         let sessionService = SessionServiceImpl()
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
         let mapViewModel = MapViewModelImpl()
-        
-        @State var selectedCar: Car?
-        
+                
         CarDetailsView(carId: Car.new.id)
             .environmentObject(sessionService)
             .environmentObject(carsViewModel)

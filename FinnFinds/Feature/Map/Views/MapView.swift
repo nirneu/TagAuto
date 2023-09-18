@@ -13,9 +13,7 @@ struct MapView: View {
     @EnvironmentObject var mapViewModel: MapViewModelImpl
     @EnvironmentObject var carsViewModel: CarsViewModelImpl
     @EnvironmentObject var sessionService: SessionServiceImpl
-    
-    @State var tracking = MapUserTrackingMode.follow
-    
+        
     private var region : Binding<MKCoordinateRegion> {
         
         Binding {
@@ -33,7 +31,7 @@ struct MapView: View {
     var body: some View {
         
         ZStack(alignment: .top) {
-            Map(coordinateRegion: region, interactionModes: .all, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: carsViewModel.cars.filter { $0.location.latitude != 0 && $0.location.longitude != 0 }) { car in
+            Map(coordinateRegion: region, interactionModes: .all, showsUserLocation: true, annotationItems: carsViewModel.cars.filter { $0.location.latitude != 0 && $0.location.longitude != 0 }) { car in
                 
                 MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: car.location.latitude, longitude: car.location.longitude)) {
                     VStack {
@@ -107,7 +105,7 @@ struct MapView: View {
             if let location = newLocation {
                 // Center the camera focus in proportion with the bottom sheet
                 let centeredLocation = CLLocationCoordinate2D(latitude: location.coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: location.coordinate.longitude)
-                mapViewModel.region = MKCoordinateRegion( center: centeredLocation, span: MapDetails.defaultSpan)
+                mapViewModel.region = MKCoordinateRegion(center: centeredLocation, span: MapDetails.defaultSpan)
             }
         }
     }
