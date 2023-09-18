@@ -54,7 +54,7 @@ struct SearchView: View {
                                 //MARK: Setting Map Region
                                 if let coordinate = place.location?.coordinate {
                                     mapViewModel.pickedLocation = .init(latitude: coordinate.latitude, longitude: coordinate.longitude)
-                                    mapViewModel.mapView.region = .init(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+                                    mapViewModel.mapView.region = .init(center: coordinate, span: MapDetails.defaultSpan)
                                     mapViewModel.addDragabblePin(coordinate: coordinate)
                                     mapViewModel.updatePlacemark(location: .init(latitude: coordinate.latitude, longitude: coordinate.longitude))
                                     
@@ -93,7 +93,7 @@ struct SearchView: View {
                         //MARK: Setting Map Region
                         let coordinate = mapViewModel.newLocationRegion.center
                         mapViewModel.pickedLocation = .init(latitude: coordinate.latitude, longitude: coordinate.longitude)
-                        mapViewModel.mapView.region = .init(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+                        mapViewModel.mapView.region = .init(center: coordinate, span: MapDetails.defaultSpan)
                         mapViewModel.addDragabblePin(coordinate: coordinate)
                         mapViewModel.updatePlacemark(location: .init(latitude: coordinate.latitude, longitude: coordinate.longitude))
                         

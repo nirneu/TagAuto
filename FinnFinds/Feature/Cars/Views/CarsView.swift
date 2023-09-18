@@ -56,7 +56,7 @@ struct CarsView: View {
                                                         .font(.subheadline)
                                                         .bold()
                                                         .foregroundColor(.gray)
-
+                                                    
                                                     Text("The vehicle is currently in use")
                                                         .bold()
                                                         .font(.subheadline)
@@ -68,22 +68,23 @@ struct CarsView: View {
                                                         Image(systemName: "exclamationmark.circle")
                                                             .foregroundColor(.gray)
                                                             .font(.subheadline)
-
+                                                        
                                                         Text("The vehicle doesn't have a location yet")
                                                             .font(.subheadline)
-
+                                                        
                                                             .foregroundColor(.gray)
                                                     }
                                                 } else {
                                                     Text(car.adress)
                                                         .foregroundColor(.gray)
                                                         .font(.subheadline)
-
+                                                    
                                                 }
                                             }
                                         }
+                                        Spacer()
                                     }
-                                    .contentShape(Rectangle())
+                                    .contentShape(Rectangle())                    
                                     .onTapGesture {
                                         self.handleTap(car)
                                     }
@@ -91,16 +92,13 @@ struct CarsView: View {
                                 }
                                 .frame(height: 50)
                                 .listRowBackground(Color.clear)
-                                
                             }
-                            
                         }
-                        
                     } else {
                         
                         Text("You still don't have any vehicles. Click on the ellipsis button, and then go to the 'Groups' section to add one.")
                             .listRowBackground(Color.clear)
-
+                        
                     }
                 }
             }
@@ -138,10 +136,10 @@ struct CarsView_Previews: PreviewProvider {
         
         @State var selectedCar: Car?
         @State var sheetDetentSelection = PresentationDetent.fraction(Constants.defaultPresentationDetentFraction)
-
+        
         let sessionService = SessionServiceImpl()
         let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
-
+        
         CarsView(selectedCar: $selectedCar, sheetDetentSelection: $sheetDetentSelection)
             .environmentObject(sessionService)
             .environmentObject(carsViewModel)

@@ -48,9 +48,13 @@ struct LoginView: View {
                     
                     VStack(spacing: 16) {
                         
-                        ButtonView(title: "Login") {
+                        ButtonView(title: "Login", handler: {
                             vm.login()
-                        }
+                        }, disabled: Binding<Bool>(
+                            get: {
+                                vm.credentials.email.isEmpty || vm.credentials.password.isEmpty},
+                            set: { _ in }
+                        ))
                         
                         ButtonView(title: "Register", background: .clear, foreground: .blue, border: .blue) {
                             showRegistration.toggle()

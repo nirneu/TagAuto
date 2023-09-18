@@ -154,8 +154,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
     
     func regionForCar(_ car: Car?) -> MKCoordinateRegion {
         guard let coordinate = car?.location else { return self.region }
-        let span = MKCoordinateSpan(latitudeDelta: MapDetails.defaultCLLocationDegrees, longitudeDelta: MapDetails.defaultCLLocationDegrees)
-        return MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: span)
+        return MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
     }
     
     //MARK: Add Draggable Pin to MapView
@@ -173,10 +172,11 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let marker = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "PARKINGPIN")
         marker.isDraggable = true
+        marker.isSelected = true
         marker.canShowCallout = false
         marker.glyphImage = UIImage(systemName: "mappin")
         marker.glyphTintColor = .black
-
+        
         return marker
     }
     
