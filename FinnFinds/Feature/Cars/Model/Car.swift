@@ -31,6 +31,6 @@ struct Car: Hashable, Identifiable {
 extension Car {
     
     static var new: Car {
-        Car(id: "", name: "", location: GeoPoint(latitude: 0, longitude: 0), adress: "Gonen 8, Tel Aviv", groupName: "", groupId: "", note: "", icon: "", currentlyInUse: false, currentlyUsedById: "", currentlyUsedByFullName: "")
+        Car(id: "", name: "", location: GeoPoint(latitude: 0, longitude: 0), adress: "", groupName: "", groupId: "", note: "", icon: "", currentlyInUse: false, currentlyUsedById: "", currentlyUsedByFullName: "")
     }
 }

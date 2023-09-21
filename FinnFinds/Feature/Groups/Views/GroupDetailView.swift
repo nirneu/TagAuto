@@ -17,6 +17,7 @@ struct GroupDetailView: View {
     @State private var showingAddCar = false
     @State private var showDeleteGroup = false
     @State var selectedCar: Car?
+    @State var isDelete: Bool = false
     
     let group: GroupDetails
     
@@ -64,15 +65,21 @@ struct GroupDetailView: View {
                             HStack {
                                 Text(car.icon)
                                 Text(car.name)
+                                Spacer()
                             }
-                            .swipeActions(edge: .leading) {
-                                Button("Edit") {
-                                    selectedCar = car
-                                }
-                                .tint(.orange)
+                            .frame(maxWidth: .infinity)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selectedCar = car
                             }
+//                            .swipeActions(edge: .leading) {
+//                                Button("Edit") {
+//                                    selectedCar = car
+//                                }
+//                                .tint(.orange)
+//                            }
                         }
-                        .onDelete(perform: deleteCar(at:))
+//                        .onDelete(perform: deleteCar(at:))
                   
                     } else {
                         Text("There are no vehicles yet")
@@ -101,7 +108,7 @@ struct GroupDetailView: View {
                 .environmentObject(vm)
         }
         .sheet(item: $selectedCar, content: { car in
-            EditCarView(group: group, car: car)
+            EditCarView(isDelete: $isDelete, car: car)
                 .environmentObject(vm)
         })
         .toolbar {

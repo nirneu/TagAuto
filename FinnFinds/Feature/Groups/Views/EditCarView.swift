@@ -11,13 +11,15 @@ import FirebaseFirestore
 struct EditCarView: View {
     
     @EnvironmentObject var vm: GroupsViewModelImpl
-        
+    
     @State private var carName = ""
     @State private var selectedEmoji: String = ""
+    @State private var isPresentingConfirm: Bool = false
+    
+    @Binding var isDelete: Bool
     
     @Environment(\.dismiss) var dismiss
     
-    let group: GroupDetails
     let car: Car
     
     var body: some View {
@@ -35,7 +37,7 @@ struct EditCarView: View {
                     }
                     .padding(.top)
                     
-                    ButtonView(title: "Edit Car", handler: {
+                    ButtonView(title: "Save Changes", handler: {
                         if !carName.trimmingCharacters(in: .whitespaces).isEmpty && !selectedEmoji.isEmpty {
                             vm.updateCarDetails(Car(id: car.id, name: carName, location: car.location, adress: car.adress, groupName: car.groupName , groupId: car.groupId, note: car.note, icon: selectedEmoji, currentlyInUse: car.currentlyInUse, currentlyUsedById: car.currentlyUsedById, currentlyUsedByFullName: car.currentlyUsedByFullName))
                         }
@@ -44,13 +46,29 @@ struct EditCarView: View {
                         get: { carName.trimmingCharacters(in: .whitespaces).isEmpty || selectedEmoji.isEmpty },
                         set: { _ in }
                     ))
+                    
+                    Divider()
+                    
+                    ButtonView(title: "Delete Vehicle", background: .red) {
+                        isPresentingConfirm = true
+                    }
+                    .confirmationDialog("Are you sure?", isPresented: $isPresentingConfirm) {
+                        Button("Delete", role: .destructive) {
+                            vm.deleteCar(groupId: car.groupId, car: car)
+                            isDelete = true
+                            dismiss()
+                        }
+                    }
+                    message: {
+                        Text("You are about to delete this vehicle from it's group for all of the group's members.")
+                    }
                 }
                 .onAppear {
                     carName = car.name
                     selectedEmoji = car.icon
                 }
                 .padding(.horizontal, 15)
-                .navigationTitle("Edit Car")
+                .navigationTitle("Edit Vehicle")
                 .alert("Error", isPresented: $vm.hasError) {
                     Button("OK", role: .cancel) { }
                 } message: {
@@ -70,8 +88,9 @@ struct EditCarView_Previews: PreviewProvider {
     static var previews: some View {
         
         let viewModel = GroupsViewModelImpl(service: GroupsServiceImpl())
-
-        EditCarView(group: GroupDetails(id: "0", name: "Preview", members: [], cars: []), car: Car.new)
+        
+        EditCarView(isDelete: .constant(true), car: Car.new)
             .environmentObject(viewModel)
+        
     }
 }

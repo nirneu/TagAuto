@@ -32,6 +32,7 @@ protocol CarsService {
     func getAddress(carId: String, geopoint: CLLocationCoordinate2D) -> AnyPublisher<String, Error>
     func getCarNote(_ car: Car) -> AnyPublisher<String, Error>
     func updateCarAddress(carId: String, adress: String) -> AnyPublisher<Void, Error>
+    func deleteCar(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
 }
 
 final class CarsServiceImpl: CarsService {
@@ -72,6 +73,8 @@ final class CarsServiceImpl: CarsService {
                                     dispatchGroup.leave()
                                 } else if let document = document, document.exists, let carIds = document.data()?[self.carsPath] as? [String], let groupName = document.data()?["name"] as? String {
                                     
+                                    let groupId = document.documentID
+                                    
                                     let carsRef = carIds.map { self.db.collection(self.carsPath).document($0) }
                                     
                                     for carRef in carsRef {
@@ -84,7 +87,7 @@ final class CarsServiceImpl: CarsService {
                                                 promise(.failure(error))
                                             } else if let document = document, document.exists, let data = document.data() {
 
-                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, groupId: "", note: data[CarKeys.note.rawValue] as? String ?? "", icon: data[CarKeys.icon.rawValue] as? String ?? "", currentlyInUse: data[CarKeys.currentlyInUse.rawValue] as? Bool ?? false, currentlyUsedById: data[CarKeys.currentlyUsedById.rawValue] as? String ?? "", currentlyUsedByFullName: data[CarKeys.currentlyUsedByFullName.rawValue] as? String ?? "")
+                                                let car = Car(id: document.documentID, name: data[CarKeys.name.rawValue] as? String ?? "", location: data[CarKeys.location.rawValue] as? GeoPoint ?? GeoPoint(latitude: 0, longitude: 0), adress: data[CarKeys.adress.rawValue] as? String ?? "", groupName: groupName, groupId: groupId, note: data[CarKeys.note.rawValue] as? String ?? "", icon: data[CarKeys.icon.rawValue] as? String ?? "", currentlyInUse: data[CarKeys.currentlyInUse.rawValue] as? Bool ?? false, currentlyUsedById: data[CarKeys.currentlyUsedById.rawValue] as? String ?? "", currentlyUsedByFullName: data[CarKeys.currentlyUsedByFullName.rawValue] as? String ?? "")
                                                 cars.append(car)
                                                 
                                             }
@@ -275,6 +278,35 @@ final class CarsServiceImpl: CarsService {
                         promise(.failure(error))
                     } else {
                         promise(.success(()))
+                    }
+                }
+            }
+        }
+        .receive(on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+    
+    func deleteCar(_ groupId: String, car: Car) -> AnyPublisher<Void, Error> {
+
+        Deferred {
+            Future { promise in
+
+                // Delete the car from the 'cars' collection
+                self.db.collection(self.carsPath).document(car.id).delete() { error in
+                    if let error = error {
+                        promise(.failure(error))
+                        return
+                    }
+
+                    // Remove the car's ID from the respective group in the 'groups' collection
+                    self.db.collection(self.groupsPath).document(groupId).updateData([
+                        self.carsPath: FieldValue.arrayRemove([car.id])
+                    ]) { error in
+                        if let error = error {
+                            promise(.failure(error))
+                        } else {
+                            promise(.success(()))
+                        }
                     }
                 }
             }

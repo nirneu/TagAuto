@@ -28,6 +28,7 @@ protocol CarsViewModel {
     func updateCarNote(car: Car, note: String)
     func getAddress(carId: String, geopoint: CLLocationCoordinate2D)
     func getCarNote(car: Car)
+    func deleteCar(groupId: String, car: Car, userId: String)
     init(service: CarsServiceImpl)
 }
 
@@ -97,6 +98,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                 case .failure (let error):
                     self?.isLoading = false
                     self?.state = .failed(error: error)
+                    self?.currentCarInfo = Car.new
                 default: break
                 }
             } receiveValue: { [weak self] car in
@@ -247,6 +249,21 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
             } receiveValue: { [weak self] _ in
                 self?.state = .successful
                 self?.getCar(carId: carId)
+            }
+            .store(in: &subscriptions)
+    }
+    
+    func deleteCar(groupId: String, car: Car, userId: String) {
+        service.deleteCar(groupId, car: car)
+            .sink { [weak self] res in
+                switch res {
+                case .failure(let error):
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] _ in
+                self?.state = .successful
+                self?.fetchUserCars(userId: userId)
             }
             .store(in: &subscriptions)
     }

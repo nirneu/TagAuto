@@ -10,8 +10,7 @@ import SwiftUI
 struct GroupsView: View {
     
     @EnvironmentObject var sessionService: SessionServiceImpl
-    
-    @StateObject private var vm = GroupsViewModelImpl(service: GroupsServiceImpl())
+    @EnvironmentObject var vm: GroupsViewModelImpl
     
     @State private var showCreateGroup = false
         

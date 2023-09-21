@@ -12,12 +12,15 @@ struct HomeView: View {
     @EnvironmentObject var sessionService: SessionServiceImpl
     
     @StateObject var carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
+    @StateObject var groupsViewModel = GroupsViewModelImpl(service: GroupsServiceImpl())
     @StateObject var mapViewModel = MapViewModelImpl()
     
     @State private var showCarsSheet = true
     @State private var showMoreSheet = false
+    @State private var showEditCar = false
     @State private var sheetDetentSelection = PresentationDetent.fraction(Constants.defaultPresentationDetentFraction)
     @State private var selectedCar: Car?
+    @State private var isVehicleDeleted: Bool = false
     @State private var dismissCarsView = true
     
     var body: some View {
@@ -32,12 +35,20 @@ struct HomeView: View {
                     if let car = selectedCar {
                         
                         HStack {
-                            Text(car.icon)
+//                            Text(car.icon)
+                            Text(carsViewModel.currentCarInfo.icon)
                                 .font(.title2.bold())
-                            Text(car.name)
+                            Text(carsViewModel.currentCarInfo.name)
                                 .font(.title2.bold())
-                            
+                            Button {
+                                showEditCar = true
+                            } label: {
+                                Image(systemName: "pencil")
+                                    .foregroundColor(Color(uiColor: .lightGray))
+                                    .font(.title2)
+                            }
                             Spacer()
+                        
                             Button {
                                 selectedCar = nil
                                 carsViewModel.selectedCar = nil
@@ -49,12 +60,27 @@ struct HomeView: View {
                             
                         }
                         .padding([.top, .leading, .trailing, .bottom])
+                        .onAppear {
+                            carsViewModel.getCar(carId: car.id)
+                        }
                         
                         CarDetailsView(carId: car.id)
                             .environmentObject(sessionService)
                             .environmentObject(mapViewModel)
                             .environmentObject(carsViewModel)
                             .padding([.leading, .trailing])
+                            .sheet(isPresented: $showEditCar) {
+                                EditCarView(isDelete: $isVehicleDeleted, car: car).environmentObject(groupsViewModel)
+                                    .onDisappear {
+                                        refreshCars()
+                                        carsViewModel.getCar(carId: car.id)
+                                        showEditCar = false
+                                        if isVehicleDeleted {
+                                            selectedCar = nil
+                                        }
+                                    }
+                            }
+
                     } else {
                         HStack {
                             Text("Vehicles")
@@ -76,16 +102,13 @@ struct HomeView: View {
                             .environmentObject(mapViewModel)
                             .environmentObject(sessionService)
                             .sheet(isPresented: $showMoreSheet, onDismiss: {
-                                if let userId = sessionService.userDetails?.userId {
-                                    carsViewModel.isLoadingCars = true
-                                    carsViewModel.fetchUserCars(userId: userId)
-                                }
+                                refreshCars()
                             }) {
                                 NavigationStack {
                                     
                                     List {
                                         Section(header: Text("Groups")) {
-                                            NavigationLink(destination: GroupsView()) {
+                                            NavigationLink(destination: GroupsView().environmentObject(groupsViewModel)) {
                                                 Label("Groups", systemImage: "person.3")
                                             }
                                             
@@ -125,6 +148,13 @@ struct HomeView: View {
                     }
                 }
             }
+    }
+    
+    private func refreshCars() {
+        if let userId = sessionService.userDetails?.userId {
+            carsViewModel.isLoadingCars = true
+            carsViewModel.fetchUserCars(userId: userId)
+        }
     }
     
 }
