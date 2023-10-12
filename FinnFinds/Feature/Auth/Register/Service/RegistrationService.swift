@@ -29,7 +29,7 @@ final class RegistrationServiceImpl: RegistrationService {
             Future { promise in
                 
                 Auth.auth()
-                    .createUser(withEmail: details.email, password: details.password) { res, err in
+                    .createUser(withEmail: details.email.lowercased(), password: details.password) { res, err in
                         
                         if let err = err {
                             promise(.failure(err))
@@ -39,7 +39,7 @@ final class RegistrationServiceImpl: RegistrationService {
                                 
                                 let values = [RegistrationKeys.firstName.rawValue: details.firstName,
                                               RegistrationKeys.lastName.rawValue: details.lastName,
-                                              RegistrationKeys.userEmail.rawValue: details.email] as [String: Any]
+                                              RegistrationKeys.userEmail.rawValue: details.email.lowercased()] as [String: Any]
                                 
                                 let db = Firestore.firestore()
                                 db.collection("users").document(uid).setData(values) { err in
@@ -48,6 +48,7 @@ final class RegistrationServiceImpl: RegistrationService {
                                         promise(.failure(err))
                                     } else {
                                         promise(.success(()))
+                                        self.saveUserFcmToken(uid)
                                     }
                                 }
                                 
@@ -60,5 +61,18 @@ final class RegistrationServiceImpl: RegistrationService {
         }
         .receive (on: RunLoop.main)
         .eraseToAnyPublisher()
+    }
+    
+    func saveUserFcmToken(_ userId: String) {
+        // Get the FCM token form user defaults
+        guard let fcmToken = UserDefaults.standard.value(forKey: Constants.FCM_TOKEN) else {
+            return
+        }
+        
+        let values = [Constants.FCM_TOKEN: fcmToken] as [String: Any]
+        
+        let db = Firestore.firestore()
+        db.collection("users").document(userId).updateData(values)
+        
     }
 }

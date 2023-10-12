@@ -32,12 +32,17 @@ final class LoginServiceImpl: LoginService {
             Future { promise in
                 
                 Auth.auth()
-                    .signIn(withEmail: credentials.email, password: credentials.password) { res, err in
+                    .signIn(withEmail: credentials.email, password: credentials.password) { [weak self] res, err in
                         
                         if let err = err {
                             promise(.failure(err))
                         } else {
                             promise(.success(()))
+                            
+                            if let uid = res?.user.uid {
+                                self?.saveUserFcmToken(uid)
+                            }
+                            
                         }
                     }
             }
@@ -58,24 +63,30 @@ final class LoginServiceImpl: LoginService {
                         promise(.failure(err))
                     } else {
                         
-                        if let uid = res?.user.uid,
-                           let givenName = appleIDCredential.fullName?.givenName,
-                           let familyName = appleIDCredential.fullName?.familyName,
-                           let userEmail = appleIDCredential.email {
+                        if let uid = res?.user.uid {
                             
-                            let values = [LoginWithAppleKeys.firstName.rawValue: givenName,
-                                          LoginWithAppleKeys.lastName.rawValue: familyName,
-                                          LoginWithAppleKeys.userEmail.rawValue: userEmail] as [String: Any]
-                            
-                            let db = Firestore.firestore()
-                            db.collection("users").document(uid).setData(values) { error in
+                            if let givenName = appleIDCredential.fullName?.givenName,
+                               let familyName = appleIDCredential.fullName?.familyName,
+                               let userEmail = appleIDCredential.email {
                                 
-                                if let error = error {
-                                    promise(.failure(error))
-                                } else {
-                                    promise(.success(()))
+                                let values = [LoginWithAppleKeys.firstName.rawValue: givenName,
+                                              LoginWithAppleKeys.lastName.rawValue: familyName,
+                                              LoginWithAppleKeys.userEmail.rawValue: userEmail] as [String: Any]
+                                
+                                let db = Firestore.firestore()
+                                db.collection("users").document(uid).setData(values) { error in
+                                    
+                                    if let error = error {
+                                        promise(.failure(error))
+                                    } else {
+                                        promise(.success(()))
+                                        
+                                    }
                                 }
                             }
+                            
+                            self.saveUserFcmToken(uid)
+                            
                         }
                     }
                 }
@@ -84,6 +95,8 @@ final class LoginServiceImpl: LoginService {
         .receive (on: RunLoop.main)
         .eraseToAnyPublisher()
     }
+    
+    
     
     func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
@@ -114,5 +127,18 @@ final class LoginServiceImpl: LoginService {
         }.joined()
         
         return hashString
+    }
+    
+    func saveUserFcmToken(_ userId: String) {
+        // Get the FCM token form user defaults
+        guard let fcmToken = UserDefaults.standard.value(forKey: Constants.FCM_TOKEN) else {
+            return
+        }
+        
+        let values = [Constants.FCM_TOKEN: fcmToken] as [String: Any]
+        
+        let db = Firestore.firestore()
+        db.collection("users").document(userId).updateData(values)
+        
     }
 }

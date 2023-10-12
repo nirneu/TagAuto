@@ -17,6 +17,8 @@ struct HomeView: View {
     
     @State private var showCarsSheet = true
     @State private var showMoreSheet = false
+    @State private var showAccountView = false
+    @State private var showGroupsView = false
     @State private var showEditCar = false
     @State private var sheetDetentSelection = PresentationDetent.fraction(Constants.defaultPresentationDetentFraction)
     @State private var selectedCar: Car?
@@ -35,7 +37,7 @@ struct HomeView: View {
                     if let car = selectedCar {
                         
                         HStack {
-//                            Text(car.icon)
+                            //                            Text(car.icon)
                             Text(carsViewModel.currentCarInfo.icon)
                                 .font(.title2.bold())
                             Text(carsViewModel.currentCarInfo.name)
@@ -48,7 +50,7 @@ struct HomeView: View {
                                     .font(.title2)
                             }
                             Spacer()
-                        
+                            
                             Button {
                                 selectedCar = nil
                                 carsViewModel.selectedCar = nil
@@ -80,8 +82,9 @@ struct HomeView: View {
                                         }
                                     }
                             }
-
+                        
                     } else {
+                        
                         HStack {
                             Text("Vehicles")
                                 .font(.title2.bold())
@@ -103,19 +106,45 @@ struct HomeView: View {
                             .environmentObject(sessionService)
                             .sheet(isPresented: $showMoreSheet, onDismiss: {
                                 refreshCars()
+                                showAccountView = false
+                                showGroupsView = false
                             }) {
                                 NavigationStack {
                                     
                                     List {
                                         Section(header: Text("Groups")) {
-                                            NavigationLink(destination: GroupsView().environmentObject(groupsViewModel)) {
-                                                Label("Groups", systemImage: "person.3")
+                                            HStack {
+                                                Button {
+                                                    showGroupsView = true
+                                                } label: {
+                                                    Label("Groups", systemImage: "person.3")
+                                                        .tint(.black)
+                                                }
+                                                Spacer()
+                                                Image(systemName: "chevron.right")
+                                                    .font(.footnote)
+                                                    .foregroundStyle(.secondary)
+                                            }
+                                            .navigationDestination(isPresented: $showGroupsView) {
+                                                GroupsView().environmentObject(groupsViewModel)
                                             }
                                             
                                         }
                                         Section(header: Text("Account")) {
-                                            NavigationLink(destination: AccountView()) {
-                                                Label("Account", systemImage: "person.crop.circle")
+                                            HStack {
+                                                Button {
+                                                    showAccountView = true
+                                                } label: {
+                                                    Label("Account", systemImage: "person.crop.circle")
+                                                        .tint(.black)
+                                                }
+                                                Spacer()
+                                                Image(systemName: "chevron.right")
+                                                    .font(.footnote)
+                                                    .foregroundStyle(.secondary)
+                                            }
+                                            .navigationDestination(isPresented: $showAccountView) {
+                                                AccountView()
                                             }
                                         }
                                     }
@@ -134,8 +163,9 @@ struct HomeView: View {
                                 .presentationDetents([.large])
                                 .presentationDragIndicator(.visible)
                             }
-                        
                     }
+                    
+                    
                     
                 }
                 .presentationDetents([.fraction(Constants.defaultPresentationDetentFraction), .large], selection: $sheetDetentSelection)
@@ -148,6 +178,24 @@ struct HomeView: View {
                     }
                 }
             }
+            .onOpenURL(perform: { url in
+                guard url.scheme == "myfindcarapp" else {
+                    return
+                }
+                guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+                    print("Invalid URL")
+                    return
+                }
+                
+                guard let action = components.host, action == "group-invitation" else {
+                    print("Unknown URL, we can't handle this one!")
+                    return
+                }
+                
+                showMoreSheet = true
+                showAccountView = true
+            })
+        
     }
     
     private func refreshCars() {

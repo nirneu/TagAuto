@@ -213,8 +213,29 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                 }
             } receiveValue: { [weak self] _ in
                 self?.state = .successful
+                
+                self?.sendNotification(to: email, groupName: groupName)
             }
             .store(in: &subscriptions)
+        
+    }
+    
+    func sendNotification(to email: String, groupName: String) {
+        service.findUserFCMByEmail(email: email)
+            .sink { [weak self] res in
+                switch res {
+                case .failure(let error):
+                    self?.state = .failed(error: error)
+                default: break
+                }
+            } receiveValue: { [weak self] fcmValue in
+                self?.state = .successful
+                
+                // Send notification to the invited user
+                PushNotificationManager.sendPushNotification(to: fcmValue, title: "New Group Invitation 🎉", body: "You are invited to the group \"\(groupName)\"", link: "group-invitation")
+            }
+            .store(in: &subscriptions)
+
     }
     
     func deleteMember(userId: String, groupId: String) {

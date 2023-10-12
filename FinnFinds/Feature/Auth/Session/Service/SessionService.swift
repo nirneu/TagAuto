@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import Firebase
+import SwiftUI
 
 enum SessionState {
     case loggedIn
@@ -20,11 +21,12 @@ protocol SessionService {
     func logout()
 }
 
+
 final class SessionServiceImpl: ObservableObject, SessionService {
     
     @Published var state: SessionState = .loggedOut
     @Published var userDetails: UserDetails?
-    
+            
     private var handler: AuthStateDidChangeListenerHandle?
     
     init() {

@@ -28,6 +28,7 @@ protocol GroupsService {
     func createGroup(with details: GroupDetails) -> AnyPublisher<Void, Error>
     func deleteGroup(_ groupId: String) -> AnyPublisher<Void, Error>
     func fetchUserDetails(for userIds: [String]) -> AnyPublisher<[UserDetails], Error>
+    func findUserFCMByEmail(email: String) -> AnyPublisher<String, Error>
     func addCarToGroup(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
     func deleteCar(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
     func updateCarDetails(_ car: Car) -> AnyPublisher<Void, Error> 
@@ -214,6 +215,7 @@ final class GroupsServiceImpl: GroupsService {
         Deferred {
             
             Future { promise in
+                
                 let dispatchGroup = DispatchGroup()
                 var userDetails: [UserDetails] = []
                 
@@ -245,6 +247,37 @@ final class GroupsServiceImpl: GroupsService {
         .receive (on: RunLoop.main)
         .eraseToAnyPublisher()
     }
+    
+    func findUserFCMByEmail(email: String) -> AnyPublisher<String, Error> {
+        
+        Deferred {
+            
+            Future { promise in
+                
+                self.db.collection(self.usersPath).whereField("userEmail", isEqualTo: email).getDocuments { (querySnapshot, error) in
+                    if let error = error {
+                        promise(.failure(error))
+                        return
+                    }
+                    
+                    if let documents = querySnapshot?.documents {
+                        if documents.isEmpty {
+                            promise(.success(("")))
+                        } else {
+                            // User found; you can access user data from the documents here
+                            for document in documents {
+                                let userData = document.data()
+                                promise(.success((userData[Constants.FCM_TOKEN] as? String ?? "")))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .receive (on: RunLoop.main)
+        .eraseToAnyPublisher()
+    }
+
     
     func addCarToGroup(_ groupId: String, car: Car) -> AnyPublisher<Void, Error> {
         
