@@ -17,7 +17,5 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>SERVER_KEY</key>
-	<string>$(SERVER_KEY)</string>
 </dict>
 </plist>

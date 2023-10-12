@@ -64,7 +64,6 @@
 /* Begin PBXFileReference section */
 		A802B1A12A9CA68F004A2370 /* VehicleEmojiPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleEmojiPicker.swift; sourceTree = "<group>"; };
 		A802B1A72A9CE38A004A2370 /* EditCarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCarView.swift; sourceTree = "<group>"; };
-		A808219E2AC5E378004B284E /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		A808219F2AC5E676004B284E /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
 		A827F2CB2A895C75002F6567 /* CarDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarDetailsView.swift; sourceTree = "<group>"; };
 		A8285A922A793F2D007D3305 /* GroupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailView.swift; sourceTree = "<group>"; };
@@ -207,7 +206,6 @@
 				A842D8542A5EBAFD008F8C8F /* Assets.xcassets */,
 				A87139AB2AB0AFA10053C187 /* GoogleService-Info.plist */,
 				A842D8562A5EBAFD008F8C8F /* Preview Content */,
-				A808219E2AC5E378004B284E /* Config.xcconfig */,
 			);
 			path = FinnFinds;
 			sourceTree = "<group>";
@@ -721,7 +719,6 @@
 /* Begin XCBuildConfiguration section */
 		A842D8592A5EBAFD008F8C8F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A808219E2AC5E378004B284E /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -782,7 +779,6 @@
 		};
 		A842D85A2A5EBAFD008F8C8F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A808219E2AC5E378004B284E /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
