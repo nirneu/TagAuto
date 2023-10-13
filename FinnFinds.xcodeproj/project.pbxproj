@@ -192,6 +192,7 @@
 		A842D8442A5EBAFC008F8C8F = {
 			isa = PBXGroup;
 			children = (
+				A83122772AD96E1900717ECE /* ci_scripts */,
 				A842D84F2A5EBAFC008F8C8F /* FinnFinds */,
 				A842D84E2A5EBAFC008F8C8F /* Products */,
 				A88A05542AC46441004999C6 /* Frameworks */,
@@ -209,7 +210,6 @@
 		A842D84F2A5EBAFC008F8C8F /* FinnFinds */ = {
 			isa = PBXGroup;
 			children = (
-				A83122772AD96E1900717ECE /* ci_scripts */,
 				A82D1A072A6FF67D00687364 /* FinnFinds.entitlements */,
 				A842D85F2A5EBB0D008F8C8F /* Feature */,
 				A842D85E2A5EBB09008F8C8F /* Base */,
