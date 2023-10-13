@@ -118,7 +118,6 @@ struct HomeView: View {
                                                     showGroupsView = true
                                                 } label: {
                                                     Label("Groups", systemImage: "person.3")
-                                                        .tint(.black)
                                                 }
                                                 Spacer()
                                                 Image(systemName: "chevron.right")
@@ -136,7 +135,6 @@ struct HomeView: View {
                                                     showAccountView = true
                                                 } label: {
                                                     Label("Account", systemImage: "person.crop.circle")
-                                                        .tint(.black)
                                                 }
                                                 Spacer()
                                                 Image(systemName: "chevron.right")

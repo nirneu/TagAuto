@@ -14,6 +14,8 @@ struct AccountView: View {
     
     @StateObject var accountViewModel = AccountViewModelImpl(service: AccountServiceImpl())
     
+    private let pastboard = UIPasteboard.general
+    
     var body: some View {
         
         NavigationStack {
@@ -29,6 +31,14 @@ struct AccountView: View {
                             .font(.headline)
 
                         Text("\(sessionService.userDetails?.userEmail ?? "")")
+                        
+                        Button {
+                                  pastboard.string = sessionService.userDetails?.userEmail ?? ""
+                              } label: {
+                                  Label("Copy to Clipboard", systemImage: "doc.on.doc").font(.subheadline)
+                              }
+                              .disabled(sessionService.userDetails?.userEmail == nil)
+                              .padding(.top, 5)
                     }
 
                     

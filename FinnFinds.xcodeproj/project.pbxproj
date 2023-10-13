@@ -73,7 +73,6 @@
 		A82D1A072A6FF67D00687364 /* FinnFinds.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinnFinds.entitlements; sourceTree = "<group>"; };
 		A82D1A0A2A71722700687364 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		A82D1A0D2A7172BB00687364 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
-		A831227A2AD989AD00717ECE /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		A831227C2AD99B3F00717ECE /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		A842D84D2A5EBAFC008F8C8F /* FinnFinds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinnFinds.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A842D8502A5EBAFC008F8C8F /* FinnFindsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnFindsApp.swift; sourceTree = "<group>"; };
@@ -184,7 +183,6 @@
 		A83122772AD96E1900717ECE /* ci_scripts */ = {
 			isa = PBXGroup;
 			children = (
-				A831227A2AD989AD00717ECE /* ci_pre_xcodebuild.sh */,
 				A831227C2AD99B3F00717ECE /* ci_post_clone.sh */,
 			);
 			path = ci_scripts;
