@@ -9,7 +9,8 @@ import Foundation
 
 class PushNotificationManager {
     static func sendPushNotification(to receiverFCM: String, title: String, body: String, link: String) {
-        if let serverKey = ProcessInfo.processInfo.environment["SERVER_KEY"] {
+//        if let serverKey = ProcessInfo.processInfo.environment["SERVER_KEY"] {
+        if let serverKey = Bundle.main.infoDictionary?["SERVER_KEY"] as? String {
             
             let url = URL(string: "https://fcm.googleapis.com/fcm/send")!
             var request = URLRequest(url: url)

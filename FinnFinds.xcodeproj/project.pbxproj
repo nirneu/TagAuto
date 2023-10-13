@@ -17,6 +17,7 @@
 		A82D1A062A6EBCC700687364 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A052A6EBCC700687364 /* ForgotPasswordViewModel.swift */; };
 		A82D1A0B2A71722700687364 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A0A2A71722700687364 /* MapView.swift */; };
 		A82D1A0E2A7172BB00687364 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82D1A0D2A7172BB00687364 /* MapViewModel.swift */; };
+		A83122792AD96E3200717ECE /* ci_pre_xcodebuild.sh in Resources */ = {isa = PBXBuildFile; fileRef = A83122782AD96E3200717ECE /* ci_pre_xcodebuild.sh */; };
 		A842D8512A5EBAFC008F8C8F /* FinnFindsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8502A5EBAFC008F8C8F /* FinnFindsApp.swift */; };
 		A842D8552A5EBAFD008F8C8F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A842D8542A5EBAFD008F8C8F /* Assets.xcassets */; };
 		A842D8582A5EBAFD008F8C8F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A842D8572A5EBAFD008F8C8F /* Preview Assets.xcassets */; };
@@ -73,6 +74,7 @@
 		A82D1A072A6FF67D00687364 /* FinnFinds.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinnFinds.entitlements; sourceTree = "<group>"; };
 		A82D1A0A2A71722700687364 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		A82D1A0D2A7172BB00687364 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		A83122782AD96E3200717ECE /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		A842D84D2A5EBAFC008F8C8F /* FinnFinds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinnFinds.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A842D8502A5EBAFC008F8C8F /* FinnFindsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinnFindsApp.swift; sourceTree = "<group>"; };
 		A842D8542A5EBAFD008F8C8F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -179,6 +181,14 @@
 			path = Service;
 			sourceTree = "<group>";
 		};
+		A83122772AD96E1900717ECE /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				A83122782AD96E3200717ECE /* ci_pre_xcodebuild.sh */,
+			);
+			path = ci_scripts;
+			sourceTree = "<group>";
+		};
 		A842D8442A5EBAFC008F8C8F = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +209,7 @@
 		A842D84F2A5EBAFC008F8C8F /* FinnFinds */ = {
 			isa = PBXGroup;
 			children = (
+				A83122772AD96E1900717ECE /* ci_scripts */,
 				A82D1A072A6FF67D00687364 /* FinnFinds.entitlements */,
 				A842D85F2A5EBB0D008F8C8F /* Feature */,
 				A842D85E2A5EBB09008F8C8F /* Base */,
@@ -653,6 +664,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A842D8582A5EBAFD008F8C8F /* Preview Assets.xcassets in Resources */,
+				A83122792AD96E3200717ECE /* ci_pre_xcodebuild.sh in Resources */,
 				A842D8552A5EBAFD008F8C8F /* Assets.xcassets in Resources */,
 				A87139AC2AB0AFA10053C187 /* GoogleService-Info.plist in Resources */,
 			);
