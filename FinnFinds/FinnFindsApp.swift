@@ -56,6 +56,7 @@ extension AppDelegate: MessagingDelegate {
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        // Save FCM registration token in order to send notifications for the user's device
         Messaging.messaging().token { token, error in
             if let error = error {
                 print("Error fetching FCM registration token: \(error)")
@@ -63,7 +64,7 @@ extension AppDelegate: MessagingDelegate {
                 print("FCM registration token: \(token)")
                 let dataDict: [String: String] = [Constants.FCM_TOKEN: token]
                 NotificationCenter.default.post(name: Notification.Name(Constants.FCM_TOKEN), object: token, userInfo: dataDict)
-                // Save it to the user defaults
+                // Save the fcm token in UserDefaults
                 UserDefaults.standard.set(token, forKey: Constants.FCM_TOKEN)
             }
         }
@@ -77,8 +78,6 @@ struct FinnFinds: App {
     
     @StateObject var sessionService = SessionServiceImpl()
     
-    @State var deepLink = ""
-
     var body: some Scene {
         WindowGroup {
             switch sessionService.state {

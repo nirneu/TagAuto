@@ -31,19 +31,30 @@ enum LocationAuthMessages {
 }
 
 protocol MapViewModel {
+    var mapView: MKMapView { get }
+    var manager: CLLocationManager { get }
+    var searchText: String { get }
+    var fetchedPlaces: [CLPlacemark]? { get }
+    var userLocation: CLLocation? { get }
+    var pickedLocation: CLLocation? { get }
+    var pickedPlaceMark: CLPlacemark? { get }
     var locationManager: CLLocationManager? { get }
     var region: MKCoordinateRegion { get }
     var newLocationRegion: MKCoordinateRegion { get }
     var state: LocationAuthState { get }
     var hasError: Bool { get }
+    var selectedCoordinate: CLLocationCoordinate2D? { get }
+    var isCurrentLocationClicked: Bool { get }
     func checkIfLocationServicesIsEnabled()
     func getCurrentLocation()
     func getCurrentLocationForNewLocationMap()
-    func regionForCar(_ car: Car?) -> MKCoordinateRegion
+    func fetchPlaces(value: String)
+    func addDragabblePin(coordinate: CLLocationCoordinate2D)
+    func updatePlacemark(location: CLLocation)
     init()
 }
 
-final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapViewDelegate{
+final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel{
     
     //MARK: Properties
     @Published var mapView: MKMapView = .init()
@@ -71,7 +82,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
         
     private var subscriptions = Set<AnyCancellable>()
     
-    var cancellable: AnyCancellable?
+    private var cancellable: AnyCancellable?
     
     override init() {
         super.init()
@@ -104,6 +115,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
         }
     }
     
+    /// Get the current location of a user and show it inside the main map of the app
     func getCurrentLocation() {
         DispatchQueue.main.async {
             if let location = self.locationManager?.location {
@@ -119,97 +131,13 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel, MKMapVie
         }
     }
     
-    func getCurrentLocationForNewLocationMap() {
-        DispatchQueue.main.async {
-            if let location = self.locationManager?.location {
-                let currentLocation = MKCoordinateRegion(center: location.coordinate,
-                                                         span: MapDetails.defaultSpan)
-                self.newLocationRegion = currentLocation
-            } else {
-                self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
-            }
-        }
-    }
-    
-    func fetchPlaces(value: String) {
-        //MARK: Fetching places using MKLocalSearch & Async/Await
-        Task {
-            do {
-                let request = MKLocalSearch.Request()
-                request.naturalLanguageQuery = value.lowercased()
-                request.region = self.region
-                
-                let response = try await MKLocalSearch(request: request).start()
-                // We can also use Mainactor to publish changes in Main Thread
-                await MainActor.run(body: {
-                    self.fetchedPlaces = response.mapItems.compactMap({ item -> CLPlacemark? in
-                        return item.placemark
-                    })
-                })
-            } catch {
-                 
-            }
-        }
-    }
-    
-    func regionForCar(_ car: Car?) -> MKCoordinateRegion {
-        guard let coordinate = car?.location else { return self.region }
-        return MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude), span: MapDetails.defaultSpan)
-    }
-    
-    //MARK: Add Draggable Pin to MapView
-    func addDragabblePin(coordinate: CLLocationCoordinate2D) {
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        annotation.title = "Drag to your parking spot"
-        
-        DispatchQueue.main.async {
-            self.mapView.addAnnotation(annotation)
-        }
-    }
-    
-    // MARK: Enabling Dragging
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        let marker = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "PARKINGPIN")
-        marker.isDraggable = true
-        marker.isSelected = true
-        marker.canShowCallout = false
-        marker.glyphImage = UIImage(systemName: "mappin")
-        marker.glyphTintColor = .black
-        
-        return marker
-    }
-    
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
-        guard let newLocation = view.annotation?.coordinate else {return}
-        self.pickedLocation = .init(latitude: newLocation.latitude, longitude: newLocation.longitude)
-        updatePlacemark(location: .init(latitude: newLocation.latitude, longitude: newLocation.longitude))
-    }
-    
-    func updatePlacemark(location: CLLocation) {
-        Task {
-            do {
-                guard let place = try await reverseLocationCoordinates(location: location) else {return}
-                await MainActor.run(body: {
-                    self.pickedPlaceMark = place
-                })
-            } catch {
-
-            }
-        }
-    }
-    
-    //MARK: Displaying New Location Data
-    func reverseLocationCoordinates(location: CLLocation) async throws -> CLPlacemark? {
-        let place = try await CLGeocoder().reverseGeocodeLocation(location).first
-        return place
-    }
-    
 }
 
 //MARK: - CLLocationManagerDelegate
 extension MapViewModelImpl: CLLocationManagerDelegate {
     
+    /// Handle a cahnge of Auth in a location manager
+    /// - Parameter manager: The location manager
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         DispatchQueue.main.async {
             switch manager.authorizationStatus {
@@ -235,6 +163,99 @@ extension MapViewModelImpl: CLLocationManagerDelegate {
         }
     }
     
+}
+
+//MARK: MKMapViewDelegate
+extension MapViewModelImpl: MKMapViewDelegate {
+    
+    /// Enabling Dragging inside a MKAnnotationView and adding an annotaion for a new parking position of a car
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let marker = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "PARKINGPIN")
+        marker.isDraggable = true
+        marker.isSelected = true
+        marker.canShowCallout = false
+        marker.glyphImage = UIImage(systemName: "mappin")
+        marker.glyphTintColor = .black
+        
+        return marker
+    }
+    
+    /// Handle a drag of an annotation in the map
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+        guard let newLocation = view.annotation?.coordinate else {return}
+        self.pickedLocation = .init(latitude: newLocation.latitude, longitude: newLocation.longitude)
+        updatePlacemark(location: .init(latitude: newLocation.latitude, longitude: newLocation.longitude))
+    }
+    
+    /// Get the current location on the map where the user choose a new location for a car
+    func getCurrentLocationForNewLocationMap() {
+        DispatchQueue.main.async {
+            if let location = self.locationManager?.location {
+                let currentLocation = MKCoordinateRegion(center: location.coordinate,
+                                                         span: MapDetails.defaultSpan)
+                self.newLocationRegion = currentLocation
+            } else {
+                self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+            }
+        }
+    }
+    
+    /// Fetching locations ("Places") of a text using MKLocalSearch & Async/Await
+    /// - Parameter value: Text of a generic place
+    func fetchPlaces(value: String) {
+        Task {
+            do {
+                let request = MKLocalSearch.Request()
+                request.naturalLanguageQuery = value.lowercased()
+                request.region = self.region
+                
+                let response = try await MKLocalSearch(request: request).start()
+                // We can also use Mainactor to publish changes in Main Thread
+                await MainActor.run(body: {
+                    self.fetchedPlaces = response.mapItems.compactMap({ item -> CLPlacemark? in
+                        return item.placemark
+                    })
+                })
+            } catch {
+                 
+            }
+        }
+    }
+    
+    /// Add a draggable pin to MapView
+    /// - Parameter coordinate: The coordinate in which the pin would be
+    func addDragabblePin(coordinate: CLLocationCoordinate2D) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        annotation.title = "Drag to your parking spot"
+        
+        DispatchQueue.main.async {
+            self.mapView.addAnnotation(annotation)
+        }
+    }
+    
+    /// Updates the view's current location address
+    /// - Parameter location: The chosen location
+    func updatePlacemark(location: CLLocation) {
+        Task {
+            do {
+                guard let place = try await reverseLocationCoordinates(location: location) else {return}
+                await MainActor.run(body: {
+                    self.pickedPlaceMark = place
+                })
+            } catch {
+
+            }
+        }
+    }
+    
+    /// Displaying address of  CLLocation data
+    /// - Parameter location: The location of the chosen place
+    /// - Returns: The address of the chosen place
+    private func reverseLocationCoordinates(location: CLLocation) async throws -> CLPlacemark? {
+        let place = try await CLGeocoder().reverseGeocodeLocation(location).first
+        return place
+    }
 }
 
 //MARK: - Error handling

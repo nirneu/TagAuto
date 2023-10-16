@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct VehicleEmojiPicker: View {
+    
     @Binding var selectedEmoji: String
 
       let emojis = ["🚗", "🚙", "🛻", "🚛", "🏎️", "🛵", "🏍️", "🚲", "🚁", "🛩️", "🛳️", "🚀"]
+    
       let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
 
       var body: some View {

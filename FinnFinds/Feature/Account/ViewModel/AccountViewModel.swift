@@ -34,7 +34,6 @@ final class AccountViewModelImpl: AccountViewModel, ObservableObject {
     
     private let service: AccountServiceImpl
     private var subscriptions = Set<AnyCancellable>()
-
     
     init(service: AccountServiceImpl) {
         self.service = service

@@ -46,6 +46,8 @@ final class SessionServiceImpl: ObservableObject, SessionService {
 
 private extension SessionServiceImpl {
     
+    
+    /// Setup a listener for changes in the auth state
     func setupFirebaseAuthHandler() {
         handler = Auth.auth().addStateDidChangeListener({ [weak self] res, user in
             guard let self = self else { return }
@@ -61,6 +63,11 @@ private extension SessionServiceImpl {
         })
     }
     
+    
+    /// Handle changes to the auth state inside the app
+    /// - Parameters:
+    ///   - uid: The user id
+    ///   - userEmail: The user email
     func handlerRefresh(uid: String, userEmail: String) {
         
         if Auth.auth().currentUser != nil {

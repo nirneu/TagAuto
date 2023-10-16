@@ -20,23 +20,29 @@ protocol GroupsViewModel {
     var hasError: Bool { get }
     var groupDetails: GroupDetails { get }
     var memberDetails: [UserDetails] { get }
+    var groupCreated: Bool { get }
+    var userListReload: Bool { get }
+    var carListReload: Bool { get }
     var groupCars: [Car] { get }
+    var isLoadingGroups: Bool { get }
+    var isLoadingMembers: Bool{ get }
+    var isLoadingCars: Bool { get }
     func fetchUserGroups(userId: String)
     func createGroup()
     func deleteGroup(_ groupId: String)
+    func fetchUserDetails(for members: [String])
     func addCarToGroup(groupId: String, car: Car)
+    func updateCarDetails(_ car: Car)
     func deleteCar(groupId: String, car: Car)
-    func sendInvitation(to email: String, for groupId: String, groupName: String)
-    func deleteMember(userId: String, groupId: String)
     func fetchGroupCars(groupId: String)
+    func sendInvitation(to email: String, for groupId: String, groupName: String)
+    func sendNotification(to email: String, groupName: String)
+    func deleteMember(userId: String, groupId: String)
     func getMembers(of groupId: String)
     init(service: GroupsService)
 }
 
 final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
-    
-    private var subscriptions = Set<AnyCancellable>()
-    private let service: GroupsService
     
     @Published var state: GroupsState = .na
     @Published var groups = [GroupDetails]()
@@ -50,6 +56,9 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     @Published var isLoadingGroups: Bool = true
     @Published var isLoadingMembers: Bool = true
     @Published var isLoadingCars: Bool = true
+    
+    private var subscriptions = Set<AnyCancellable>()
+    private let service: GroupsService
     
     init(service: GroupsService) {
         self.service = service

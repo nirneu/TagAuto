@@ -21,13 +21,22 @@ protocol CarsViewModel {
     var hasError: Bool { get }
     var cars: [Car] { get }
     var currentCarInfo: Car { get }
+    var carAdress: String { get }
+    var carNewNote: String { get }
+    var isLoading: Bool { get }
+    var isLoadingCars: Bool { get }
+    var selectedCar: Car? { get }
+    var locationUpdated: Bool { get }
+    var currentLocationFocus: CLLocation? { get }
     func fetchUserCars(userId: String, newLocation: CLLocation?)
+    func getCar(carId: String)
     func selectCar(_ car: Car?)
     func updateCarLocation(car: Car, newLocation: CLLocation, userId: String)
     func markCarAsUsed(carId: String, userId: String, userFullName: String)
     func updateCarNote(car: Car, note: String)
     func getAddress(carId: String, geopoint: CLLocationCoordinate2D)
     func getCarNote(car: Car)
+    func updateCarAddress(carId: String, adress: String)
     func deleteCar(groupId: String, car: Car, userId: String)
     init(service: CarsServiceImpl)
 }
@@ -124,7 +133,6 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                 default: break
                 }
             } receiveValue: { [weak self] geoPoint in
-//                self?.isLoading = false
                 self?.state = .successful
                 self?.fetchUserCars(userId: userId, newLocation: newLocation)
                 self?.selectCar(car)

@@ -27,6 +27,11 @@ struct HomeView: View {
     
     var body: some View {
         
+        /*
+            The front view of the app is based on a main map which has a permanent sheet on top for showing the user's cars and a specific car details.
+            Then on top of the first sheet there's another sheet for more app info.
+            This is designed like this in order to give the app the modern feel of Apple's maps apps.
+        */
         MapView()
             .environmentObject(carsViewModel)
             .environmentObject(mapViewModel)
@@ -34,6 +39,7 @@ struct HomeView: View {
                 
                 VStack(alignment: .leading, spacing: 0) {
                     
+                    // Show selected car details view
                     if let car = selectedCar {
                         
                         HStack {
@@ -84,7 +90,7 @@ struct HomeView: View {
                             }
                         
                     } else {
-                        
+                        // Show cars view
                         HStack {
                             Text("Vehicles")
                                 .font(.title2.bold())
@@ -104,6 +110,7 @@ struct HomeView: View {
                             .environmentObject(carsViewModel)
                             .environmentObject(mapViewModel)
                             .environmentObject(sessionService)
+                            // Second sheet for more app information on top of the current sheet
                             .sheet(isPresented: $showMoreSheet, onDismiss: {
                                 refreshCars()
                                 showAccountView = false
@@ -112,6 +119,7 @@ struct HomeView: View {
                                 NavigationStack {
                                     
                                     List {
+                                        // User's groups
                                         Section(header: Text("Groups")) {
                                             HStack {
                                                 Button {
@@ -129,6 +137,7 @@ struct HomeView: View {
                                             }
                                             
                                         }
+                                        // User's account info and it's group invitiations
                                         Section(header: Text("Account")) {
                                             HStack {
                                                 Button {
@@ -176,6 +185,8 @@ struct HomeView: View {
                     }
                 }
             }
+            // On opening the app from outside
+            // Currently supports only for a notification about a group invitation
             .onOpenURL(perform: { url in
                 guard url.scheme == "myfindcarapp" else {
                     return
@@ -190,6 +201,7 @@ struct HomeView: View {
                     return
                 }
                 
+                // Show the relevant views when someone open the app from a group invitation notification
                 showMoreSheet = true
                 showAccountView = true
             })

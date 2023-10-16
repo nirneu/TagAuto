@@ -8,8 +8,8 @@
 import Foundation
 
 struct UserDetails: Hashable {
-    var userId: String
+    let userId: String
     let userEmail: String
-    var firstName: String
-    var lastName: String
+    let firstName: String
+    let lastName: String
 }

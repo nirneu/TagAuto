@@ -18,6 +18,7 @@ enum RegistrationKeys: String {
 
 protocol RegistrationService {
     func register(with details: RegistrationDetails) -> AnyPublisher<Void, Error>
+    func saveUserFcmToken(_ userId: String)
 }
 
 final class RegistrationServiceImpl: RegistrationService {
@@ -63,6 +64,8 @@ final class RegistrationServiceImpl: RegistrationService {
         .eraseToAnyPublisher()
     }
     
+    /// Save the user's device FCM token for sending the device notifications
+    /// - Parameter userId: The user's id
     func saveUserFcmToken(_ userId: String) {
         // Get the FCM token form user defaults
         guard let fcmToken = UserDefaults.standard.value(forKey: Constants.FCM_TOKEN) else {

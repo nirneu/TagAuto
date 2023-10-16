@@ -22,9 +22,11 @@ protocol LoginService {
     func loginWithApple(with credential: OAuthCredential, appleIDCredential: ASAuthorizationAppleIDCredential) -> AnyPublisher<Void, Error>
     func randomNonceString(length: Int) -> String
     func sha256(_ input: String) -> String
+    func saveUserFcmToken(_ userId: String) 
 }
 
 final class LoginServiceImpl: LoginService {
+    
     func login(with credentials: LoginCredentials) -> AnyPublisher<Void, Error> {
         
         Deferred {
@@ -95,8 +97,6 @@ final class LoginServiceImpl: LoginService {
         .receive (on: RunLoop.main)
         .eraseToAnyPublisher()
     }
-    
-    
     
     func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)

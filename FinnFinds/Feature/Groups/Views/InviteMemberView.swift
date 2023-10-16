@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct InviteMemberView: View {
+    
     @EnvironmentObject var vm: GroupsViewModelImpl
     @EnvironmentObject var sessionService: SessionServiceImpl
     

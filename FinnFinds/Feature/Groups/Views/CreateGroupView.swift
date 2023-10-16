@@ -10,7 +10,6 @@ import SwiftUI
 struct CreateGroupView: View {
     
     @EnvironmentObject var sessionService: SessionServiceImpl
-    
     @EnvironmentObject var vm: GroupsViewModelImpl
     
     @Binding var showingSheet: Bool
