@@ -87,18 +87,6 @@ struct MapView: View {
                 mapViewModel.isCurrentLocationClicked = false
                 
             }
-   
-            .alert("Error", isPresented: $mapViewModel.hasError) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                if case .failed(let error) = mapViewModel.state {
-                    Text(error.localizedDescription)
-                } else if case .unauthorized(let reason) = mapViewModel.state {
-                    Text(reason)
-                } else {
-                    Text("Something went wrong")
-                }
-            }
             
             HStack {
                 

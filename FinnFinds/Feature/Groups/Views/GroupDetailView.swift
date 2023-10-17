@@ -72,15 +72,7 @@ struct GroupDetailView: View {
                             .onTapGesture {
                                 selectedCar = car
                             }
-//                            .swipeActions(edge: .leading) {
-//                                Button("Edit") {
-//                                    selectedCar = car
-//                                }
-//                                .tint(.orange)
-//                            }
                         }
-//                        .onDelete(perform: deleteCar(at:))
-                  
                     } else {
                         Text("There are no vehicles yet")
                     }

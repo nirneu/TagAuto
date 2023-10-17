@@ -79,7 +79,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel{
     @Published var selectedCoordinate: CLLocationCoordinate2D?
     
     var locationManager: CLLocationManager?
-        
+    
     private var subscriptions = Set<AnyCancellable>()
     
     private var cancellable: AnyCancellable?
@@ -127,6 +127,9 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel{
                 self.isCurrentLocationClicked = true
             } else {
                 self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+                let currentLocation = MKCoordinateRegion(center: MapDetails.startingLocation,
+                                                         span: MapDetails.defaultSpan)
+                self.region = currentLocation
             }
         }
     }
@@ -155,10 +158,20 @@ extension MapViewModelImpl: CLLocationManagerDelegate {
                         self.region = MKCoordinateRegion(center: centeredLocation, span: MapDetails.defaultSpan)
                     }
                 } else {
+                    // Center the camera focus in proportion with the bottom sheet
+                    DispatchQueue.main.async {
+                        self.region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
+                    }
                     self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+
                 }
             @unknown default:
+                // Center the camera focus in proportion with the bottom sheet
+                DispatchQueue.main.async {
+                    self.region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
+                }
                 self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+
             }
         }
     }
@@ -217,7 +230,7 @@ extension MapViewModelImpl: MKMapViewDelegate {
                     })
                 })
             } catch {
-                 
+                
             }
         }
     }
@@ -244,7 +257,7 @@ extension MapViewModelImpl: MKMapViewDelegate {
                     self.pickedPlaceMark = place
                 })
             } catch {
-
+                
             }
         }
     }

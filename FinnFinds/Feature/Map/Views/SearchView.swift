@@ -140,9 +140,16 @@ struct SearchView: View {
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
         
+        let carsViewModel = CarsViewModelImpl(service: CarsServiceImpl())
+        let mapViewModel = MapViewModelImpl()
+        let sessionService = SessionServiceImpl()
+        
         @State var showingSheet = true
         
         SearchView(showingSheet: $showingSheet, car: Car.new)
+            .environmentObject(mapViewModel)
+            .environmentObject(carsViewModel)
+            .environmentObject(sessionService)
     }
 }
 

@@ -35,6 +35,7 @@ struct HomeView: View {
         MapView()
             .environmentObject(carsViewModel)
             .environmentObject(mapViewModel)
+            .environmentObject(sessionService)
             .sheet(isPresented: $showCarsSheet) {
                 
                 VStack(alignment: .leading, spacing: 0) {
@@ -43,7 +44,6 @@ struct HomeView: View {
                     if let car = selectedCar {
                         
                         HStack {
-                            //                            Text(car.icon)
                             Text(carsViewModel.currentCarInfo.icon)
                                 .font(.title2.bold())
                             Text(carsViewModel.currentCarInfo.name)
@@ -172,8 +172,6 @@ struct HomeView: View {
                             }
                     }
                     
-                    
-                    
                 }
                 .presentationDetents([.fraction(Constants.defaultPresentationDetentFraction), .large], selection: $sheetDetentSelection)
                 .presentationDragIndicator(.visible)
@@ -182,6 +180,17 @@ struct HomeView: View {
                 .onChange(of: carsViewModel.selectedCar) { newCar in
                     DispatchQueue.main.async {
                         selectedCar = newCar
+                    }
+                }
+                .alert("Error", isPresented: $mapViewModel.hasError) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    if case .failed(let error) = mapViewModel.state {
+                        Text(error.localizedDescription)
+                    } else if case .unauthorized(let reason) = mapViewModel.state {
+                        Text(reason)
+                    } else {
+                        Text("Something went wrong")
                     }
                 }
             }

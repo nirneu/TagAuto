@@ -14,7 +14,7 @@ struct Car: Hashable, Identifiable {
     let id: String
     let name: String
     var location: GeoPoint
-    let adress: String
+    let address: String
     let groupName: String
     let groupId: String
     let note: String
@@ -31,6 +31,6 @@ struct Car: Hashable, Identifiable {
 extension Car {
     
     static var new: Car {
-        Car(id: "", name: "", location: GeoPoint(latitude: 0, longitude: 0), adress: "", groupName: "", groupId: "", note: "", icon: "", currentlyInUse: false, currentlyUsedById: "", currentlyUsedByFullName: "")
+        Car(id: "", name: "", location: GeoPoint(latitude: 0, longitude: 0), address: "", groupName: "", groupId: "", note: "", icon: "", currentlyInUse: false, currentlyUsedById: "", currentlyUsedByFullName: "")
     }
 }

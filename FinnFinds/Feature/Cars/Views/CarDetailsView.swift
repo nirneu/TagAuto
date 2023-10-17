@@ -31,7 +31,7 @@ struct CarDetailsView: View {
                 
                 VStack(alignment: .leading, spacing: 10) {
                     
-                    if carsViewModel.currentCarInfo.adress.isEmpty {
+                    if carsViewModel.currentCarInfo.address.isEmpty {
                         HStack {
                             Image(systemName: "exclamationmark.circle")
                             Text("The vehicle doesn't have a location yet")
@@ -41,7 +41,7 @@ struct CarDetailsView: View {
                             Text("Last Known Address:")
                                 .bold()
                             
-                            Text(carsViewModel.currentCarInfo.adress)
+                            Text(carsViewModel.currentCarInfo.address)
                                 .foregroundColor(.gray)
                             
                         }

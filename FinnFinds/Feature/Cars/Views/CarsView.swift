@@ -63,7 +63,7 @@ struct CarsView: View {
                                                         .foregroundColor(.gray)
                                                 }
                                             } else {
-                                                if car.adress.isEmpty {
+                                                if car.address.isEmpty {
                                                     HStack(spacing: 5) {
                                                         Image(systemName: "exclamationmark.circle")
                                                             .foregroundColor(.gray)
@@ -75,7 +75,7 @@ struct CarsView: View {
                                                             .foregroundColor(.gray)
                                                     }
                                                 } else {
-                                                    Text(car.adress)
+                                                    Text(car.address)
                                                         .foregroundColor(.gray)
                                                         .font(.subheadline)
                                                     
@@ -105,10 +105,14 @@ struct CarsView: View {
             .listStyle(.plain)
         }
         .onAppear {
-            carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
+            if let userId = sessionService.userDetails?.userId {
+                carsViewModel.fetchUserCars(userId: userId)
+            }
         }
         .onChange(of: sessionService.userDetails) { newUserDetails in
-            carsViewModel.fetchUserCars(userId: sessionService.userDetails?.userId ?? "")
+            if let userId = sessionService.userDetails?.userId {
+                carsViewModel.fetchUserCars(userId: userId)
+            }
         }
         .alert("Error", isPresented: $carsViewModel.hasError) {
             Button("OK", role: .cancel) { }
