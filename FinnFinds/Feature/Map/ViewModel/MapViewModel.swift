@@ -38,14 +38,12 @@ protocol MapViewModel {
     var userLocation: CLLocation? { get }
     var pickedLocation: CLLocation? { get }
     var pickedPlaceMark: CLPlacemark? { get }
-    var locationManager: CLLocationManager? { get }
     var region: MKCoordinateRegion { get }
     var newLocationRegion: MKCoordinateRegion { get }
     var state: LocationAuthState { get }
     var hasError: Bool { get }
     var selectedCoordinate: CLLocationCoordinate2D? { get }
     var isCurrentLocationClicked: Bool { get }
-    func checkIfLocationServicesIsEnabled()
     func getCurrentLocation()
     func getCurrentLocationForNewLocationMap()
     func fetchPlaces(value: String)
@@ -77,9 +75,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel{
     @Published var isCurrentLocationClicked = true
     @Published var newLocationRegion = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
     @Published var selectedCoordinate: CLLocationCoordinate2D?
-    
-    var locationManager: CLLocationManager?
-    
+        
     private var subscriptions = Set<AnyCancellable>()
     
     private var cancellable: AnyCancellable?
@@ -108,17 +104,10 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel{
             })
     }
     
-    func checkIfLocationServicesIsEnabled() {
-        DispatchQueue.main.async {
-            self.locationManager = CLLocationManager()
-            self.locationManager!.delegate = self
-        }
-    }
-    
     /// Get the current location of a user and show it inside the main map of the app
     func getCurrentLocation() {
         DispatchQueue.main.async {
-            if let location = self.locationManager?.location {
+            if let location = self.manager.location {
                 // Center the camera focus in proportion with the bottom sheet
                 let centeredLocation = CLLocationCoordinate2D(latitude: location.coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: location.coordinate.longitude)
                 let currentLocation = MKCoordinateRegion(center: centeredLocation,
@@ -203,7 +192,7 @@ extension MapViewModelImpl: MKMapViewDelegate {
     /// Get the current location on the map where the user choose a new location for a car
     func getCurrentLocationForNewLocationMap() {
         DispatchQueue.main.async {
-            if let location = self.locationManager?.location {
+            if let location = self.manager.location {
                 let currentLocation = MKCoordinateRegion(center: location.coordinate,
                                                          span: MapDetails.defaultSpan)
                 self.newLocationRegion = currentLocation

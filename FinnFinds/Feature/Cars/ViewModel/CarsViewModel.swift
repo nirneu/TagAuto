@@ -45,7 +45,6 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
     
     private var subscriptions = Set<AnyCancellable>()
     private let service: CarsServiceImpl
-    private let locationManager = CLLocationManager()
     
     @Published var state: CarsState = .na
     @Published var hasError: Bool = false

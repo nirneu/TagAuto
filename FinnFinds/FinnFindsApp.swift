@@ -61,7 +61,6 @@ extension AppDelegate: MessagingDelegate {
             if let error = error {
                 print("Error fetching FCM registration token: \(error)")
             } else if let token = token {
-                print("FCM registration token: \(token)")
                 let dataDict: [String: String] = [Constants.FCM_TOKEN: token]
                 NotificationCenter.default.post(name: Notification.Name(Constants.FCM_TOKEN), object: token, userInfo: dataDict)
                 // Save the fcm token in UserDefaults
