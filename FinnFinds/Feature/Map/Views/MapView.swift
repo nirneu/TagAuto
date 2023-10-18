@@ -53,7 +53,9 @@ struct MapView: View {
                         }
                     }
                     .onTapGesture {
-                        carsViewModel.selectCar(car)
+                        Task {
+                            await carsViewModel.selectCar(car)
+                        }
                     }
                 }
             

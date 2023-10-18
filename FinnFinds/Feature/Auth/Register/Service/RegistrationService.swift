@@ -60,7 +60,7 @@ final class RegistrationServiceImpl: RegistrationService {
                     }
             }
         }
-        .receive (on: RunLoop.main)
+        .receive(on: RunLoop.main)
         .eraseToAnyPublisher()
     }
     

@@ -69,7 +69,9 @@ struct HomeView: View {
                         }
                         .padding([.top, .leading, .trailing, .bottom])
                         .onAppear {
-                            carsViewModel.getCar(carId: car.id)
+                            Task {
+                                await carsViewModel.getCar(carId: car.id)
+                            }
                         }
                         
                         CarDetailsView(carId: car.id)
@@ -81,7 +83,9 @@ struct HomeView: View {
                                 EditCarView(isDelete: $isVehicleDeleted, car: car).environmentObject(groupsViewModel)
                                     .onDisappear {
                                         refreshCars()
-                                        carsViewModel.getCar(carId: car.id)
+                                        Task {
+                                            await carsViewModel.getCar(carId: car.id)
+                                        }
                                         showEditCar = false
                                         if isVehicleDeleted {
                                             selectedCar = nil

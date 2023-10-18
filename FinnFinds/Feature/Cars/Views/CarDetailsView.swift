@@ -71,8 +71,9 @@ struct CarDetailsView: View {
                         if userDetails.userId != carsViewModel.currentCarInfo.currentlyUsedById {
                             
                             Button {
-                                carsViewModel.markCarAsUsed(carId: carId, userId: userDetails.userId, userFullName: userDetails.firstName + " " + userDetails.lastName)
-                                
+                                Task {
+                                    await carsViewModel.markCarAsUsed(carId: carId, userId: userDetails.userId, userFullName: userDetails.firstName + " " + userDetails.lastName)
+                                }
                             } label: {
                                 Image(systemName: "person.badge.key")
                                 Text("Claim")
@@ -99,8 +100,9 @@ struct CarDetailsView: View {
         }
         .frame(maxHeight: .infinity, alignment: .top)
         .onAppear {
-            carsViewModel.carNewNote = ""
-            carsViewModel.getCar(carId: carId)
+            Task {
+                await carsViewModel.getCar(carId: carId)
+            }
         }
         .sheet(isPresented: $showLocationUpdateAlert,onDismiss: {
             mapViewModel.pickedLocation = nil

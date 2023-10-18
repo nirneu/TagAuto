@@ -19,7 +19,9 @@ struct CarsView: View {
     
     func handleTap(_ car: Car) {
         self.selectedCar = car
-        carsViewModel.selectCar(car)
+        Task {
+            await carsViewModel.selectCar(car)
+        }
         self.sheetDetentSelection = PresentationDetent.fraction(Constants.defaultPresentationDetentFraction)
     }
     
