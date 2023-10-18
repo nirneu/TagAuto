@@ -7,33 +7,79 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4228DE76-B8FD-4142-9211-1E8D0FCD19CD"
+            uuid = "CDDB9638-3332-482A-9FB8-43782CA0E493"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FinnFinds/Feature/Map/ViewModel/MapViewModel.swift"
+            filePath = "FinnFinds/Feature/Auth/Forgot Password/Service/ForgotPasswordService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
-            landmarkName = "init()"
+            startingLineNumber = "18"
+            endingLineNumber = "18"
+            landmarkName = "sendPasswordReset(to:)"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "46A834F4-88E4-4F06-8B26-9113822D8DD1"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FinnFinds/Feature/Map/ViewModel/MapViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "134"
-            endingLineNumber = "134"
-            landmarkName = "locationManagerDidChangeAuthorization(_:)"
-            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CDDB9638-3332-482A-9FB8-43782CA0E493 - 6990b691cd82b209"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for FinnFinds.ForgotPasswordServiceImpl.sendPasswordReset(to: Swift.String) async throws -&gt; ()"
+                  moduleName = "FinnFinds"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nirneuman/Documents/Projects/Swift/Self/FinnFinds/FinnFinds/Feature/Auth/Forgot%20Password/Service/ForgotPasswordService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "18"
+                  endingLineNumber = "18"
+                  offsetFromSymbolStart = "84">
+               </Location>
+               <Location
+                  uuid = "CDDB9638-3332-482A-9FB8-43782CA0E493 - 196c5d3a094a6f4e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for FinnFinds.ForgotPasswordServiceImpl.sendPasswordReset(to: Swift.String) async throws -&gt; ()"
+                  moduleName = "FinnFinds"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nirneuman/Documents/Projects/Swift/Self/FinnFinds/FinnFinds/Feature/Auth/Forgot%20Password/Service/ForgotPasswordService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "18"
+                  endingLineNumber = "18"
+                  offsetFromSymbolStart = "52">
+               </Location>
+               <Location
+                  uuid = "CDDB9638-3332-482A-9FB8-43782CA0E493 - 202fc3e20ac06603"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for FinnFinds.ForgotPasswordServiceImpl.sendPasswordReset(to: Swift.String) async throws -&gt; ()"
+                  moduleName = "FinnFinds"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nirneuman/Documents/Projects/Swift/Self/FinnFinds/FinnFinds/Feature/Auth/Forgot%20Password/Service/ForgotPasswordService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "18"
+                  endingLineNumber = "18"
+                  offsetFromSymbolStart = "36">
+               </Location>
+               <Location
+                  uuid = "CDDB9638-3332-482A-9FB8-43782CA0E493 - 4774558aa85f0cf8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for FinnFinds.ForgotPasswordServiceImpl.sendPasswordReset(to: Swift.String) async throws -&gt; ()"
+                  moduleName = "FinnFinds"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nirneuman/Documents/Projects/Swift/Self/FinnFinds/FinnFinds/Feature/Auth/Forgot%20Password/Service/ForgotPasswordService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "18"
+                  endingLineNumber = "18"
+                  offsetFromSymbolStart = "44">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

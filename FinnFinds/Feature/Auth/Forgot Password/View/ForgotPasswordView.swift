@@ -21,8 +21,11 @@ struct ForgotPasswordView: View {
                 InputTextFieldView(text: $vm.email, placeholder: "Email", keyboardType: .emailAddress, sfSymbol: "envelope")
                 
                 ButtonView(title: "Send Password Reset") {
-                    vm.sendPasswordReset()
-                    dismiss()
+                    Task {
+                        await vm.sendPasswordReset()
+                        dismiss()
+                    }
+                    
                 }
                 
             }

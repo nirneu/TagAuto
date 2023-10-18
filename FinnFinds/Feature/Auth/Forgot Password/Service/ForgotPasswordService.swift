@@ -10,27 +10,13 @@ import Combine
 import Firebase
 
 protocol ForgotPasswordService {
-    func sendPasswordReset(to email: String) -> AnyPublisher<Void, Error>
+    func sendPasswordReset(to email: String) async throws
 }
 
 final class ForgotPasswordServiceImpl: ForgotPasswordService {
     
-    func sendPasswordReset(to email: String) -> AnyPublisher<Void, Error> {
-        
-        Deferred {
-            
-            Future { promise in
-                
-                Auth.auth().sendPasswordReset(withEmail: email) { error in
-                    
-                    if let error = error {
-                        promise(.failure(error))
-                    } else {
-                        promise(.success(()))
-                    }
-                }
-            }
-        }
-        .eraseToAnyPublisher()
+    func sendPasswordReset(to email: String) async throws {
+        try await Auth.auth().sendPasswordReset(withEmail: email)
     }
+    
 }

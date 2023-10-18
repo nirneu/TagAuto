@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 protocol ForgotPasswordViewModel {
-    func sendPasswordReset()
+    func sendPasswordReset() async
     var service: ForgotPasswordService { get }
     var email: String { get }
     init(service: ForgotPasswordService)
@@ -27,20 +27,12 @@ final class ForgotPasswordViewModelImpl: ObservableObject, ForgotPasswordViewMod
         self.service = service
     }
     
-    func sendPasswordReset() {
-        
-        service.sendPasswordReset(to: email)
-            .sink { res in
-
-                switch res {
-                case .failure (let error):
-                    print("Failed: \(error)")
-                default: break
-                }
-
-            } receiveValue: { 
-                print("Sent Password Reset Request")
-            }
-            .store(in: &subscriptions)
-    }
+    @MainActor
+    func sendPasswordReset() async  {
+        do {
+            try await service.sendPasswordReset(to: email)            
+        } catch {
+            print("Failed: \(error)")
+        }
+    } 
 }

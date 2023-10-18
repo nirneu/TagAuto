@@ -69,27 +69,28 @@ private extension SessionServiceImpl {
     ///   - uid: The user id
     ///   - userEmail: The user email
     func handlerRefresh(uid: String, userEmail: String) {
-        
-        if Auth.auth().currentUser != nil {
-            
-            let db = Firestore.firestore()
-            let docRef = db.collection("users").document(uid)
-            
-            docRef.getDocument { [weak self] (document, error) in
-                
-                if let self = self {
-                    if let document = document, document.exists {
-                        guard let dataDescription = document.data(),
-                              let firstName = dataDescription[RegistrationKeys.firstName.rawValue] as? String,
-                              let lastName = dataDescription[RegistrationKeys.lastName.rawValue] as? String else {
-                            return
-                        }
-                        
-                        DispatchQueue.main.async {
-                            self.userDetails = UserDetails(userId: uid, userEmail: userEmail, firstName: firstName, lastName: lastName)
-                        }
-                    }
-                }
+        guard let user = Auth.auth().currentUser else {
+            return
+        }
+
+        let db = Firestore.firestore()
+        let docRef = db.collection("users").document(uid)
+
+        docRef.getDocument { [weak self] document, error in
+            if let error = error {
+                print("Error fetching user details: \(error.localizedDescription)")
+                return
+            }
+
+            guard let document = document, document.exists,
+                  let dataDescription = document.data(),
+                  let firstName = dataDescription[RegistrationKeys.firstName.rawValue] as? String,
+                  let lastName = dataDescription[RegistrationKeys.lastName.rawValue] as? String else {
+                return
+            }
+
+            DispatchQueue.main.async {
+                self?.userDetails = UserDetails(userId: uid, userEmail: userEmail, firstName: firstName, lastName: lastName)
             }
         }
     }
