@@ -20,7 +20,7 @@ protocol GroupsViewModel {
     var hasError: Bool { get }
     var groupDetails: GroupDetails { get }
     var memberDetails: [UserDetails] { get }
-    var groupCreated: Bool { get }
+    var groupChange: Bool { get }
     var userListReload: Bool { get }
     var carListReload: Bool { get }
     var groupCars: [Car] { get }
@@ -49,7 +49,7 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
     @Published var hasError: Bool = false
     @Published var groupDetails: GroupDetails = GroupDetails.new
     @Published var memberDetails: [UserDetails] = []
-    @Published var groupCreated: Bool = false
+    @Published var groupChange: Bool = false
     @Published var userListReload: Bool = false
     @Published var carListReload: Bool = false
     @Published var groupCars: [Car] = []
@@ -99,7 +99,7 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                 }
             } receiveValue: { [weak self] in
                 self?.state = .successful
-                self?.groupCreated = true
+                self?.groupChange = true
             }
             .store(in: &subscriptions)
     }
@@ -115,7 +115,7 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                 }
             } receiveValue: { [weak self] in
                 self?.state = .successful
-                self?.groupCreated = true
+                self?.groupChange = true
             }
             .store(in: &subscriptions)
     }
@@ -258,6 +258,7 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
             } receiveValue: { [weak self] _ in
                 self?.state = .successful
                 self?.userListReload = true
+                self?.groupChange = true
             }
             .store(in: &subscriptions)
     }

@@ -61,10 +61,10 @@ struct GroupsView: View {
         .onAppear {
             vm.fetchUserGroups(userId: sessionService.userDetails?.userId ?? "")
         }
-        .onReceive(vm.$groupCreated) { created in
+        .onReceive(vm.$groupChange) { created in
             if created {
                 vm.fetchUserGroups(userId: sessionService.userDetails?.userId ?? "")
-                vm.groupCreated = false
+                vm.groupChange = false
             }
         }
         .alert("Error", isPresented: $vm.hasError) {

@@ -34,8 +34,12 @@ struct GroupDetailView: View {
                             HStack {
                                 Image(systemName: "person.crop.circle")
                                     .foregroundColor(Color(uiColor: .systemBlue))
-                                Text(member.firstName + " " + member.lastName)
+                                VStack(alignment: .leading) {
+                                    Text(member.firstName + " " + member.lastName).font(.system(.headline)).bold()
+                                    Text(member.userEmail).font(.subheadline)
+                                }
                             }
+                            
                         }
                         .onDelete(perform: deleteMember(at:))
                         
@@ -77,7 +81,7 @@ struct GroupDetailView: View {
                         Text("There are no vehicles yet")
                     }
                 }
-         
+                
             }
             .onAppear {
                 vm.fetchGroupCars(groupId: group.id)
@@ -139,7 +143,7 @@ struct GroupDetailView: View {
     private func deleteCar(at offsets: IndexSet) {
         for index in offsets {
             let carToDelete = vm.groupCars.sorted { $0.name < $1.name }[index]
-            vm.deleteCar(groupId: group.id, car: carToDelete)  
+            vm.deleteCar(groupId: group.id, car: carToDelete)
         }
     }
     
@@ -148,6 +152,7 @@ struct GroupDetailView: View {
             let memberToDelete = vm.memberDetails.sorted { $0.firstName < $1.firstName }[index]
             
             vm.deleteMember(userId: memberToDelete.userId, groupId: group.id)
+            presentationMode.wrappedValue.dismiss()
         }
     }
 }
