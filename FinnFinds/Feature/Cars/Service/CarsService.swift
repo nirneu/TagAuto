@@ -122,7 +122,7 @@ final class CarsServiceImpl: CarsService {
             )
             return car
         } else {
-            throw NSError()
+            throw CustomError.error("The car does not exist")
         }
     }
     

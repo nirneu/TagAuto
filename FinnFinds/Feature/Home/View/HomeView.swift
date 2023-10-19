@@ -82,9 +82,8 @@ struct HomeView: View {
                             .sheet(isPresented: $showEditCar) {
                                 EditCarView(isDelete: $isVehicleDeleted, car: car).environmentObject(groupsViewModel)
                                     .onDisappear {
-                                        refreshCars()
                                         Task {
-                                            await carsViewModel.getCar(carId: car.id)
+                                            await refreshCars()
                                         }
                                         showEditCar = false
                                         if isVehicleDeleted {
@@ -112,13 +111,17 @@ struct HomeView: View {
                         
                         CarsView(selectedCar: $selectedCar, sheetDetentSelection: $sheetDetentSelection)
                             .environmentObject(carsViewModel)
+                            .environmentObject(groupsViewModel)
                             .environmentObject(mapViewModel)
                             .environmentObject(sessionService)
                             // Second sheet for more app information on top of the current sheet
                             .sheet(isPresented: $showMoreSheet, onDismiss: {
-                                refreshCars()
+                                carsViewModel.isLoadingCars = true
                                 showAccountView = false
                                 showGroupsView = false
+                                Task {
+                                    await refreshCars()
+                                }
                             }) {
                                 NavigationStack {
                                     
@@ -163,6 +166,7 @@ struct HomeView: View {
                                     .toolbar {
                                         ToolbarItem(placement: .navigationBarTrailing) {
                                             Button {
+                                                carsViewModel.isLoadingCars = true
                                                 showMoreSheet = false
                                             } label: {
                                                 Text("Done")
@@ -221,10 +225,9 @@ struct HomeView: View {
         
     }
     
-    private func refreshCars() {
+    private func refreshCars() async {
         if let userId = sessionService.userDetails?.userId {
-            carsViewModel.isLoadingCars = true
-            carsViewModel.fetchUserCars(userId: userId)
+            await carsViewModel.fetchUserCars(userId: userId)
         }
     }
     

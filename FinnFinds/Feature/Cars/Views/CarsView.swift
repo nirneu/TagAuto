@@ -11,6 +11,7 @@ struct CarsView: View {
     
     @EnvironmentObject var sessionService: SessionServiceImpl
     @EnvironmentObject var carsViewModel: CarsViewModelImpl
+    @EnvironmentObject var groupsViewModel: GroupsViewModelImpl
     
     @State private var showLocationUpdateAlert = false
     
@@ -32,8 +33,9 @@ struct CarsView: View {
             List {
                 
                 if carsViewModel.isLoadingCars {
-                    ProgressView()
+                    ProgressView().id(UUID())
                         .listRowBackground(Color.clear)
+                    
                 } else {
                     
                     if !carsViewModel.cars.isEmpty {
@@ -86,7 +88,7 @@ struct CarsView: View {
                                         }
                                         Spacer()
                                     }
-                                    .contentShape(Rectangle())                    
+                                    .contentShape(Rectangle())
                                     .onTapGesture {
                                         self.handleTap(car)
                                     }
@@ -108,12 +110,23 @@ struct CarsView: View {
         }
         .onAppear {
             if let userId = sessionService.userDetails?.userId {
-                carsViewModel.fetchUserCars(userId: userId)
+                Task {
+                    await carsViewModel.fetchUserCars(userId: userId)
+                }
             }
         }
         .onChange(of: sessionService.userDetails) { newUserDetails in
             if let userId = sessionService.userDetails?.userId {
-                carsViewModel.fetchUserCars(userId: userId)
+                Task {
+                    await carsViewModel.fetchUserCars(userId: userId)
+                }
+            }
+        }
+        .onReceive(groupsViewModel.$carListReload) { change in
+            if let userId = sessionService.userDetails?.userId {
+                Task {
+                    await carsViewModel.fetchUserCars(userId: userId)
+                }
             }
         }
         .alert("Error", isPresented: $carsViewModel.hasError) {

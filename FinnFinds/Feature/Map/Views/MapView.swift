@@ -68,7 +68,9 @@ struct MapView: View {
             .onAppear {
                 
                 if let userId = sessionService.userDetails?.userId {
-                    carsViewModel.fetchUserCars(userId: userId)
+                    Task {
+                        await carsViewModel.fetchUserCars(userId: userId)
+                    }
                 }
                 
             }

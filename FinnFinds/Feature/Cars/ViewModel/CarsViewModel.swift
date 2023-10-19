@@ -26,7 +26,7 @@ protocol CarsViewModel {
     var selectedCar: Car? { get }
     var locationUpdated: Bool { get }
     var currentLocationFocus: CLLocation? { get }
-    func fetchUserCars(userId: String, newLocation: CLLocation?)
+    func fetchUserCars(userId: String, newLocation: CLLocation?) async
     func getCar(carId: String) async
     func selectCar(_ car: Car?) async
     func updateCarLocation(car: Car, newLocation: CLLocation, userId: String)
@@ -55,7 +55,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
         setupErrorSubscription()
     }
     
-    func fetchUserCars(userId: String, newLocation: CLLocation? = nil) {
+    func fetchUserCars(userId: String, newLocation: CLLocation? = nil) async {
         guard !userId.isEmpty else {
             return
         }
@@ -118,7 +118,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                 DispatchQueue.main.async {
                     self.state = .successful
                 }
-                self.fetchUserCars(userId: userId, newLocation: newLocation)
+                await self.fetchUserCars(userId: userId, newLocation: newLocation)
                 await self.selectCar(car)
                 
                 let address = try await service.getAddress(carId: car.id, geopoint: CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude))
@@ -158,7 +158,7 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                 self.isLoading = false
                 self.state = .successful
             }
-            self.fetchUserCars(userId: userId)
+            await self.fetchUserCars(userId: userId)
             
             // Use getCar function to update car information
             await getCar(carId: carId)
@@ -180,7 +180,11 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
                 }
             } receiveValue: { [weak self] _ in
                 self?.state = .successful
-                self?.fetchUserCars(userId: userId)
+                if let self = self {
+                    Task {
+                        await self.fetchUserCars(userId: userId)
+                    }
+                }
             }
             .store(in: &subscriptions)
     }
