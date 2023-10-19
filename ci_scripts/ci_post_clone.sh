@@ -1,14 +1,14 @@
 #!/bin/sh
 
 #  ci_post_clone.sh
-#  FinnFinds
+#  TagAuto
 #
 #  Created by Nir Neuman on 13/10/2023.
 #  
 
 echo "Stage: Post-Xcode Build is activated .... "
 
-cd ../FinnFinds/
+cd ../TagAuto/
 
 plutil -replace SERVER_KEY -string $SERVER_KEY Info.plist
 
