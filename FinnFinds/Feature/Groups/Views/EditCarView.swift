@@ -60,7 +60,7 @@ struct EditCarView: View {
                         }
                     }
                     message: {
-                        Text("You are about to delete this vehicle from it's group for all of the group's members.")
+                        Text("You are about to delete this vehicle from its group for all of the group members.")
                     }
                 }
                 .onAppear {

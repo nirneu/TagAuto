@@ -152,7 +152,8 @@ final class GroupsServiceImpl: GroupsService {
                     
                     guard let document = document, document.exists,
                           let members = document.data()?["members"] as? [String] else {
-                        promise(.failure(NSError(domain: "Group not found or members not found", code: 404)))
+                        promise(.failure(CustomError.error("Group not found or members not found")))
+
                         return
                     }
 
@@ -297,7 +298,8 @@ final class GroupsServiceImpl: GroupsService {
                     } else {
                         // If the car document was created successfully, update the group
                         guard let newCarId = newCarRef?.documentID else {
-                            promise(.failure(NSError(domain: "Couldn't get car ID", code: 404)))
+                            promise(.failure(CustomError.error("Couldn't get car ID")))
+
                             return
                         }
                         
@@ -435,12 +437,12 @@ final class GroupsServiceImpl: GroupsService {
                     }
                     
                     guard let document = document, document.exists else {
-                        promise(.failure(NSError(domain: "Document doesn't exist", code: 404)))
+                        promise(.failure(CustomError.error("Document doesn't exist")))
                         return
                     }
                     
                     if let members = document.data()?["members"] as? [String], members.count <= 1, members.contains(userId) {
-                        promise(.failure(NSError(domain: "Cannot leave group with only one member", code: 403)))
+                        promise(.failure(CustomError.error("Cannot leave group with only one member")))
                         return
                     }
                     

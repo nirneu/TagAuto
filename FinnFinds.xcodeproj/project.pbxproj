@@ -42,6 +42,7 @@
 		A885FD862A6E78F300C3CBD4 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A885FD852A6E78F300C3CBD4 /* LoginViewModel.swift */; };
 		A88A05562AC46441004999C6 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = A88A05552AC46441004999C6 /* FirebaseMessaging */; };
 		A88B86F82A99130300F90C54 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88B86F72A99130300F90C54 /* SearchView.swift */; };
+		A8936B542AE146650057D7D5 /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8936B532AE146650057D7D5 /* CustomError.swift */; };
 		A89F2E642A79359800C97665 /* GroupsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E632A79359800C97665 /* GroupsService.swift */; };
 		A89F2E672A7938FA00C97665 /* GroupsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E662A7938FA00C97665 /* GroupsViewModel.swift */; };
 		A89F2E6A2A793BCA00C97665 /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89F2E692A793BCA00C97665 /* GroupsView.swift */; };
@@ -95,6 +96,7 @@
 		A87139AE2AB2027D0053C187 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A885FD852A6E78F300C3CBD4 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		A88B86F72A99130300F90C54 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		A8936B532AE146650057D7D5 /* CustomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomError.swift; sourceTree = "<group>"; };
 		A89F2E632A79359800C97665 /* GroupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsService.swift; sourceTree = "<group>"; };
 		A89F2E662A7938FA00C97665 /* GroupsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsViewModel.swift; sourceTree = "<group>"; };
 		A89F2E692A793BCA00C97665 /* GroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsView.swift; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 		A842D85E2A5EBB09008F8C8F /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				A8936B522AE146520057D7D5 /* CustomError */,
 				A88A05572AC4659C004999C6 /* Notifications */,
 				A87139AD2AB2026B0053C187 /* Constants */,
 				A842D86E2A5F1C62008F8C8F /* Modifier */,
@@ -425,6 +428,14 @@
 				A808219F2AC5E676004B284E /* PushNotificationManager.swift */,
 			);
 			path = Notifications;
+			sourceTree = "<group>";
+		};
+		A8936B522AE146520057D7D5 /* CustomError */ = {
+			isa = PBXGroup;
+			children = (
+				A8936B532AE146650057D7D5 /* CustomError.swift */,
+			);
+			path = CustomError;
 			sourceTree = "<group>";
 		};
 		A89F2E5F2A7934BA00C97665 /* Auth */ = {
@@ -658,6 +669,7 @@
 				A802B1A82A9CE38A004A2370 /* EditCarView.swift in Sources */,
 				A842D87F2A608926008F8C8F /* HomeView.swift in Sources */,
 				A842D8722A606514008F8C8F /* InputPasswordView.swift in Sources */,
+				A8936B542AE146650057D7D5 /* CustomError.swift in Sources */,
 				A8FF95C42A7D16F30025C516 /* CarsService.swift in Sources */,
 				A8285A932A793F2D007D3305 /* GroupDetailView.swift in Sources */,
 				A80821A02AC5E676004B284E /* PushNotificationManager.swift in Sources */,

@@ -51,7 +51,7 @@ final class AccountServiceImpl: AccountService {
                         promise(.success(accountInvitationsArray))
                         
                     } else {
-                        promise(.failure(NSError(domain: "No invitations found", code: 404)))
+                        promise(.failure(CustomError.error("No invitations found")))
                     }
                 }
             }

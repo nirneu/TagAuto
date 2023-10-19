@@ -54,7 +54,7 @@ final class RegistrationServiceImpl: RegistrationService {
                                 }
                                 
                             } else {
-                                promise(.failure(NSError(domain: "Invalid User Id", code: 0)))
+                                promise(.failure(CustomError.error("Invalid User Id")))
                             }
                         }
                     }

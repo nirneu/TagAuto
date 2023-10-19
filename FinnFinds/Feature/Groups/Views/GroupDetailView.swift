@@ -18,6 +18,8 @@ struct GroupDetailView: View {
     @State private var showDeleteGroup = false
     @State var selectedCar: Car?
     @State var isDelete: Bool = false
+    @State var isError: Bool = false
+    @State var errorMessage: String = ""
     
     let group: GroupDetails
     
@@ -128,6 +130,20 @@ struct GroupDetailView: View {
         } message: {
             Text("Are you sure you want to delete the group: \(group.name)?")
         }
+        .alert("Error", isPresented: $vm.hasError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            if case .failed(let error) = vm.state {
+                Text(error.localizedDescription)
+            } else {
+                Text("Something went wrong")
+            }
+        }
+        .alert("Error", isPresented: $isError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(errorMessage)
+        }
     }
     
     private func headerView(title: String, action: @escaping () -> Void) -> some View {
@@ -148,11 +164,21 @@ struct GroupDetailView: View {
     }
     
     private func deleteMember(at offsets: IndexSet) {
-        for index in offsets {
-            let memberToDelete = vm.memberDetails.sorted { $0.firstName < $1.firstName }[index]
-            
-            vm.deleteMember(userId: memberToDelete.userId, groupId: group.id)
-            presentationMode.wrappedValue.dismiss()
+        if vm.memberDetails.count > 1 {
+            for index in offsets {
+                let memberToDelete = vm.memberDetails.sorted { $0.firstName < $1.firstName }[index]
+                
+                vm.deleteMember(userId: memberToDelete.userId, groupId: group.id)
+                
+                if memberToDelete.userId == sessionService.userDetails?.userId {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                errorMessage = "Cannot leave group with only one member"
+                isError = true
+            }
         }
     }
 }
