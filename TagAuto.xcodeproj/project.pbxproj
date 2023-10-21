@@ -37,9 +37,9 @@
 		A842D8932A61AE9F008F8C8F /* SessionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8922A61AE9F008F8C8F /* SessionService.swift */; };
 		A842D8962A63FC28008F8C8F /* LoginCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8952A63FC28008F8C8F /* LoginCredentials.swift */; };
 		A842D8992A63FC72008F8C8F /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A842D8982A63FC72008F8C8F /* LoginService.swift */; };
-		A87139AC2AB0AFA10053C187 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A87139AB2AB0AFA10053C187 /* GoogleService-Info.plist */; };
 		A87139AF2AB2027D0053C187 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A87139AE2AB2027D0053C187 /* Constants.swift */; };
 		A885FD862A6E78F300C3CBD4 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A885FD852A6E78F300C3CBD4 /* LoginViewModel.swift */; };
+		A8882ED42AE480170001AFA9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A8882ED32AE480170001AFA9 /* GoogleService-Info.plist */; };
 		A88A05562AC46441004999C6 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = A88A05552AC46441004999C6 /* FirebaseMessaging */; };
 		A88B86F82A99130300F90C54 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88B86F72A99130300F90C54 /* SearchView.swift */; };
 		A8936B542AE146650057D7D5 /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8936B532AE146650057D7D5 /* CustomError.swift */; };
@@ -92,9 +92,9 @@
 		A842D8952A63FC28008F8C8F /* LoginCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCredentials.swift; sourceTree = "<group>"; };
 		A842D8982A63FC72008F8C8F /* LoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
 		A86702342AE184A000116D2D /* TagAuto.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TagAuto.entitlements; sourceTree = "<group>"; };
-		A87139AB2AB0AFA10053C187 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A87139AE2AB2027D0053C187 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A885FD852A6E78F300C3CBD4 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		A8882ED32AE480170001AFA9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A88B86F72A99130300F90C54 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		A8936B532AE146650057D7D5 /* CustomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomError.swift; sourceTree = "<group>"; };
 		A89F2E632A79359800C97665 /* GroupsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsService.swift; sourceTree = "<group>"; };
@@ -204,7 +204,7 @@
 				A842D85E2A5EBB09008F8C8F /* Base */,
 				A842D8502A5EBAFC008F8C8F /* TagAutoApp.swift */,
 				A842D8542A5EBAFD008F8C8F /* Assets.xcassets */,
-				A87139AB2AB0AFA10053C187 /* GoogleService-Info.plist */,
+				A8882ED32AE480170001AFA9 /* GoogleService-Info.plist */,
 				A842D8562A5EBAFD008F8C8F /* Preview Content */,
 			);
 			path = TagAuto;
@@ -653,7 +653,7 @@
 			files = (
 				A842D8582A5EBAFD008F8C8F /* Preview Assets.xcassets in Resources */,
 				A842D8552A5EBAFD008F8C8F /* Assets.xcassets in Resources */,
-				A87139AC2AB0AFA10053C187 /* GoogleService-Info.plist in Resources */,
+				A8882ED42AE480170001AFA9 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

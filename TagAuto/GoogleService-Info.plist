@@ -15,16 +15,16 @@
 	<key>STORAGE_BUCKET</key>
 	<string>findcar-2f22b.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:388924989761:ios:a6923699fe8e8cd7cf01c0</string>
+	<string>1:388924989761:ios:1362d059d15726cdcf01c0</string>
 </dict>
 </plist>
