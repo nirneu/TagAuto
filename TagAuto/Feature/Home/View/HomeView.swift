@@ -84,6 +84,7 @@ struct HomeView: View {
                                     .onDisappear {
                                         Task {
                                             await refreshCars()
+                                            await carsViewModel.getCar(carId: car.id)
                                         }
                                         showEditCar = false
                                         if isVehicleDeleted {
