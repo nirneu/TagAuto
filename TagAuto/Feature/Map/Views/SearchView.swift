@@ -223,8 +223,10 @@ struct MapViewSelection: View {
                     
                     Button {
                         if let pickedLcoation = mapViewModel.pickedLocation, let userId = sessionService.userDetails?.userId {
-                            carsViewModel.updateCarLocation(car: car, newLocation: pickedLcoation, userId: userId)
-                            showingSheet = false
+                            Task {
+                                await carsViewModel.updateCarLocation(car: car, newLocation: pickedLcoation, userId: userId)
+                                showingSheet = false
+                            }
                         }
                     } label: {
                         Text("Confirm Location")

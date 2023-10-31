@@ -67,6 +67,8 @@ struct MapView: View {
             .ignoresSafeArea(edges: .top)
             .onAppear {
                 
+                mapViewModel.getCurrentLocation()
+                
                 if let userId = sessionService.userDetails?.userId {
                     Task {
                         await carsViewModel.fetchUserCars(userId: userId)

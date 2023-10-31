@@ -75,7 +75,7 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel{
     @Published var isCurrentLocationClicked = true
     @Published var newLocationRegion = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
     @Published var selectedCoordinate: CLLocationCoordinate2D?
-        
+    
     private var subscriptions = Set<AnyCancellable>()
     
     private var cancellable: AnyCancellable?
@@ -105,21 +105,20 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel{
     }
     
     /// Get the current location of a user and show it inside the main map of the app
+    @MainActor
     func getCurrentLocation() {
-        DispatchQueue.main.async {
-            if let location = self.manager.location {
-                // Center the camera focus in proportion with the bottom sheet
-                let centeredLocation = CLLocationCoordinate2D(latitude: location.coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: location.coordinate.longitude)
-                let currentLocation = MKCoordinateRegion(center: centeredLocation,
-                                                         span: MapDetails.defaultSpan)
-                self.region = currentLocation
-                self.isCurrentLocationClicked = true
-            } else {
-                self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
-                let currentLocation = MKCoordinateRegion(center: MapDetails.startingLocation,
-                                                         span: MapDetails.defaultSpan)
-                self.region = currentLocation
-            }
+        if let location = self.manager.location {
+            // Center the camera focus in proportion with the bottom sheet
+            let centeredLocation = CLLocationCoordinate2D(latitude: location.coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: location.coordinate.longitude)
+            let currentLocation = MKCoordinateRegion(center: centeredLocation,
+                                                     span: MapDetails.defaultSpan)
+            self.region = currentLocation
+            self.isCurrentLocationClicked = true
+        } else {
+            self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+            let currentLocation = MKCoordinateRegion(center: MapDetails.startingLocation,
+                                                     span: MapDetails.defaultSpan)
+            self.region = currentLocation
         }
     }
     
@@ -130,38 +129,32 @@ extension MapViewModelImpl: CLLocationManagerDelegate {
     
     /// Handle a cahnge of Auth in a location manager
     /// - Parameter manager: The location manager
+    @MainActor
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        DispatchQueue.main.async {
-            switch manager.authorizationStatus {
-            case .notDetermined:
-                manager.requestWhenInUseAuthorization()
-            case .restricted:
-                self.state = .unauthorized(reason: LocationAuthMessages.unauthorized)
-            case .denied:
-                self.state = .unauthorized(reason: LocationAuthMessages.denied)
-            case .authorizedAlways, .authorizedWhenInUse:
-                if let location = manager.location {
-                    // Center the camera focus in proportion with the bottom sheet
-                    let centeredLocation = CLLocationCoordinate2D(latitude: location.coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: location.coordinate.longitude)
-                    DispatchQueue.main.async {
-                        self.region = MKCoordinateRegion(center: centeredLocation, span: MapDetails.defaultSpan)
-                    }
-                } else {
-                    // Center the camera focus in proportion with the bottom sheet
-                    DispatchQueue.main.async {
-                        self.region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
-                    }
-                    self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
-
-                }
-            @unknown default:
+        switch manager.authorizationStatus {
+        case .notDetermined:
+            manager.requestWhenInUseAuthorization()
+        case .restricted:
+            self.state = .unauthorized(reason: LocationAuthMessages.unauthorized)
+        case .denied:
+            self.state = .unauthorized(reason: LocationAuthMessages.denied)
+        case .authorizedAlways, .authorizedWhenInUse:
+            if let location = manager.location {
                 // Center the camera focus in proportion with the bottom sheet
-                DispatchQueue.main.async {
-                    self.region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
-                }
+                let centeredLocation = CLLocationCoordinate2D(latitude: location.coordinate.latitude - Constants.defaultSubtractionForMapAnnotation, longitude: location.coordinate.longitude)
+                self.region = MKCoordinateRegion(center: centeredLocation, span: MapDetails.defaultSpan)
+                
+            } else {
+                // Center the camera focus in proportion with the bottom sheet
+                self.region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
                 self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
-
+                
             }
+        @unknown default:
+            // Center the camera focus in proportion with the bottom sheet
+            self.region = MKCoordinateRegion(center: MapDetails.startingLocation, span: MapDetails.defaultSpan)
+            self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
+            
         }
     }
     
@@ -190,15 +183,14 @@ extension MapViewModelImpl: MKMapViewDelegate {
     }
     
     /// Get the current location on the map where the user choose a new location for a car
+    @MainActor
     func getCurrentLocationForNewLocationMap() {
-        DispatchQueue.main.async {
-            if let location = self.manager.location {
-                let currentLocation = MKCoordinateRegion(center: location.coordinate,
-                                                         span: MapDetails.defaultSpan)
-                self.newLocationRegion = currentLocation
-            } else {
-                self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
-            }
+        if let location = self.manager.location {
+            let currentLocation = MKCoordinateRegion(center: location.coordinate,
+                                                     span: MapDetails.defaultSpan)
+            self.newLocationRegion = currentLocation
+        } else {
+            self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
         }
     }
     

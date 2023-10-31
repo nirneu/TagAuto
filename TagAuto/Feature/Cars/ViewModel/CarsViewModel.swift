@@ -29,7 +29,7 @@ protocol CarsViewModel {
     func fetchUserCars(userId: String, newLocation: CLLocation?) async
     func getCar(carId: String) async
     func selectCar(_ car: Car?) async
-    func updateCarLocation(car: Car, newLocation: CLLocation, userId: String)
+    func updateCarLocation(car: Car, newLocation: CLLocation, userId: String) async
     func markCarAsUsed(carId: String, userId: String, userFullName: String) async
     func deleteCar(groupId: String, car: Car, userId: String)
     init(service: CarsServiceImpl)
@@ -55,118 +55,100 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
         setupErrorSubscription()
     }
     
+    @MainActor
     func fetchUserCars(userId: String, newLocation: CLLocation? = nil) async {
         guard !userId.isEmpty else {
             return
         }
         
-        DispatchQueue.main.async {
-            self.isLoadingCars = true
-        }
+        self.isLoadingCars = true
         
-        Task {
-            do {
-                let cars = try await service.getCars(of: userId)
-                DispatchQueue.main.async {
-                    self.cars = cars
-                    
-                    if let newLocation = newLocation {
-                        self.currentLocationFocus = newLocation
-                    }
-                    
-                    self.isLoadingCars = false
-                    self.state = .successful
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    self.isLoadingCars = false
-                    self.state = .failed(error: error)
-                }
+        do {
+            let cars = try await service.getCars(of: userId)
+            self.cars = cars
+            
+            if let newLocation = newLocation {
+                self.currentLocationFocus = newLocation
             }
+            
+            self.isLoadingCars = false
+            self.state = .successful
+        } catch {
+            self.isLoadingCars = false
+            self.state = .failed(error: error)
         }
     }
-
+    
+    @MainActor
     func getCar(carId: String) async {
-        DispatchQueue.main.async {
-            self.isLoading = true
-        }
+        
+        self.isLoading = true
+        
         do {
             let car = try await service.getCar(carId: carId)
-            DispatchQueue.main.async {
-                self.state = .successful
-                self.currentCarInfo = car
-                self.isLoading = false
-            }
+            self.state = .successful
+            self.currentCarInfo = car
+            self.isLoading = false
+            
         } catch {
-            DispatchQueue.main.async {
-                self.isLoading = false
-                self.state = .failed(error: error)
-                self.currentCarInfo = Car.new
-            }
+            self.isLoading = false
+            self.state = .failed(error: error)
+            self.currentCarInfo = Car.new
         }
     }
     
-    func updateCarLocation(car: Car, newLocation: CLLocation, userId: String) {
-        DispatchQueue.main.async {
-            self.isLoading = true
-        }
+    @MainActor
+    func updateCarLocation(car: Car, newLocation: CLLocation, userId: String) async {
+        self.isLoading = true
         
-        Task {
-            do {
-                let geoPoint = try await service.updateCarLocation(car, location: newLocation)
-                
-                DispatchQueue.main.async {
-                    self.state = .successful
-                }
-                await self.fetchUserCars(userId: userId, newLocation: newLocation)
-                await self.selectCar(car)
-                
-                let address = try await service.getAddress(carId: car.id, geopoint: CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude))
-                try await service.updateCarAddress(carId: car.id, address: address)
-                await self.getCar(carId: car.id)
-                
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    // Handle the error
-                    self.isLoading = false
-                    self.state = .failed(error: error)
-                }
-            }
+        do {
+            let geoPoint = try await service.updateCarLocation(car, location: newLocation)
+            
+            self.state = .successful
+            
+            await self.fetchUserCars(userId: userId, newLocation: newLocation)
+            await self.selectCar(car)
+            
+            let address = try await service.getAddress(carId: car.id, geopoint: CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude))
+            try await service.updateCarAddress(carId: car.id, address: address)
+            await self.getCar(carId: car.id)
+            
+            self.isLoading = false
+            
+        } catch {
+            // Handle the error
+            self.isLoading = false
+            self.state = .failed(error: error)
+            
         }
     }
     
+    @MainActor
     func selectCar(_ car: Car?) async {
-        DispatchQueue.main.async {
-            self.selectedCar = car
-        }
+        self.selectedCar = car
+        
         if let car = car {
             await self.getCar(carId: car.id)
         }
     }
     
+    @MainActor
     func markCarAsUsed(carId: String, userId: String, userFullName: String) async {
-        DispatchQueue.main.async {
-            self.isLoading = true
-        }
-        
+        self.isLoading = true
+    
         do {
             try await service.markCarAsUsed(carId: carId, userId: userId, userFullName: userFullName)
-            DispatchQueue.main.async {
-                self.isLoading = false
-                self.state = .successful
-            }
-            await self.fetchUserCars(userId: userId)
             
+            self.isLoading = false
+            self.state = .successful
+            
+            await self.fetchUserCars(userId: userId)
+    
             // Use getCar function to update car information
             await getCar(carId: carId)
         } catch {
-            DispatchQueue.main.async {
-                self.isLoading = false
-                self.state = .failed(error: error)
-            }
+            self.isLoading = false
+            self.state = .failed(error: error)
         }
     }
     
