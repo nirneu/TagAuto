@@ -24,10 +24,10 @@ enum LocationAuthState {
 }
 
 enum LocationAuthMessages {
-    static let turnOnLocation = "This app needs your location to find it on the map. Please enable location services in your phone's settings."
+    static let turnOnLocation = "This app needs your location to find it on the map. Please enable location services in your device's settings."
     static let unauthorized = "Your location is restricted."
     static let denied = "You have denied this app location permission. Go into settings to change it."
-    static let cantRetrieve = "No location data has ever been retrieved."
+    static let cantRetrieve = "We were unable to retrieve your location."
 }
 
 protocol MapViewModel {
