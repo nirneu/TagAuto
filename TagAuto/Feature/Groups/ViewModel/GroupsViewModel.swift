@@ -223,7 +223,7 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
             } receiveValue: { [weak self] _ in
                 self?.state = .successful
                 
-                self?.sendNotification(to: email, groupName: groupName)
+//                self?.sendNotification(to: email, groupName: groupName)
             }
             .store(in: &subscriptions)
         

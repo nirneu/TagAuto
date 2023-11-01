@@ -42,7 +42,7 @@ final class LoginServiceImpl: LoginService {
                             promise(.success(()))
                             
                             if let uid = res?.user.uid {
-                                self?.saveUserFcmToken(uid)
+//                                self?.saveUserFcmToken(uid)
                             }
                             
                         }
@@ -87,7 +87,7 @@ final class LoginServiceImpl: LoginService {
                                 }
                             }
                             
-                            self.saveUserFcmToken(uid)
+//                            self.saveUserFcmToken(uid)
                             
                         }
                     }

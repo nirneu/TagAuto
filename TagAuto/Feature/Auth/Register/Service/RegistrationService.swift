@@ -49,7 +49,7 @@ final class RegistrationServiceImpl: RegistrationService {
                                         promise(.failure(err))
                                     } else {
                                         promise(.success(()))
-                                        self.saveUserFcmToken(uid)
+//                                        self.saveUserFcmToken(uid)
                                     }
                                 }
                                 
