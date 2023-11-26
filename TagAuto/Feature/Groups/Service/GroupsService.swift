@@ -32,7 +32,7 @@ protocol GroupsService {
     func addCarToGroup(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
     func deleteCar(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
     func updateCarDetails(_ car: Car) -> AnyPublisher<Void, Error> 
-    func sendInvitation(to email: String, for group: String, groupName: String) -> AnyPublisher<Void, Error>
+    func sendInvitation(to email: String, for group: String, groupName: String) async throws
     func deleteMember(userId: String, groupId: String) -> AnyPublisher<Void, Error>
     func getCars(of groupId: String) -> AnyPublisher<[Car], Error>
     func getMembersIds(of groupId: String) -> AnyPublisher<[String], Error>
@@ -399,28 +399,14 @@ final class GroupsServiceImpl: GroupsService {
         .eraseToAnyPublisher()
     }
     
-    func sendInvitation(to email: String, for groupId: String, groupName: String) -> AnyPublisher<Void, Error> {
-        
-        Deferred {
-            
-            Future { promise in
+    func sendInvitation(to email: String, for groupId: String, groupName: String) async throws {
                 
-                self.db.collection(self.invitationsPath).addDocument(data: [
-                    InvitationKeys.email.rawValue: email,
-                    InvitationKeys.groupId.rawValue: groupId,
-                    InvitationKeys.groupName.rawValue: groupName
-                ]) { error in
-                    if let error = error {
-                        promise(.failure(error))
-                    } else {
-                        promise(.success(()))
-                    }
-                }
-                
-            }
-        }
-        .receive (on: RunLoop.main)
-        .eraseToAnyPublisher()
+        self.db.collection(self.invitationsPath).addDocument(data: [
+            InvitationKeys.email.rawValue: email,
+            InvitationKeys.groupId.rawValue: groupId,
+            InvitationKeys.groupName.rawValue: groupName
+        ])
+    
     }
     
     func deleteMember(userId: String, groupId: String) -> AnyPublisher<Void, Error> {

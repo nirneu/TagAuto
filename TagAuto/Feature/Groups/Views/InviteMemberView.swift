@@ -50,9 +50,12 @@ struct InviteMemberView: View {
                             
                             // Check if the user isn't trying to invite existing group members
                             if !membersEmails.contains(invitationEmailNoSpaces) {
-                                vm.sendInvitation(to: invitationEmailNoSpaces.lowercased(), for: group.id, groupName: group.name)
                                 
-                                showingSheet = false
+                                Task {
+                                    await vm.sendInvitation(to: invitationEmailNoSpaces.lowercased(), for: group.id, groupName: group.name)
+                                    
+                                    showingSheet = false
+                                }
                                 
                             } else {
                                 self.isInputError = true

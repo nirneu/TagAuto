@@ -35,7 +35,7 @@ protocol GroupsViewModel {
     func updateCarDetails(_ car: Car)
     func deleteCar(groupId: String, car: Car)
     func fetchGroupCars(groupId: String)
-    func sendInvitation(to email: String, for groupId: String, groupName: String)
+    func sendInvitation(to email: String, for groupId: String, groupName: String) async
     func sendNotification(to email: String, groupName: String)
     func deleteMember(userId: String, groupId: String)
     func getMembers(of groupId: String)
@@ -212,20 +212,21 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
             .store(in: &subscriptions)
     }
     
-    func sendInvitation(to email: String, for groupId: String, groupName: String) {
-        service.sendInvitation(to: email, for: groupId, groupName: groupName)
-            .sink { [weak self] res in
-                switch res {
-                case .failure(let error):
-                    self?.state = .failed(error: error)
-                default: break
-                }
-            } receiveValue: { [weak self] _ in
-                self?.state = .successful
-                
-//                self?.sendNotification(to: email, groupName: groupName)
+    func sendInvitation(to email: String, for groupId: String, groupName: String) async {
+        
+        do {
+            try await service.sendInvitation(to: email, for: groupId, groupName: groupName)
+//            self?.sendNotification(to: email, groupName: groupName)
+            
+            DispatchQueue.main.async {
+                self.state = .successful
+
             }
-            .store(in: &subscriptions)
+        } catch {
+            DispatchQueue.main.async {
+                self.state = .failed(error: error)
+            }
+        }
         
     }
     
