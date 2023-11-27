@@ -54,9 +54,9 @@ struct EditCarView: View {
                     }
                     .confirmationDialog("Are you sure?", isPresented: $isPresentingConfirm) {
                         Button("Delete", role: .destructive) {
-                            vm.deleteCar(groupId: car.groupId, car: car)
                             isDelete = true
                             dismiss()
+                            vm.deleteCar(groupId: car.groupId, car: car)
                         }
                     }
                     message: {
