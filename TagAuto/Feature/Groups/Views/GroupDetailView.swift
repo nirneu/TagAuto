@@ -164,15 +164,19 @@ struct GroupDetailView: View {
     }
     
     private func deleteMember(at offsets: IndexSet) {
+        
+        var isCurrentUser = false
+        
         if vm.memberDetails.count > 1 {
             for index in offsets {
                 let memberToDelete = vm.memberDetails.sorted { $0.firstName < $1.firstName }[index]
                 
-                vm.deleteMember(userId: memberToDelete.userId, groupId: group.id)
-                
                 if memberToDelete.userId == sessionService.userDetails?.userId {
                     presentationMode.wrappedValue.dismiss()
+                    isCurrentUser = true
                 }
+                
+                vm.deleteMember(userId: memberToDelete.userId, groupId: group.id, isCurrentUser: isCurrentUser)
             }
         } else {
             DispatchQueue.main.async {

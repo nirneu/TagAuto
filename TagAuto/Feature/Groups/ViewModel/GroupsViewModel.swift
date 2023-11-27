@@ -37,7 +37,7 @@ protocol GroupsViewModel {
     func fetchGroupCars(groupId: String)
     func sendInvitation(to email: String, for groupId: String, groupName: String) async
     func sendNotification(to email: String, groupName: String)
-    func deleteMember(userId: String, groupId: String)
+    func deleteMember(userId: String, groupId: String, isCurrentUser: Bool)
     func getMembers(of groupId: String)
     init(service: GroupsService)
 }
@@ -248,7 +248,7 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
 
     }
     
-    func deleteMember(userId: String, groupId: String) {
+    func deleteMember(userId: String, groupId: String, isCurrentUser: Bool) {
         service.deleteMember(userId: userId, groupId: groupId)
             .sink { [weak self] res in
                 switch res {
@@ -258,7 +258,9 @@ final class GroupsViewModelImpl: GroupsViewModel, ObservableObject {
                 }
             } receiveValue: { [weak self] _ in
                 self?.state = .successful
-                self?.userListReload = true
+                if !isCurrentUser {
+                    self?.userListReload = true
+                }
                 self?.groupChange = true
             }
             .store(in: &subscriptions)
