@@ -114,11 +114,6 @@ final class MapViewModelImpl: NSObject, ObservableObject, MapViewModel{
                                                      span: MapDetails.defaultSpan)
             self.region = currentLocation
             self.isCurrentLocationClicked = true
-        } else {
-            self.state = .unauthorized(reason: LocationAuthMessages.cantRetrieve)
-            let currentLocation = MKCoordinateRegion(center: MapDetails.startingLocation,
-                                                     span: MapDetails.defaultSpan)
-            self.region = currentLocation
         }
     }
     
