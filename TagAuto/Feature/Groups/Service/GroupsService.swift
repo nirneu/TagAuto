@@ -163,13 +163,11 @@ final class GroupsServiceImpl: GroupsService {
                     let dispatchGroup = DispatchGroup()
                     var deletionError: Error? = nil
                     
-                    // Iterate over the members and remove groupId from each member's groups
-                    for memberId in members {
+                    // Iterate over the cars and delete each one from the cars collection
+                    for carId in cars {
                         dispatchGroup.enter()
-                        let userDocRef = self.db.collection(self.usersPath).document(memberId)
-                        userDocRef.updateData([
-                            self.groupsPath: FieldValue.arrayRemove([groupId])
-                        ]) { error in
+                        let carDocRef = self.db.collection(self.carsPath).document(carId)
+                        carDocRef.delete() { error in
                             if let error = error {
                                 deletionError = error
                             }
@@ -177,11 +175,13 @@ final class GroupsServiceImpl: GroupsService {
                         }
                     }
                     
-                    // Iterate over the cars and delete each one from the cars collection
-                    for carId in cars {
+                    // Iterate over the members and remove groupId from each member's groups
+                    for memberId in members {
                         dispatchGroup.enter()
-                        let carDocRef = self.db.collection(self.carsPath).document(carId)
-                        carDocRef.delete() { error in
+                        let userDocRef = self.db.collection(self.usersPath).document(memberId)
+                        userDocRef.updateData([
+                            self.groupsPath: FieldValue.arrayRemove([groupId])
+                        ]) { error in
                             if let error = error {
                                 deletionError = error
                             }
