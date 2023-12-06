@@ -8,11 +8,13 @@
 import Foundation
 import Combine
 import FirebaseFirestore
+import FirebaseAuth
 
 protocol AccountService {
     func getInvitations(for accountEmail: String) -> AnyPublisher<[Invitation], Error>
     func acceptInvitation(userId: String, groupId: String, invitationId: String) -> AnyPublisher<Void, Error>
     func removeInvitation(_ invitationId: String) -> AnyPublisher<Void, Error>
+    func deleteAccount(_ userId: String) async throws
 }
 
 final class AccountServiceImpl: AccountService {
@@ -121,6 +123,54 @@ final class AccountServiceImpl: AccountService {
         }
         .receive(on: RunLoop.main)
         .eraseToAnyPublisher()
+    }
+    
+    func deleteAccount(_ userId: String) async throws {
+        
+        // Delete user from DB
+        try await removeUserFromGroups(userId)
+        try await removeUserFromCars(userId)
+        try await removeUserFromUserCollection(userId)
+        
+        // Delete user from Auth
+        try await Auth.auth().currentUser?.delete()
+    }
+    
+    private func removeUserFromGroups(_ userId: String) async throws {
+        
+        let document = try await db.collection(self.usersPath).document(userId).getDocument()
+            
+        guard document.exists, let userGroups = document.data()?["groups"] as? [String] else {
+            throw CustomError.error("User not found or user groups not found")
+        }
+        
+        for groupId in userGroups {
+            try await db.collection(self.groupsPath).document(groupId).updateData([
+                self.membersPath: FieldValue.arrayRemove([userId])
+            ])
+            
+            // TODO: If the group doesn't have any more members then you should: 1) delete the group 2) Delete the cars of the group. Maybe you can use the already built deleteGroup function from the GroupService
+        }
+    }
+    
+    private func removeUserFromCars(_ userId: String) async throws {
+
+        let documents = try await db.collection(self.carsPath).whereField("currentlyUsedById", isEqualTo: userId).getDocuments().documents
+        
+        for document in documents {
+            
+            let carId = document.data()[CarKeys.id.rawValue] as? String ?? ""
+            
+            try await db.collection(self.carsPath).document(carId).updateData([
+                CarKeys.currentlyInUse.rawValue: false,
+                CarKeys.currentlyUsedById.rawValue: "",
+                CarKeys.currentlyUsedByFullName.rawValue: "",
+            ])
+        }
+    }
+    
+    private func removeUserFromUserCollection(_ userId: String) async throws {
+        try await db.collection(self.usersPath).document(userId).delete()
     }
     
 }

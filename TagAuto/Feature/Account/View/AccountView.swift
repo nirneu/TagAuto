@@ -14,6 +14,8 @@ struct AccountView: View {
     
     @StateObject var accountViewModel = AccountViewModelImpl(service: AccountServiceImpl())
     
+    @State var isDeleteAccountAlert = false
+    
     private let pastboard = UIPasteboard.general
     
     var body: some View {
@@ -107,7 +109,28 @@ struct AccountView: View {
                 
                 ButtonView(title: "Sign Out") {
                     sessionService.logout()
+                } 
+                
+                ButtonView(title: "Delete Account", background: .red) {
+                    isDeleteAccountAlert = true
                 }
+                .disabled(sessionService.userDetails?.userId.isEmpty ?? true)
+                .alert("Delete Account", isPresented: $isDeleteAccountAlert) {
+                    Button("Confirm", action: {
+                        Task {
+                            if let userId = sessionService.userDetails?.userId {
+                                await accountViewModel.deleteAccount(userId: userId)
+                                sessionService.logout()
+                            }
+                        }
+                    })
+                    Button("Cancel", role: .cancel) {
+                        isDeleteAccountAlert = false
+                    }
+                } message: {
+                    Text("Confirm if you intend to delete your account along with all its associated data.")
+                }
+
             }
             .onAppear {
                 accountViewModel.isLoading = true

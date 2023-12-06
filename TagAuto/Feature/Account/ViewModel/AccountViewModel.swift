@@ -22,6 +22,7 @@ protocol AccountViewModel {
     func fetchAccountInvitations(userEmail: String)
     func acceptInvitation(userId: String, groupId: String, invitationId: String, userEmail: String)
     func removeInvitation(invitationId: String, userEmail: String)
+    func deleteAccount(userId: String) async
     init(service: AccountServiceImpl)
 }
 
@@ -111,6 +112,24 @@ final class AccountViewModelImpl: AccountViewModel, ObservableObject {
                 self?.fetchAccountInvitations(userEmail: userEmail)
             }
             .store(in: &subscriptions)
+    }
+    
+    @MainActor
+    func deleteAccount(userId: String) async {
+        
+        defer {
+            isLoading = false
+        }
+        
+        isLoading = true
+
+        do {
+            try await service.deleteAccount(userId)
+            state = .successful
+        } catch {
+            state = .failed(error: error)
+        }
+        
     }
     
 }
