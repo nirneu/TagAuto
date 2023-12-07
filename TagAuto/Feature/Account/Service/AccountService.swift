@@ -128,56 +128,64 @@ final class AccountServiceImpl: AccountService {
     func deleteAccount(_ userId: String) async throws {
         
         // Delete user from DB
-        try await removeUserFromGroups(userId)
-        try await removeUserFromCars(userId)
+        try await removeUserFromGroups(userId: userId)
         try await removeUserFromUserCollection(userId)
         
         // Delete user from Auth
         try await Auth.auth().currentUser?.delete()
     }
     
-    private func removeUserFromGroups(_ userId: String) async throws {
+    private func removeUserFromGroups(userId: String) async throws {
         
         let document = try await db.collection(self.usersPath).document(userId).getDocument()
             
-        guard document.exists, let userGroups = document.data()?["groups"] as? [String] else {
-            throw CustomError.error("User not found or user groups not found")
+        guard document.exists else {
+            throw CustomError.error("User not found")
+        }
+        
+        guard let userGroups = document.data()?["groups"] as? [String] else {
+            return
         }
         
         for groupId in userGroups {
-            try await db.collection(self.groupsPath).document(groupId).updateData([
-                self.membersPath: FieldValue.arrayRemove([userId])
-            ])
             
             // Check if the group is empty after removing the user
             let groupData = try await db.collection(self.groupsPath).document(groupId).getDocument().data()
             let groupMembers = groupData?["members"] as? [String]
 
-            if groupMembers?.isEmpty ?? false {
-                if let groupCars = groupData?["cars"] as? [String] {
-                    try await deleteEmptyGroup(groupId: groupId, groupCars: groupCars)
+            if let members = groupMembers {
+                if members.count <= 1 {
+                    if let groupCars = groupData?["cars"] as? [String] {
+                        try await deleteEmptyGroup(groupId: groupId, groupCars: groupCars)
+                    } else {
+                        // if there is no cars array for this group but there are no members still delete the group
+                        try await deleteEmptyGroup(groupId: groupId, groupCars: [])
+                    }
                 } else {
-                    // if there is no cars array for this group but there are no members still delete the group
-                    try await deleteEmptyGroup(groupId: groupId, groupCars: [])
+                    try await removeUserFromCars(userId: userId, userRelatedCars: groupData?["cars"] as? [String] ?? [])
+
+                    try await db.collection(self.groupsPath).document(groupId).updateData([
+                        self.membersPath: FieldValue.arrayRemove([userId])
+                    ])
                 }
             }
             
         }
+        
     }
     
-    private func removeUserFromCars(_ userId: String) async throws {
-
-        let documents = try await db.collection(self.carsPath).whereField("currentlyUsedById", isEqualTo: userId).getDocuments().documents
+    private func removeUserFromCars(userId: String, userRelatedCars: [String]) async throws {
         
-        for document in documents {
+        for carId in userRelatedCars {
             
-            let carId = document.data()[CarKeys.id.rawValue] as? String ?? ""
-            
-            try await db.collection(self.carsPath).document(carId).updateData([
-                CarKeys.currentlyInUse.rawValue: false,
-                CarKeys.currentlyUsedById.rawValue: "",
-                CarKeys.currentlyUsedByFullName.rawValue: "",
-            ])
+            if try await db.collection(self.carsPath).document(carId).getDocument().get("currentlyUsedById") as? String == userId {
+                try await db.collection(self.carsPath).document(carId).updateData([
+                    CarKeys.currentlyInUse.rawValue: false,
+                    CarKeys.currentlyUsedById.rawValue: "",
+                    CarKeys.currentlyUsedByFullName.rawValue: "",
+                ])
+            }
+
         }
     }
     

@@ -119,8 +119,9 @@ struct AccountView: View {
                     Button("Confirm", action: {
                         Task {
                             if let userId = sessionService.userDetails?.userId {
-                                await accountViewModel.deleteAccount(userId: userId)
-                                sessionService.logout()
+                                if await accountViewModel.deleteAccount(userId: userId) {
+                                    sessionService.logout()
+                                }
                             }
                         }
                     })
@@ -148,6 +149,15 @@ struct AccountView: View {
             }
             .padding([.horizontal, .bottom], 16)
             .navigationTitle("Account")
+            .alert("Error", isPresented: $accountViewModel.hasError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                if case .failed(let error) = accountViewModel.state {
+                    Text(error.localizedDescription)
+                } else {
+                    Text("Something went wrong")
+                }
+            }
         }
     }
     
