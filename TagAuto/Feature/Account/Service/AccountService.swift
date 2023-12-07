@@ -149,7 +149,19 @@ final class AccountServiceImpl: AccountService {
                 self.membersPath: FieldValue.arrayRemove([userId])
             ])
             
-            // TODO: If the group doesn't have any more members then you should: 1) delete the group 2) Delete the cars of the group. Maybe you can use the already built deleteGroup function from the GroupService
+            // Check if the group is empty after removing the user
+            let groupData = try await db.collection(self.groupsPath).document(groupId).getDocument().data()
+            let groupMembers = groupData?["members"] as? [String]
+
+            if groupMembers?.isEmpty ?? false {
+                if let groupCars = groupData?["cars"] as? [String] {
+                    try await deleteEmptyGroup(groupId: groupId, groupCars: groupCars)
+                } else {
+                    // if there is no cars array for this group but there are no members still delete the group
+                    try await deleteEmptyGroup(groupId: groupId, groupCars: [])
+                }
+            }
+            
         }
     }
     
@@ -171,6 +183,16 @@ final class AccountServiceImpl: AccountService {
     
     private func removeUserFromUserCollection(_ userId: String) async throws {
         try await db.collection(self.usersPath).document(userId).delete()
+    }
+    
+    private func deleteEmptyGroup(groupId: String, groupCars: [String]) async throws {
+        
+        // Delete the cars of the group from cars collection
+        for carId in groupCars {
+            try await db.collection(self.carsPath).document(carId).delete()
+        }
+        
+        try await db.collection(self.groupsPath).document(groupId).delete()
     }
     
 }
