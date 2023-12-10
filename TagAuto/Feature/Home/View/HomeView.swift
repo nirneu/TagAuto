@@ -28,10 +28,10 @@ struct HomeView: View {
     var body: some View {
         
         /*
-            The front view of the app is based on a main map which has a permanent sheet on top for showing the user's cars and a specific car details.
-            Then on top of the first sheet there's another sheet for more app info.
-            This is designed like this in order to give the app the modern feel of Apple's maps apps.
-        */
+         The front view of the app is based on a main map which has a permanent sheet on top for showing the user's cars and a specific car details.
+         Then on top of the first sheet there's another sheet for more app info.
+         This is designed like this in order to give the app the modern feel of Apple's maps apps.
+         */
         MapView()
             .environmentObject(carsViewModel)
             .environmentObject(mapViewModel)
@@ -117,7 +117,7 @@ struct HomeView: View {
                             .environmentObject(groupsViewModel)
                             .environmentObject(mapViewModel)
                             .environmentObject(sessionService)
-                            // Second sheet for more app information on top of the current sheet
+                        // Second sheet for more app information on top of the current sheet
                             .sheet(isPresented: $showMoreSheet, onDismiss: {
                                 carsViewModel.isLoadingCars = true
                                 showAccountView = false
@@ -159,6 +159,17 @@ struct HomeView: View {
                                                 Image(systemName: "chevron.right")
                                                     .font(.footnote)
                                                     .foregroundStyle(.secondary)
+                                            }
+                                            HStack {
+                                                Button {
+                                                    if let url = URL(string: "mailto:\("nir.neuman@icloud.com")?subject=\("Help and Feedback TagAuto")"),
+                                                       UIApplication.shared.canOpenURL(url)
+                                                    {
+                                                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                                    }
+                                                } label: {
+                                                    Label("Help & Feedback", systemImage: "questionmark.circle")
+                                                }
                                             }
                                             .navigationDestination(isPresented: $showAccountView) {
                                                 AccountView()
@@ -205,8 +216,8 @@ struct HomeView: View {
                     }
                 }
             }
-            // On opening the app from outside
-            // Currently supports only for a notification about a group invitation
+        // On opening the app from outside
+        // Currently supports only for a notification about a group invitation
             .onOpenURL(perform: { url in
                 guard url.scheme == "myfindcarapp" else {
                     return
