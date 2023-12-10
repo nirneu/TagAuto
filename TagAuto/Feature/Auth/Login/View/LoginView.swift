@@ -16,87 +16,49 @@ struct LoginView: View {
     @State private var showForgotPassword = false
     
     @StateObject private var vm = LoginViewModelImpl(service: LoginServiceImpl())
-        
+    
     var body: some View {
         
         NavigationStack {
             
-            ScrollView {
+            VStack(spacing: 100) {
                 
-                VStack(spacing: 16) {
+                VStack {
+                    Image("Logo", bundle: .main)
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(.circle)
                     
-                    VStack(spacing: 16) {
-                        
-                        InputTextFieldView(text: $vm.credentials.email, placeholder: "Email", keyboardType: .emailAddress, sfSymbol: "envelope")
-                        
-                        InputPasswordView(password: $vm.credentials.password, placeholder: "Password", sfSymbol: "lock")
-                        
-                    }
-                    
-                    HStack {
-                        Spacer()
-                        Button {
-                            showForgotPassword.toggle()
-                        } label: {
-                            Text("Forgot Password?")
-                        }
-                        .font(.system(size: 16, weight: .bold))
-                        .sheet(isPresented: $showForgotPassword) {
-                            ForgotPasswordView()
-                        }
-                    }
-                    
-                    VStack(spacing: 16) {
-                        
-                        ButtonView(title: "Login", handler: {
-                            vm.login()
-                        }, disabled: Binding<Bool>(
-                            get: {
-                                vm.credentials.email.isEmpty || vm.credentials.password.isEmpty},
-                            set: { _ in }
-                        ))
-                        
-                        ButtonView(title: "Register", background: .clear, foreground: .blue, border: .blue) {
-                            showRegistration.toggle()
-                        }
-                        .sheet(isPresented: $showRegistration) {
-                            RegisterView()
-                        }
-                    }
-                    
-                    HStack {
-                        VStack { Divider() }
-                        Text("or")
-                        VStack { Divider() }
-                    }
-                    
-                    VStack(spacing: 16) {
-                        SignInWithAppleButton(
-                            onRequest: { request in
-                                vm.handleSignInWithAppleRequest(with: request)
-                            },
-                            onCompletion: { result in
-                                vm.handleSignInWithAppleCompletion(with: result)
-                            }
-                        )
-                        .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
-                        .frame(maxWidth: .infinity, minHeight: 50)
-                        .cornerRadius(50)
-                    }
+                    Text("TagAuto")
+                        .font(.largeTitle)
+                        .bold()
                 }
-                .padding([.horizontal, .top], 15)
-                .navigationTitle("Login")
-                .alert("Error", isPresented: $vm.hasError) {
-                    Button("OK", role: .cancel) { }
-                } message: {
-                    if case .failed(let error) = vm.state {
-                        Text(error.localizedDescription)
-                    } else {
-                        Text("Something went wrong")
+                
+                SignInWithAppleButton(
+                    onRequest: { request in
+                        vm.handleSignInWithAppleRequest(with: request)
+                    },
+                    onCompletion: { result in
+                        vm.handleSignInWithAppleCompletion(with: result)
                     }
+                )
+                .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
+                .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 50)
+                .cornerRadius(50)
+                
+            }
+            .padding([.horizontal, .top], 15)
+            .alert("Error", isPresented: $vm.hasError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                if case .failed(let error) = vm.state {
+                    Text(error.localizedDescription)
+                } else {
+                    Text("Something went wrong")
                 }
             }
         }
+        
     }
 }
 
