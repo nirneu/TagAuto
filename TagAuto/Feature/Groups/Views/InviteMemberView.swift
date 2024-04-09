@@ -37,9 +37,9 @@ struct InviteMemberView: View {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Note:")
                             .bold()
-                            .font(.headline) // Emphasizes "Note" as a heading
-                        Text("1. Only members who have already signed up to the app can be invited.")
-                        Text("2. First, ask the member to send you their email address from their Account page. Then, use this email address to invite them here.")
+                            .font(.headline)
+                        Text("1. Only members who have already signed up for the app can be invited.")
+                        Text("2. First, ask the member to send you the email address from their Account page. Then, use this address to send them an invitation.")
                         Text("3. An invitation request will appear in the invited member’s Account page, under 'Group Invitations'.")
                     }
                     .padding() 
