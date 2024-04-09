@@ -17,7 +17,7 @@ struct Car: Hashable, Identifiable {
     let address: String
     let groupName: String
     let groupId: String
-    let note: String
+    var note: String
     let icon: String
     let currentlyInUse: Bool
     let currentlyUsedById: String

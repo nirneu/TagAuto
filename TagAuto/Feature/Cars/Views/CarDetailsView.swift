@@ -17,7 +17,7 @@ struct CarDetailsView: View {
     
     @State private var showLocationUpdateAlert = false
     @State private var showNoteParkingAlert = false
-    @State private var locationText: String = ""
+    @State private var showNoteInput = false
     
     var carId: String
     
@@ -31,6 +31,7 @@ struct CarDetailsView: View {
                 
                 VStack(alignment: .leading, spacing: 10) {
                     
+                    // Car's location info
                     if carsViewModel.currentCarInfo.address.isEmpty {
                         HStack {
                             Image(systemName: "exclamationmark.circle")
@@ -50,6 +51,23 @@ struct CarDetailsView: View {
                         
                     }
                     
+                    // Car's parking note info
+                    if !carsViewModel.currentCarInfo.note.isEmpty {
+                        
+                        VStack(alignment: .leading) {
+                            Text("Parking Note:")
+                                .bold()
+                            
+                            Text(carsViewModel.currentCarInfo.note)
+                                .foregroundColor(.gray)
+                            
+                        }
+                        .padding(.bottom, 5)
+                        .font(.system(.headline))
+                        
+                    }
+                    
+                    // Car's currently in use info
                     if carsViewModel.currentCarInfo.currentlyInUse {
                         
                         VStack(alignment: .leading) {
@@ -95,6 +113,29 @@ struct CarDetailsView: View {
                     .cornerRadius(50)
                     .font(.title2)
                     
+                    Button{
+                        self.showNoteInput = true
+                    } label: {
+                        Image(systemName: "note.text")
+                        Text("Note")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .cornerRadius(50)
+                    .font(.title2)
+                    .sheet(isPresented: $showNoteInput) {
+                        NoteInputView(
+                               isPresented: $showNoteInput,
+                               note: $carsViewModel.currentCarInfo.note,
+                               saveAction: { newNote in
+                                   Task {
+                                       await carsViewModel.updateCarNote(
+                                           carId: carsViewModel.currentCarInfo.id,
+                                           note: newNote
+                                       )
+                                   }
+                               }
+                           )                    }
+                    
                 }
             }
         }
@@ -102,6 +143,7 @@ struct CarDetailsView: View {
         .onAppear {
             Task {
                 await carsViewModel.getCar(carId: carId)
+                
             }
         }
         .sheet(isPresented: $showLocationUpdateAlert,onDismiss: {

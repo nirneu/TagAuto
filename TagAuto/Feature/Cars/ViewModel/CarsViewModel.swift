@@ -31,6 +31,7 @@ protocol CarsViewModel {
     func selectCar(_ car: Car?) async
     func updateCarLocation(car: Car, newLocation: CLLocation, userId: String) async
     func markCarAsUsed(carId: String, userId: String, userFullName: String) async
+    func updateCarNote(carId: String, note: String) async
     func deleteCar(groupId: String, car: Car, userId: String)
     init(service: CarsServiceImpl)
 }
@@ -151,6 +152,29 @@ final class CarsViewModelImpl: CarsViewModel, ObservableObject {
             self.state = .failed(error: error)
         }
     }
+    
+    @MainActor
+        func updateCarNote(carId: String, note: String) async {
+            guard !carId.isEmpty else {
+                self.state = .unsuccessful(reason: "Invalid car ID.")
+                return
+            }
+            
+            self.isLoading = true
+
+            do {
+                try await service.updateCarNote(carId: carId, note: note)
+                
+                // Use getCar function to update car information
+                await getCar(carId: carId)
+                
+                self.isLoading = false
+                self.state = .successful
+            } catch {
+                self.isLoading = false
+                self.state = .failed(error: error)
+            }
+        }
     
     func deleteCar(groupId: String, car: Car, userId: String) {
         service.deleteCar(groupId, car: car)

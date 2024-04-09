@@ -84,6 +84,12 @@ struct CarsView: View {
                                                         .font(.subheadline)
                                                     
                                                 }
+                                                
+                                                if !car.note.isEmpty {
+                                                    Text(car.note)
+                                                        .foregroundColor(.gray)
+                                                        .font(.subheadline)
+                                                }
                                             }
                                         }
                                         Spacer()
@@ -94,7 +100,7 @@ struct CarsView: View {
                                     }
                                     
                                 }
-                                .frame(height: 50)
+                                .frame(height: 55)
                                 .listRowBackground(Color.clear)
                             }
                         }

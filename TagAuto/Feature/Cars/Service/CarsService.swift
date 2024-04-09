@@ -30,6 +30,7 @@ protocol CarsService {
     func markCarAsUsed(carId: String, userId: String, userFullName: String) async throws
     func getAddress(carId: String, geopoint: CLLocationCoordinate2D) async throws -> String
     func updateCarAddress(carId: String, address: String) async throws
+    func updateCarNote(carId: String, note: String) async throws 
     func deleteCar(_ groupId: String, car: Car) -> AnyPublisher<Void, Error>
 }
 
@@ -182,6 +183,17 @@ final class CarsServiceImpl: CarsService {
             CarKeys.address.rawValue: address,
         ])
     }
+    
+    func updateCarNote(carId: String, note: String) async throws {
+        do {
+            try await db.collection(carsPath).document(carId).updateData([
+                CarKeys.note.rawValue: note
+            ])
+        } catch {
+            throw error
+        }
+    }
+
     
     func deleteCar(_ groupId: String, car: Car) -> AnyPublisher<Void, Error> {
         
