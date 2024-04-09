@@ -33,7 +33,18 @@ struct InviteMemberView: View {
                         InputTextFieldView(text: $memberEmail, placeholder: "Member's Email", keyboardType: .emailAddress, sfSymbol: "envelope")
                         
                     }
-                    
+                                        
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Note:")
+                            .bold()
+                            .font(.headline) // Emphasizes "Note" as a heading
+                        Text("1. Only members who have already signed up to the app can be invited.")
+                        Text("2. First, ask the member to send you their email address from their Account page. Then, use this email address to invite them here.")
+                        Text("3. An invitation request will appear in the invited member’s Account page, under 'Group Invitations'.")
+                    }
+                    .padding() 
+
+
                     ButtonView(title: "Send Invitation", handler: {
                         
                         self.isInputError = false
