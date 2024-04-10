@@ -401,11 +401,13 @@ final class GroupsServiceImpl: GroupsService {
     
     func sendInvitation(to email: String, for groupId: String, groupName: String) async throws {
         
-        self.db.collection(self.invitationsPath).addDocument(data: [
-            InvitationKeys.email.rawValue: email,
-            InvitationKeys.groupId.rawValue: groupId,
-            InvitationKeys.groupName.rawValue: groupName
-        ])
+        func sendInvitation(to email: String, for groupId: String, groupName: String) async throws {
+            try await self.db.collection(self.invitationsPath).addDocument(data: [
+                InvitationKeys.email.rawValue: email,
+                InvitationKeys.groupId.rawValue: groupId,
+                InvitationKeys.groupName.rawValue: groupName
+            ])
+        }
         
     }
     
