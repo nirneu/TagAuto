@@ -21,7 +21,5 @@
 	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>MinimumOSVersion</key>
-	<string>16.4</string>
 </dict>
 </plist>
